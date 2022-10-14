@@ -11,15 +11,23 @@ import java.util.*;
 public class TaskManager {
     private final Map<TaskType, Map<Integer, Task>> tasksByType;
     private int lastID;
+
     public int getLastID() {
         return lastID;
     }
+
     public TaskManager() {
         tasksByType = new EnumMap<>(TaskType.class);
         lastID = 0;
     }
+
     public void addTask(Task task, TaskType type) {
         Map<Integer, Task> tasks;
+        task.setTaskID(++lastID);
+        if (type == TaskType.SUB_TASK) {
+            Epic epic = (Epic) getTaskById(((SubTask) task).getEpicID());
+            epic.addSubtask((SubTask) task);
+        }
         if (tasksByType.containsKey(type)) {
             tasks = tasksByType.get(type);
         } else {
@@ -28,30 +36,31 @@ public class TaskManager {
         tasks.put(task.getTaskID(), task);
         tasksByType.put(type, tasks);
     }
+
     public void removeAllTasks() {
         tasksByType.clear();
         lastID = 0;
     }
+
     public void removeAllTasks(TaskType taskType) {
         if (tasksByType.containsKey(taskType)) {
             if (taskType == TaskType.SUB_TASK) {
                 Map<Integer, Task> subTasks = tasksByType.get(taskType);
                 for (Task subTask : subTasks.values()) {
-                    Epic epic = (Epic) getTaskById(((SubTask)subTask).getEpicID());
+                    Epic epic = (Epic) getTaskById(((SubTask) subTask).getEpicID());
                     epic.getSubTasks().remove(subTask.getTaskID());
                 }
             }
             if (taskType == TaskType.EPIC) {
                 Map<Integer, Task> epics = tasksByType.get(taskType);
                 for (Task epic : epics.values()) {
-                    for (SubTask subTask : ((Epic) epic).getSubTasks().values()) {
-                        removeTaskByID(subTask.getTaskID());
-                    }
+                    ((Epic) epic).getSubTasks().clear();
                 }
             }
             tasksByType.remove(taskType);
         }
     }
+
     public void removeTaskByID(int taskID) {
         for (Map.Entry<TaskType, Map<Integer, Task>> entry : tasksByType.entrySet()) {
             Map<Integer, Task> tasks = entry.getValue();
@@ -65,6 +74,7 @@ public class TaskManager {
             }
         }
     }
+
     public void removeTaskByID(int taskID, TaskType taskType) {
         Map<Integer, Task> tasks = tasksByType.get(taskType);
         if (tasks.containsKey(taskID)) {
@@ -76,9 +86,11 @@ public class TaskManager {
             tasks.remove(taskID);
         }
     }
+
     public List<Task> getAllSubtaskByEpic(Epic epic) {
         return new ArrayList<>(epic.getSubTasks().values());
     }
+
     public List<Task> getAllTasks() {
         List<Task> allTasks = new ArrayList<>();
 
@@ -94,9 +106,11 @@ public class TaskManager {
         }
         return allTasks;
     }
+
     public List<Task> getAllTasks(TaskType taskType) {
         return new ArrayList<>(tasksByType.get(taskType).values());
     }
+
     public Task getTaskById(int taskID) {
         for (Map<Integer, Task> map : tasksByType.values()) {
             if (map.containsKey(taskID)) {
@@ -105,6 +119,7 @@ public class TaskManager {
         }
         return null;
     }
+
     public void updateTask(Task task, TaskType taskType) {
         Map<Integer, Task> taskByType = tasksByType.get(taskType);
         taskByType.put(task.getTaskID(), task);
@@ -116,6 +131,7 @@ public class TaskManager {
             updateEpicStatus(epic);
         }
     }
+
     private void updateEpicStatus(Epic epic) {
         int countDone = 0;
         int countNew = 0;

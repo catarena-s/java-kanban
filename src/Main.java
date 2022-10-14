@@ -47,7 +47,7 @@ public class Main {
         currentID = 15;
         printTaskByID(currentID, taskManager);
 
-        currentID = 3;
+        currentID = 4;
         System.out.printf(MSG_GET_TASK_BY_ID, "подзадачи эпика", currentID);
         Epic epic = (Epic) taskManager.getTaskById(currentID);
         allTasks = taskManager.getAllSubtaskByEpic(epic);
@@ -99,7 +99,7 @@ public class Main {
         System.out.println(" -> " + taskManager.getTaskById(currentID));
         System.out.println();
 
-        currentID = 3;
+        currentID = 4;
         Epic updatedEpic = (Epic) taskManager.getTaskById(currentID);
         System.out.printf(MSG_UPDATE_TASK_BY_ID, currentID, updatedEpic);
         updatedEpic.setName("newEpic" + currentID);
@@ -137,7 +137,7 @@ public class Main {
         printAllTaskManagerList(taskManager);
         System.out.println();
 
-        System.out.println(">>Удаляем все" + TaskType.EPIC);
+        System.out.println(">>Удаляем все " + TaskType.EPIC);
         taskManager.removeAllTasks(TaskType.EPIC);
         printAllTaskManagerList(taskManager);
         System.out.println();
@@ -168,27 +168,27 @@ public class Main {
 
     private static void initTaskManager(TaskManager taskManager) {
         int lastID = taskManager.getLastID();
-        Task task = new Task(++lastID, "Задача " + lastID, "Описание задачи " + lastID);
+        Task task = new Task("Задача " + ++lastID, "Описание задачи " + lastID);
         taskManager.addTask(task, TaskType.TASK);
-        task = new Task(++lastID, "Задача " + lastID, "Описание задачи " + lastID);
+        task = new Task("Задача " + ++lastID, "Описание задачи " + lastID);
         taskManager.addTask(task, TaskType.TASK);
 
-        Epic epic = new Epic(++lastID, "Эпик " + lastID, "Описание эпика " + lastID);
+        task = new Task("Задача " + ++lastID, "Описание задачи " + lastID);
+        taskManager.addTask(task, TaskType.TASK);
+
+        Epic epic = new Epic("Эпик " + ++lastID, "Описание эпика " + lastID);
         taskManager.addTask(epic, TaskType.EPIC);
 
-        SubTask subTask = new SubTask(++lastID, "Подзадача " + lastID, "Описание подзадачи " + lastID, epic);
-        epic.addSubtask(lastID, subTask);
+        SubTask subTask = new SubTask("Подзадача " + ++lastID, "Описание подзадачи " + lastID, epic);
         taskManager.addTask(subTask, TaskType.SUB_TASK);
 
-        subTask = new SubTask(++lastID, "Подзадача " + lastID, "Описание подзадачи " + lastID, epic);
-        epic.addSubtask(lastID, subTask);
+        subTask = new SubTask("Подзадача " + ++lastID, "Описание подзадачи " + lastID, epic);
         taskManager.addTask(subTask, TaskType.SUB_TASK);
 
-        epic = new Epic(++lastID, "Эпик " + lastID, "Описание эпика " + lastID);
+        epic = new Epic("Эпик " + ++lastID, "Описание эпика " + lastID);
         taskManager.addTask(epic, TaskType.EPIC);
 
-        subTask = new SubTask(++lastID, "Подзадача " + lastID, "Описание подзадачи " + lastID, epic);
-        epic.addSubtask(lastID, subTask);
+        subTask = new SubTask("Подзадача " + ++lastID, "Описание подзадачи " + lastID, epic);
         taskManager.addTask(subTask, TaskType.SUB_TASK);
 
         System.out.println(">>Заполнили TaskManager тестовыми данными");

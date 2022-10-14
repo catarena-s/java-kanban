@@ -3,13 +3,12 @@ package ru.yandex.practicum.kanban.tasks;
 import ru.yandex.practicum.kanban.util.TaskStatus;
 
 public class Task {
-    private final Integer taskID;
+    private Integer taskID = 0;
     private String name;
     private String description;
     private TaskStatus taskStatus;
 
-    public Task(Integer taskID, String name, String description) {
-        this.taskID = taskID;
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
@@ -27,6 +26,10 @@ public class Task {
 
     public Integer getTaskID() {
         return taskID;
+    }
+
+    public void setTaskID(Integer taskID) {
+        this.taskID = taskID;
     }
 
     public String getName() {
