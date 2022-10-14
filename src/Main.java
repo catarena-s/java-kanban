@@ -118,7 +118,8 @@ public class Main {
         taskManager.updateTask(subTask, TaskType.SUB_TASK);
         subTask = (SubTask) taskManager.getTaskById(currentID);
         System.out.println(" -> " + subTask);
-        System.out.println(" -> " + subTask.getEpic());
+        Epic epic = (Epic) taskManager.getTaskById(subTask.getEpicID());
+        System.out.println(" -> " + epic);
         System.out.println();
     }
 
