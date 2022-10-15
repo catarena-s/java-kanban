@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Epic extends Task {
-    private final Map<Integer, SubTask> subTasks;
+    private final Map<String , SubTask> subTasks;
 
     public Epic(String name, String description) {
         super(name, description);
@@ -15,7 +15,7 @@ public class Epic extends Task {
         subTasks.put(subtask.getTaskID(), subtask);
     }
 
-    public Map<Integer, SubTask> getSubTasks() {
+    public Map<String, SubTask> getSubTasks() {
         return subTasks;
     }
 

@@ -10,8 +10,8 @@ import java.util.List;
 public class Main {
     private static final String MSG_SEPARATOR = "---------------------------------------------------------------------";
     private static final String MSG_SEPARATOR_TASK_LIST = "---Печать %s---\n";
-    private static final String MSG_UPDATE_TASK_BY_ID = ">>Обновляем задачу ID = %d - %s\n";
-    private static final String MSG_GET_TASK_BY_ID = ">>Получаем %s ID = %d\n";
+    private static final String MSG_UPDATE_TASK_BY_ID = ">>Обновляем задачу ID = %s - %s\n";
+    private static final String MSG_GET_TASK_BY_ID = ">>Получаем %s ID = %s\n";
     private static final String MSG_DELETE_BY_ID = ">>Удаляем задачу ID = ";
 
     public static void main(String[] args) {
@@ -35,19 +35,19 @@ public class Main {
     }
 
     private static void testGetTasksByID(TaskManager taskManager) {
-        int currentID;
+        String  currentID;
         List<Task> allTasks;
 
-        currentID = 1;
+        currentID = "0001";
         printTaskByID(currentID, taskManager);
-        currentID = 3;
+        currentID = "0003";
         printTaskByID(currentID, taskManager);
-        currentID = 5;
+        currentID = "0005";
         printTaskByID(currentID, taskManager);
-        currentID = 15;
+        currentID = "0015";
         printTaskByID(currentID, taskManager);
 
-        currentID = 4;
+        currentID = "0004";
         System.out.printf(MSG_GET_TASK_BY_ID, "подзадачи эпика", currentID);
         Epic epic = (Epic) taskManager.getTaskById(currentID);
         allTasks = taskManager.getAllSubtaskByEpic(epic);
@@ -89,8 +89,8 @@ public class Main {
     }
 
     private static void testUpdateTasks(TaskManager taskManager) {
-        int currentID = 2;
-        Task task = taskManager.getTaskById(2);
+        String  currentID ="0002";
+        Task task = taskManager.getTaskById(currentID);
         System.out.printf(MSG_UPDATE_TASK_BY_ID, currentID, task);
         task.setName("newName" + currentID);
         task.setDescription("new Description " + currentID);
@@ -99,7 +99,7 @@ public class Main {
         System.out.println(" -> " + taskManager.getTaskById(currentID));
         System.out.println();
 
-        currentID = 4;
+        currentID = "0004";
         Epic updatedEpic = (Epic) taskManager.getTaskById(currentID);
         System.out.printf(MSG_UPDATE_TASK_BY_ID, currentID, updatedEpic);
         updatedEpic.setName("newEpic" + currentID);
@@ -109,7 +109,7 @@ public class Main {
         System.out.println(" -> " + taskManager.getTaskById(currentID));
         System.out.println();
 
-        currentID = 5;
+        currentID = "0005";
         SubTask subTask = (SubTask) taskManager.getTaskById(currentID);
         System.out.printf(MSG_UPDATE_TASK_BY_ID, currentID, subTask);
         subTask.setName("new subTaskName" + currentID);
@@ -124,14 +124,13 @@ public class Main {
     }
 
     private static void testRemoveTasks(TaskManager taskManager) {
-        int currentID;
-        currentID = 3;
+        String  currentID = "0004";
         System.out.println(MSG_DELETE_BY_ID + currentID);
         taskManager.removeTaskByID(currentID);
         printAllTaskManagerList(taskManager);
         System.out.println();
 
-        currentID = 8;
+        currentID = "0008";
         System.out.println(MSG_DELETE_BY_ID + currentID);
         taskManager.removeTaskByID(currentID, TaskType.SUB_TASK);
         printAllTaskManagerList(taskManager);
@@ -147,7 +146,7 @@ public class Main {
         System.out.println("Все задачи удалены!");
     }
 
-    private static void printTaskByID(int currentID, TaskManager taskManager) {
+    private static void printTaskByID(String currentID, TaskManager taskManager) {
         System.out.printf(MSG_GET_TASK_BY_ID, "задачу", currentID);
         Task task = taskManager.getTaskById(currentID);
         if (task == null) {

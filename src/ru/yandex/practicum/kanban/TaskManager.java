@@ -9,7 +9,7 @@ import ru.yandex.practicum.kanban.util.TaskType;
 import java.util.*;
 
 public class TaskManager {
-    private final Map<TaskType, Map<Integer, Task>> tasksByType;
+    private final Map<TaskType, Map<String, Task>> tasksByType;
     private int lastID;
 
     public int getLastID() {
@@ -21,9 +21,13 @@ public class TaskManager {
         lastID = 0;
     }
 
+    private String newTaskID() {
+        return String.format("%04d",  ++lastID);
+    }
+
     public void addTask(Task task, TaskType type) {
-        Map<Integer, Task> tasks;
-        task.setTaskID(++lastID);
+        Map<String, Task> tasks;
+        task.setTaskID(newTaskID());
         if (type == TaskType.SUB_TASK) {
             Epic epic = (Epic) getTaskById(((SubTask) task).getEpicID());
             epic.addSubtask((SubTask) task);
@@ -45,14 +49,14 @@ public class TaskManager {
     public void removeAllTasks(TaskType taskType) {
         if (tasksByType.containsKey(taskType)) {
             if (taskType == TaskType.SUB_TASK) {
-                Map<Integer, Task> subTasks = tasksByType.get(taskType);
+                Map<String, Task> subTasks = tasksByType.get(taskType);
                 for (Task subTask : subTasks.values()) {
                     Epic epic = (Epic) getTaskById(((SubTask) subTask).getEpicID());
                     epic.getSubTasks().remove(subTask.getTaskID());
                 }
             }
             if (taskType == TaskType.EPIC) {
-                Map<Integer, Task> epics = tasksByType.get(taskType);
+                Map<String, Task> epics = tasksByType.get(taskType);
                 for (Task epic : epics.values()) {
                     ((Epic) epic).getSubTasks().clear();
                 }
@@ -61,9 +65,9 @@ public class TaskManager {
         }
     }
 
-    public void removeTaskByID(int taskID) {
-        for (Map.Entry<TaskType, Map<Integer, Task>> entry : tasksByType.entrySet()) {
-            Map<Integer, Task> tasks = entry.getValue();
+    public void removeTaskByID(String taskID) {
+        for (Map.Entry<TaskType, Map<String, Task>> entry : tasksByType.entrySet()) {
+            Map<String, Task> tasks = entry.getValue();
             if (tasks.containsKey(taskID)) {
                 if (entry.getKey() == TaskType.SUB_TASK) {
                     SubTask subTask = (SubTask) tasks.get(taskID);
@@ -75,8 +79,8 @@ public class TaskManager {
         }
     }
 
-    public void removeTaskByID(int taskID, TaskType taskType) {
-        Map<Integer, Task> tasks = tasksByType.get(taskType);
+    public void removeTaskByID(String  taskID, TaskType taskType) {
+        Map<String, Task> tasks = tasksByType.get(taskType);
         if (tasks.containsKey(taskID)) {
             if (taskType == TaskType.SUB_TASK) {
                 SubTask subTask = (SubTask) tasks.get(taskID);
@@ -100,7 +104,7 @@ public class TaskManager {
         if (tasksByType.get(TaskType.EPIC) != null) {
             for (Task epic : tasksByType.get(TaskType.EPIC).values()) {
                 allTasks.add(epic);
-                Map<Integer, SubTask> epicSubTasks = ((Epic) epic).getSubTasks();
+                Map<String, SubTask> epicSubTasks = ((Epic) epic).getSubTasks();
                 allTasks.addAll(epicSubTasks.values());
             }
         }
@@ -111,8 +115,8 @@ public class TaskManager {
         return new ArrayList<>(tasksByType.get(taskType).values());
     }
 
-    public Task getTaskById(int taskID) {
-        for (Map<Integer, Task> map : tasksByType.values()) {
+    public Task getTaskById(String taskID) {
+        for (Map<String, Task> map : tasksByType.values()) {
             if (map.containsKey(taskID)) {
                 return map.get(taskID);
             }
@@ -121,7 +125,7 @@ public class TaskManager {
     }
 
     public void updateTask(Task task, TaskType taskType) {
-        Map<Integer, Task> taskByType = tasksByType.get(taskType);
+        Map<String, Task> taskByType = tasksByType.get(taskType);
         taskByType.put(task.getTaskID(), task);
         if (taskType == TaskType.EPIC) {
             updateEpicStatus((Epic) task);

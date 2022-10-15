@@ -1,14 +1,14 @@
 package ru.yandex.practicum.kanban.tasks;
 
 public class SubTask extends Task {
-    private final int epicID;
+    private final String epicID;
 
     public SubTask(String name, String description, Epic epic) {
         super(name, description);
         this.epicID = epic.getTaskID();
     }
 
-    public int getEpicID() {
+    public String getEpicID() {
         return epicID;
     }
 
