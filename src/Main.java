@@ -105,6 +105,10 @@ public class Main {
         updatedEpic.setName("newEpic" + currentID);
         updatedEpic.setDescription("new Description " + currentID);
         updatedEpic.setStatus(TaskStatus.IN_PROGRESS);
+        /* Спасибо, за комментарий про статус эпика. На данный момент действительно, установить статус эпику(если у него
+         все сабы new) не получится.
+         Я подумаю на тем как запретить попытку поменять статус эпика без учета сабов(если я правильно поняла замечание).
+         */
         taskManager.updateTask(updatedEpic, TaskType.EPIC);
         System.out.println(" -> " + taskManager.getTaskById(currentID));
         System.out.println();
