@@ -1,22 +1,22 @@
-package ru.yandex.practicum.kanban.tasks;
+package ru.yandex.practicum.kanban.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private final Map<String , SubTask> subTasks;
+    private final List<String> subTasksID;
 
     public Epic(String name, String description) {
         super(name, description);
-        subTasks = new HashMap<>();
+        subTasksID = new ArrayList<>();
     }
 
     public void addSubtask(SubTask subtask) {
-        subTasks.put(subtask.getTaskID(), subtask);
+        subTasksID.add(subtask.taskID);
     }
 
-    public Map<String, SubTask> getSubTasks() {
-        return subTasks;
+    public List<String> getSubTasksID() {
+        return subTasksID;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", subTasks=" + subTasks.keySet() +
+                ", subTasks=" + subTasksID +
                 " }";
     }
 }

@@ -1,100 +1,115 @@
-package ru.yandex.practicum.kanban;
+package ru.yandex.practicum.kanban.managers;
 
-import ru.yandex.practicum.kanban.tasks.Epic;
-import ru.yandex.practicum.kanban.tasks.SubTask;
-import ru.yandex.practicum.kanban.tasks.Task;
-import ru.yandex.practicum.kanban.util.TaskStatus;
-import ru.yandex.practicum.kanban.util.TaskType;
+import ru.yandex.practicum.kanban.model.*;
+import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.util.*;
 
-public class TaskManager {
-    private final Map<TaskType, Map<String, Task>> tasksByType;
-    private int lastID;
+import static ru.yandex.practicum.kanban.utils.Helper.printMessage;
 
-    public int getLastID() {
-        return lastID;
+public class InMemoryTaskManager implements TaskManager {
+    private final Map<TaskType, Map<String, Task>> tasksByType;
+    private final HistoryManager historyManager;
+    private int lastID = 0;
+
+    public InMemoryTaskManager() {
+        tasksByType = new EnumMap<>(TaskType.class);
+        historyManager = Managers.getDefaultHistory();
     }
 
-    public TaskManager() {
-        tasksByType = new EnumMap<>(TaskType.class);
-        lastID = 0;
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 
     private String newTaskID() {
-        return String.format("%04d",  ++lastID);
+        return String.format("%04d", ++lastID);
     }
 
-    public void addTask(Task task, TaskType type) {
+    @Override
+    public void add(Task task, TaskType type) {
         Map<String, Task> tasks;
+
         task.setTaskID(newTaskID());
+
         if (type == TaskType.SUB_TASK) {
-            Epic epic = (Epic) getTaskById(((SubTask) task).getEpicID());
+            Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
             epic.addSubtask((SubTask) task);
         }
+
         if (tasksByType.containsKey(type)) {
             tasks = tasksByType.get(type);
         } else {
             tasks = new HashMap<>();
         }
+
         tasks.put(task.getTaskID(), task);
         tasksByType.put(type, tasks);
     }
 
+    @Override
     public void removeAllTasks() {
         tasksByType.clear();
         lastID = 0;
     }
 
+    @Override
     public void removeAllTasks(TaskType taskType) {
         if (tasksByType.containsKey(taskType)) {
             if (taskType == TaskType.SUB_TASK) {
                 Map<String, Task> subTasks = tasksByType.get(taskType);
                 for (Task subTask : subTasks.values()) {
-                    Epic epic = (Epic) getTaskById(((SubTask) subTask).getEpicID());
-                    epic.getSubTasks().remove(subTask.getTaskID());
+                    Epic epic = (Epic) getEpic(((SubTask) subTask).getEpicID());
+                    epic.getSubTasksID().remove(subTask.getTaskID());
                 }
             }
             if (taskType == TaskType.EPIC) {
                 Map<String, Task> epics = tasksByType.get(taskType);
                 for (Task epic : epics.values()) {
-                    ((Epic) epic).getSubTasks().clear();
+                    ((Epic) epic).getSubTasksID().clear();
                 }
             }
             tasksByType.remove(taskType);
         }
     }
 
+    @Override
     public void removeTaskByID(String taskID) {
         for (Map.Entry<TaskType, Map<String, Task>> entry : tasksByType.entrySet()) {
             Map<String, Task> tasks = entry.getValue();
             if (tasks.containsKey(taskID)) {
                 if (entry.getKey() == TaskType.SUB_TASK) {
                     SubTask subTask = (SubTask) tasks.get(taskID);
-                    Epic epic = (Epic) getTaskById(subTask.getEpicID());
-                    epic.getSubTasks().remove(taskID);
+                    Epic epic = (Epic) getEpic(subTask.getEpicID());
+                    epic.getSubTasksID().remove(taskID);
                 }
                 tasks.remove(taskID);
             }
         }
     }
 
-    public void removeTaskByID(String  taskID, TaskType taskType) {
+    @Override
+    public void removeTaskByID(String taskID, TaskType taskType) {
         Map<String, Task> tasks = tasksByType.get(taskType);
         if (tasks.containsKey(taskID)) {
             if (taskType == TaskType.SUB_TASK) {
                 SubTask subTask = (SubTask) tasks.get(taskID);
-                Epic epic = (Epic) getTaskById(subTask.getEpicID());
-                epic.getSubTasks().remove(taskID);
+                Epic epic = (Epic) getEpic(subTask.getEpicID());
+                epic.getSubTasksID().remove(taskID);
             }
             tasks.remove(taskID);
         }
     }
 
+    @Override
     public List<Task> getAllSubtaskByEpic(Epic epic) {
-        return new ArrayList<>(epic.getSubTasks().values());
+        List<Task> subTasks = new ArrayList<>();
+        for (String subTaskId : epic.getSubTasksID()) {
+            subTasks.add(getSubtask(subTaskId));
+        }
+        return subTasks;
     }
 
+    @Override
     public List<Task> getAllTasks() {
         List<Task> allTasks = new ArrayList<>();
 
@@ -104,26 +119,57 @@ public class TaskManager {
         if (tasksByType.get(TaskType.EPIC) != null) {
             for (Task epic : tasksByType.get(TaskType.EPIC).values()) {
                 allTasks.add(epic);
-                Map<String, SubTask> epicSubTasks = ((Epic) epic).getSubTasks();
-                allTasks.addAll(epicSubTasks.values());
+                for (String subTaskId : ((Epic) epic).getSubTasksID()) {
+                    allTasks.add(getSubtask(subTaskId));
+                }
             }
         }
         return allTasks;
     }
 
+    @Override
     public List<Task> getAllTasks(TaskType taskType) {
         return new ArrayList<>(tasksByType.get(taskType).values());
     }
 
-    public Task getTaskById(String taskID) {
+    @Override
+    public Task getById(String taskID) {
         for (Map<String, Task> map : tasksByType.values()) {
             if (map.containsKey(taskID)) {
-                return map.get(taskID);
+                Task task = map.get(taskID);
+                historyManager.add(task);
+                return task;
             }
         }
         return null;
     }
 
+    @Override
+    public Task getTask(String taskID) {
+        return getByIdAndType(taskID,TaskType.TASK);
+    }
+
+    @Override
+    public Task getEpic(String taskID) {
+        return getByIdAndType(taskID,TaskType.EPIC);
+    }
+
+    @Override
+    public Task getSubtask(String taskID) {
+        return getByIdAndType(taskID,TaskType.SUB_TASK);
+    }
+
+    private Task getByIdAndType(String taskID,TaskType type) {
+        Map<String, Task> tasks = tasksByType.get(type);
+        if (tasks.containsKey(taskID)) {
+            Task task = tasks.get(taskID);
+            historyManager.add(task);
+            return task;
+        }
+        return null;
+    }
+
+    @Override
     public void updateTask(Task task, TaskType taskType) {
         Map<String, Task> taskByType = tasksByType.get(taskType);
         taskByType.put(task.getTaskID(), task);
@@ -131,7 +177,7 @@ public class TaskManager {
             updateEpicStatus((Epic) task);
         }
         if (taskType == TaskType.SUB_TASK) {
-            Epic epic = (Epic) getTaskById(((SubTask) task).getEpicID());
+            Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
             updateEpicStatus(epic);
         }
     }
@@ -139,19 +185,24 @@ public class TaskManager {
     private void updateEpicStatus(Epic epic) {
         int countDone = 0;
         int countNew = 0;
-        ArrayList<SubTask> allSubTasks = new ArrayList<>(epic.getSubTasks().values());
+        ArrayList<String> allSubTasks = new ArrayList<>(epic.getSubTasksID());
+        if (allSubTasks.isEmpty()) {
+            printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
+            epic.setStatus(TaskStatus.NEW);
+            return;
+        }
 
-        for (SubTask subTask : allSubTasks) {
-            if (subTask.getStatus() == TaskStatus.DONE) {
+        for (String subTaskId : allSubTasks) {
+            if (getSubtask(subTaskId).getStatus() == TaskStatus.DONE) {
                 countDone++;
             }
-            if (subTask.getStatus() == TaskStatus.NEW) {
+            if (getSubtask(subTaskId).getStatus() == TaskStatus.NEW) {
                 countNew++;
             }
         }
-        if (epic.getSubTasks().isEmpty() || countNew == epic.getSubTasks().size()) {
+        if (countNew == epic.getSubTasksID().size()) {
             epic.setStatus(TaskStatus.NEW);
-        } else if (countDone == epic.getSubTasks().size()) {
+        } else if (countDone == epic.getSubTasksID().size()) {
             epic.setStatus(TaskStatus.DONE);
         } else {
             epic.setStatus(TaskStatus.IN_PROGRESS);

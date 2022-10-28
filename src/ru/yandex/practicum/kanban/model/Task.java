@@ -1,12 +1,10 @@
-package ru.yandex.practicum.kanban.tasks;
-
-import ru.yandex.practicum.kanban.util.TaskStatus;
+package ru.yandex.practicum.kanban.model;
 
 public class Task {
-    private String taskID = "0";
-    private String name;
-    private String description;
-    private TaskStatus taskStatus;
+    protected String taskID = "0";
+    protected String name;
+    protected String description;
+    protected TaskStatus taskStatus;
 
     public Task(String name, String description) {
         this.name = name;
