@@ -1,18 +1,13 @@
 package ru.yandex.practicum.kanban.managers;
 
-public class Managers<T extends TaskManager> {
-    private T taskManager;
+public class Managers<T extends Manager> {
+    private final T manager;
 
-    public Managers(T taskManager) {
-        this.taskManager = taskManager;
+    public Managers(T manager) {
+        this.manager = manager;
     }
 
     public T getDefault() {
-        return taskManager;
+        return manager;
     }
-
-    public static HistoryManager getDefaultHistory() {
-        return new InMemoryHistoryManager();
-    }
-
 }

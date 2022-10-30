@@ -14,7 +14,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     public InMemoryTaskManager() {
         tasksByType = new EnumMap<>(TaskType.class);
-        historyManager = Managers.getDefaultHistory();
+
+        Managers<HistoryManager> managers = new Managers<>(new InMemoryHistoryManager());
+        historyManager = managers.getDefault();
     }
 
     public HistoryManager getHistoryManager() {
@@ -26,15 +28,26 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void add(Task task, TaskType type) {
+    public void addTask(Task task) {
+        add(task, TaskType.TASK);
+    }
+
+    @Override
+    public void addEpic(Epic task) {
+        add(task, TaskType.EPIC);
+    }
+
+    @Override
+    public void addSubtask(SubTask task) {
+        add(task, TaskType.SUB_TASK);
+        Epic epic = (Epic) getEpic(task.getEpicID());
+        epic.addSubtask(task);
+        updateEpicStatus(epic);
+    }
+
+    private void add(Task task, TaskType type) {
         Map<String, Task> tasks;
-
         task.setTaskID(newTaskID());
-
-        if (type == TaskType.SUB_TASK) {
-            Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
-            epic.addSubtask((SubTask) task);
-        }
 
         if (tasksByType.containsKey(type)) {
             tasks = tasksByType.get(type);
@@ -44,6 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         tasks.put(task.getTaskID(), task);
         tasksByType.put(type, tasks);
+
     }
 
     @Override
@@ -81,6 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
                     SubTask subTask = (SubTask) tasks.get(taskID);
                     Epic epic = (Epic) getEpic(subTask.getEpicID());
                     epic.getSubTasksID().remove(taskID);
+                    updateEpicStatus(epic);
                 }
                 tasks.remove(taskID);
             }
@@ -146,20 +161,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(String taskID) {
-        return getByIdAndType(taskID,TaskType.TASK);
+        return getByIdAndType(taskID, TaskType.TASK);
     }
 
     @Override
     public Task getEpic(String taskID) {
-        return getByIdAndType(taskID,TaskType.EPIC);
+        return getByIdAndType(taskID, TaskType.EPIC);
     }
 
     @Override
     public Task getSubtask(String taskID) {
-        return getByIdAndType(taskID,TaskType.SUB_TASK);
+        return getByIdAndType(taskID, TaskType.SUB_TASK);
     }
 
-    private Task getByIdAndType(String taskID,TaskType type) {
+    private Task getByIdAndType(String taskID, TaskType type) {
         Map<String, Task> tasks = tasksByType.get(type);
         if (tasks.containsKey(taskID)) {
             Task task = tasks.get(taskID);
@@ -186,6 +201,7 @@ public class InMemoryTaskManager implements TaskManager {
         int countDone = 0;
         int countNew = 0;
         ArrayList<String> allSubTasks = new ArrayList<>(epic.getSubTasksID());
+
         if (allSubTasks.isEmpty()) {
             printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
             epic.setStatus(TaskStatus.NEW);

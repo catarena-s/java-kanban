@@ -2,7 +2,7 @@ package ru.yandex.practicum.kanban.managers;
 
 import ru.yandex.practicum.kanban.model.Task;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -10,7 +10,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final List<Task> history;
 
     public InMemoryHistoryManager() {
-        this.history = new ArrayList<>();
+        this.history = new LinkedList<>();
     }
 
     @Override

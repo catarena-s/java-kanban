@@ -16,16 +16,13 @@ public class Main {
         TaskManager taskManager = managers.getDefault();
 
         initTaskManager(taskManager);
-        printHistory(taskManager);
-
-        Helper.printMessage(Helper.MSG_SEPARATOR);
-        testGetTasksByID(taskManager);
+        printTaskByID("0004",taskManager);
+        printTaskByID("0005",taskManager);
+        printTaskByID("0006",taskManager);
 
         Helper.printMessage(Helper.MSG_SEPARATOR);
         testUpdateTasks(taskManager);
 
-        Helper.printMessage(Helper.MSG_SEPARATOR);
-        testRemoveTasks(taskManager);
     }
 
     public static void printHistory(TaskManager taskManager) {
@@ -74,37 +71,11 @@ public class Main {
     }
 
     private static void testUpdateTasks(TaskManager taskManager) {
-        String currentID = "0002";
-        Task task = taskManager.getTask(currentID);
-        Helper.printMessage(Helper.MSG_UPDATE_TASK_BY_ID, currentID, task);
-
-        task.setName("newName" + currentID);
-        task.setDescription("new Description " + currentID);
-        task.setStatus(TaskStatus.IN_PROGRESS);
-        taskManager.updateTask(task, TaskType.TASK);
-
-        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, taskManager.getTask(currentID));
-        printHistory(taskManager);
+        String currentID = "0004";
+        Epic epic = (Epic) taskManager.getEpic(currentID);
+        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
         Helper.printEmptySting();
-
-        currentID = "0007";
-        Epic updatedEpic = (Epic) taskManager.getEpic(currentID);
-        Helper.printMessage(Helper.MSG_UPDATE_TASK_BY_ID, currentID, updatedEpic);
-
-        updatedEpic.setName("newEpic" + currentID);
-        updatedEpic.setDescription("new Description " + currentID);
-        /*
-         Вопрос: Стоит ли переоперделить setStatus у эпика - запретить смену статуса, если у него нет подзадач?
-         Или оставить эту проверку внутири таск-менеджера?
-         */
-        updatedEpic.setStatus(TaskStatus.IN_PROGRESS);
-
-        taskManager.updateTask(updatedEpic, TaskType.EPIC);
-
-        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, taskManager.getEpic(currentID));
-        printHistory(taskManager);
-        Helper.printEmptySting();
-
+//------Обзовляем подзадачу
         currentID = "0005";
         SubTask subTask = (SubTask) taskManager.getSubtask(currentID);
         Helper.printMessage(Helper.MSG_UPDATE_TASK_BY_ID, currentID, subTask);
@@ -116,8 +87,42 @@ public class Main {
         subTask = (SubTask) taskManager.getSubtask(currentID);
 
         Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, subTask);
+        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
+        Helper.printEmptySting();
+//------Обзовляем подзадачу
+        currentID = "0006";
+        subTask = (SubTask) taskManager.getSubtask(currentID);
+        Helper.printMessage(Helper.MSG_UPDATE_TASK_BY_ID, currentID, subTask);
 
-        Epic epic = (Epic) taskManager.getEpic(subTask.getEpicID());
+        subTask.setName("new subTaskName" + currentID);
+        subTask.setDescription("new subTask Description " + currentID);
+        subTask.setStatus(TaskStatus.DONE);
+        taskManager.updateTask(subTask, TaskType.SUB_TASK);
+        subTask = (SubTask) taskManager.getSubtask(currentID);
+
+        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, subTask);
+        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
+        Helper.printEmptySting();
+//------Удаляем подзадачу
+        currentID = "0005";
+        Helper.printMessage(Helper.MSG_DELETE_BY_ID, currentID);
+        taskManager.removeTaskByID(currentID);
+        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
+        printHistory(taskManager);
+        Helper.printEmptySting();
+
+//------Добавляем подзадачу
+        subTask = new SubTask("Подзадача 1-3", "Описание подзадачи 1-3",subTask.getEpicID() );
+        taskManager.addSubtask(subTask);
+        Helper.printMessage(Helper.MSG_ADD_TASK,subTask.getTaskID(),subTask);
+        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, subTask);
+        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
+        printHistory(taskManager);
+        Helper.printEmptySting();
+//------Удаляем подзадачу
+        currentID = "0006";
+        Helper.printMessage(Helper.MSG_DELETE_BY_ID, currentID);
+        taskManager.removeTaskByID(currentID);
         Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
         printHistory(taskManager);
         Helper.printEmptySting();
@@ -166,38 +171,24 @@ public class Main {
 
     private static void initTaskManager(TaskManager taskManager) {
         Task task = new Task("Задача 1", "Описание задачи 1");
-        taskManager.add(task, TaskType.TASK);
-        Helper.printMessage(Helper.MSG_ADD_TASK, task.getTaskID(), task.getName());
-        printHistory(taskManager);
+        taskManager.addTask(task);
 
         task = new Task("Задача 2", "Описание задачи 2");
-        taskManager.add(task, TaskType.TASK);
-        Helper.printMessage(Helper.MSG_ADD_TASK, task.getTaskID(), task.getName());
-        printHistory(taskManager);
+        taskManager.addTask(task);
+
         task = new Task("Задача 3", "Описание задачи 3");
-        taskManager.add(task, TaskType.TASK);
-        Helper.printMessage(Helper.MSG_ADD_TASK, task.getTaskID(), task.getName());
-        printHistory(taskManager);
+        taskManager.addTask(task);
 
         Epic epic = new Epic("Эпик 1", "Описание эпика 1");
-        taskManager.add(epic, TaskType.EPIC);
-        Helper.printMessage(Helper.MSG_ADD_TASK, epic.getTaskID(), epic.getName());
-        printHistory(taskManager);
+        taskManager.addEpic(epic);
+
         SubTask subTask = new SubTask("Подзадача 1-1", "Описание подзадачи 1-1", epic.getTaskID());
-        taskManager.add(subTask, TaskType.SUB_TASK);
-        Helper.printMessage(Helper.MSG_ADD_TASK, subTask.getTaskID(), subTask.getName());
-        printHistory(taskManager);
+        taskManager.addSubtask(subTask);
 
         subTask = new SubTask("Подзадача 1-2", "Описание подзадачи 1-2", epic.getTaskID());
-        taskManager.add(subTask, TaskType.SUB_TASK);
-        Helper.printMessage(Helper.MSG_ADD_TASK, subTask.getTaskID(), subTask.getName());
-        printHistory(taskManager);
+        taskManager.addSubtask(subTask);
 
         epic = new Epic("Эпик 2", "Описание эпика 2");
-        taskManager.add(epic, TaskType.EPIC);
-        Helper.printMessage(Helper.MSG_ADD_TASK, epic.getTaskID(), epic.getName());
-        printHistory(taskManager);
-
-        Helper.printMessage(">>Заполнили TaskManager тестовыми данными\n");
+        taskManager.addEpic(epic);
     }
 }

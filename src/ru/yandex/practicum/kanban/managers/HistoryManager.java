@@ -4,7 +4,7 @@ import ru.yandex.practicum.kanban.model.Task;
 
 import java.util.List;
 
-public interface HistoryManager {
+public interface HistoryManager extends Manager {
     List<Task> getHistory();
 
     void add(Task task);

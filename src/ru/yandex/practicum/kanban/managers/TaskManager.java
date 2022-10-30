@@ -1,13 +1,18 @@
 package ru.yandex.practicum.kanban.managers;
 
 import ru.yandex.practicum.kanban.model.Epic;
+import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.model.TaskType;
 
 import java.util.List;
 
-public interface TaskManager {
-    void add(Task task, TaskType type);
+public interface TaskManager extends Manager {
+    void addTask(Task task);
+
+    void addEpic(Epic task);
+
+    void addSubtask(SubTask task);
 
     void removeAllTasks();
 
