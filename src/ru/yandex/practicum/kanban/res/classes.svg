@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="516px" preserveAspectRatio="none" style="width:778px;height:516px;background:#FFFFFF;" version="1.1" viewBox="0 0 778 516" width="778.8px" zoomAndPan="magnify"><defs/><g><!--MD5=[1c0bc11a624763d2b4ed6436d6ddd96d]
+cluster ru.yandex.practicum.kanban.managers--><g id="cluster_ru.yandex.practicum.kanban.managers"><rect fill="#DDDDDD" height="427.5" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.6;" width="430.2" x="345" y="85.05"/><path d="M513,85.05 L513,91.4156 L507,97.4156 L345,97.4156 " fill="none" style="stroke:#181818;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" font-weight="bold" lengthAdjust="spacing" textLength="162" x="346.8" y="94.3699">ru.yandex.practicum.kanban.managers</text></g><!--MD5=[721fae4ba285995207b1278296a5dca4]
+cluster ru.yandex.practicum.kanban.model--><g id="cluster_ru.yandex.practicum.kanban.model"><rect fill="none" height="273" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.6;" width="326.4" x="4.2" y="37.35"/><path d="M156.6,37.35 L156.6,43.7156 L150.6,49.7156 L4.2,49.7156 " fill="none" style="stroke:#181818;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" font-weight="bold" lengthAdjust="spacing" textLength="146.4" x="6" y="46.6699">ru.yandex.practicum.kanban.model</text></g><!--MD5=[b24ed8d4ae84bae9290d9aab401637c7]
+class Manager--><g id="elem_Manager"><rect codeLine="4" fill="#F0F8FF" height="28.8" id="Manager" rx="1.5" ry="1.5" style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" width="53.4" x="553.5" y="256.05"/><ellipse cx="562.5" cy="265.65" fill="#B4A7E5" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M563.1,263.85 L563.1,267.45 L564.3,267.45 L564.5906,267.45 L564.9,267.825 L564.9,268.05 L564.9,268.275 L564.5906,268.65 L564.3,268.65 L560.7,268.65 L560.4094,268.65 L560.1,268.275 L560.1,268.05 L560.1,267.825 L560.4094,267.45 L560.7,267.45 L561.9,267.45 L561.9,263.85 L560.7,263.85 L560.4094,263.85 L560.1,263.475 L560.1,263.25 L560.1,263.025 L560.4094,262.65 L560.7,262.65 L564.3,262.65 L564.5906,262.65 L564.9,263.025 L564.9,263.25 L564.9,263.475 L564.5906,263.85 L564.3,263.85 L563.1,263.85 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" font-style="italic" lengthAdjust="spacing" textLength="34.2" x="570.9" y="269.0871">Manager</text><line style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" x1="554.1" x2="606.3" y1="275.25" y2="275.25"/><line style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" x1="554.1" x2="606.3" y1="280.05" y2="280.05"/></g><!--MD5=[cd9fb75cbe485c444a15a98e14f58f8d]
+class HistoryManager--><g id="elem_HistoryManager"><rect codeLine="5" fill="#F0F8FF" height="49.9313" id="HistoryManager" rx="1.5" ry="1.5" style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" width="108" x="403.8" y="245.55"/><ellipse cx="425.49" cy="255.15" fill="#B4A7E5" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M426.09,253.35 L426.09,256.95 L427.29,256.95 L427.5806,256.95 L427.89,257.325 L427.89,257.55 L427.89,257.775 L427.5806,258.15 L427.29,258.15 L423.69,258.15 L423.3994,258.15 L423.09,257.775 L423.09,257.55 L423.09,257.325 L423.3994,256.95 L423.69,256.95 L424.89,256.95 L424.89,253.35 L423.69,253.35 L423.3994,253.35 L423.09,252.975 L423.09,252.75 L423.09,252.525 L423.3994,252.15 L423.69,252.15 L427.29,252.15 L427.5806,252.15 L427.89,252.525 L427.89,252.75 L427.89,252.975 L427.5806,253.35 L427.29,253.35 L426.09,253.35 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" font-style="italic" lengthAdjust="spacing" textLength="60.6" x="436.71" y="258.5871">HistoryManager</text><line style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" x1="404.4" x2="511.2" y1="264.75" y2="264.75"/><line style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" x1="404.4" x2="511.2" y1="269.55" y2="269.55"/><ellipse cx="410.4" cy="278.1328" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="92.4" x="415.8" y="280.6699">getHistory() : List&lt;Task&gt;</text><ellipse cx="410.4" cy="288.6984" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="57" x="415.8" y="291.2355">add(Task task)</text></g><!--MD5=[30c6b2ed4da85cef5b9d586bf674f588]
+class TaskManager--><g id="elem_TaskManager"><rect codeLine="9" fill="#F0F8FF" height="166.1531" id="TaskManager" rx="1.5" ry="1.5" style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" width="183" x="582.3" y="336.75"/><ellipse cx="644.55" cy="346.35" fill="#B4A7E5" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M645.15,344.55 L645.15,348.15 L646.35,348.15 L646.6406,348.15 L646.95,348.525 L646.95,348.75 L646.95,348.975 L646.6406,349.35 L646.35,349.35 L642.75,349.35 L642.4594,349.35 L642.15,348.975 L642.15,348.75 L642.15,348.525 L642.4594,348.15 L642.75,348.15 L643.95,348.15 L643.95,344.55 L642.75,344.55 L642.4594,344.55 L642.15,344.175 L642.15,343.95 L642.15,343.725 L642.4594,343.35 L642.75,343.35 L646.35,343.35 L646.6406,343.35 L646.95,343.725 L646.95,343.95 L646.95,344.175 L646.6406,344.55 L646.35,344.55 L645.15,344.55 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" font-style="italic" lengthAdjust="spacing" textLength="53.4" x="656.85" y="349.7871">TaskManager</text><line style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" x1="582.9" x2="764.7" y1="355.95" y2="355.95"/><line style="stroke:#0000FF;stroke-width:0.6;stroke-dasharray:1.0,3.0;" x1="582.9" x2="764.7" y1="360.75" y2="360.75"/><ellipse cx="588.9" cy="369.3328" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="75.6" x="594.3" y="371.8699">addTask(Task task)</text><ellipse cx="588.9" cy="379.8984" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="70.8" x="594.3" y="382.4355">addEpic(Epic task)</text><ellipse cx="588.9" cy="390.4641" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="102.6" x="594.3" y="393.0012">addSubtask(SubTask task)</text><ellipse cx="588.9" cy="401.0297" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="66" x="594.3" y="403.5668">removeAllTasks()</text><ellipse cx="588.9" cy="411.5953" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="118.2" x="594.3" y="414.1324">removeTaskByID(String taskID)</text><ellipse cx="588.9" cy="422.1609" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="163.8" x="594.3" y="424.698">getAllSubtaskByEpic(Epic epic) :List&lt;Task&gt;</text><ellipse cx="588.9" cy="432.7266" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="96" x="594.3" y="435.2637">getAllTasks() :List&lt;Task&gt;</text><ellipse cx="588.9" cy="443.2922" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="108" x="594.3" y="445.8293">getById(String taskID) : Task</text><ellipse cx="588.9" cy="453.8578" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="110.4" x="594.3" y="456.3949">getTask(String taskID) : Task</text><ellipse cx="588.9" cy="464.4234" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="108" x="594.3" y="466.9605">getEpic(String taskID) : Task</text><ellipse cx="588.9" cy="474.9891" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="122.4" x="594.3" y="477.5262">getSubtask(String taskID) : Task</text><ellipse cx="588.9" cy="485.5547" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="167.4" x="594.3" y="488.0918">updateTask(Task task, TaskType taskType)</text><ellipse cx="588.9" cy="496.1203" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="144" x="594.3" y="498.6574">getHistoryManager() : HistoryManager</text></g><!--MD5=[b965bef89234c041fdd0490cfa9d362b]
+class Managers--><g id="elem_Managers"><rect codeLine="25" fill="#F1F1F1" height="49.9313" id="Managers" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="121.8" x="519.3" y="106.65"/><ellipse cx="528.3" cy="116.25" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M529.5,114.15 Q529.6219,113.85 529.7625,113.7 Q529.9031,113.55 530.0625,113.55 Q530.3438,113.55 530.5219,113.7188 Q530.7,113.8875 530.7,114.2813 L530.7,115.2188 Q530.7,115.6125 530.5313,115.7813 Q530.3625,115.95 530.1,115.95 Q529.8656,115.95 529.7156,115.8469 Q529.5656,115.7437 529.5,115.4719 Q529.4719,115.2844 529.3688,115.1812 Q529.1813,114.9844 528.8438,114.8719 Q528.5063,114.75 528.1687,114.75 Q527.7469,114.75 527.3906,114.9188 Q527.0437,115.0875 526.7719,115.4625 Q526.5,115.8375 526.5,116.3531 L526.5,116.9063 Q526.5,117.525 527.0063,117.9375 Q527.5125,118.35 528.4125,118.35 Q528.9469,118.35 529.3219,118.2281 Q529.5375,118.1625 529.7813,117.9469 Q529.9406,117.825 530.025,117.7875 Q530.1094,117.75 530.2125,117.75 Q530.4094,117.75 530.55,117.9094 Q530.7,118.0594 530.7,118.275 Q530.7,118.4812 530.4938,118.725 Q530.1938,119.0813 529.7156,119.2781 Q529.0875,119.55 528.3188,119.55 Q527.4187,119.55 526.6969,119.1938 Q526.1156,118.9125 525.7031,118.3031 Q525.3,117.6938 525.3,116.9719 L525.3,116.3156 Q525.3,115.5656 525.6563,114.9094 Q526.0219,114.2531 526.65,113.9063 Q527.2875,113.55 528,113.55 Q528.4313,113.55 528.8063,113.7 Q529.1813,113.85 529.5,114.15 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="37.8" x="536.7" y="119.6871">Managers</text><rect fill="#FFFFFF" height="10.2563" style="stroke:#181818;stroke-width:0.6;stroke-dasharray:2.0,2.0;" width="63.6" x="579.3" y="104.85"/><text fill="#000000" font-family="sans-serif" font-size="7.2" font-style="italic" lengthAdjust="spacing" textLength="62.4" x="579.9" y="112.9242">T extends Manager</text><line style="stroke:#181818;stroke-width:0.3;" x1="519.9" x2="640.5" y1="125.85" y2="125.85"/><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="524.1" y="132.6328"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="41.4" x="531.3" y="136.9699">T manager</text><line style="stroke:#181818;stroke-width:0.3;" x1="519.9" x2="640.5" y1="141.2156" y2="141.2156"/><ellipse cx="525.9" cy="149.7984" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="57.6" x="531.3" y="152.3355">getDefault() : T</text></g><!--MD5=[0307d0fefec392257e49e98d444315ce]
+class InMemoryTaskManager--><g id="elem_InMemoryTaskManager"><rect codeLine="29" fill="#F1F1F1" height="92.1938" id="InMemoryTaskManager" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="206.4" x="354.6" y="373.65"/><ellipse cx="410.85" cy="383.25" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M412.05,381.15 Q412.1719,380.85 412.3125,380.7 Q412.4531,380.55 412.6125,380.55 Q412.8938,380.55 413.0719,380.7188 Q413.25,380.8875 413.25,381.2813 L413.25,382.2188 Q413.25,382.6125 413.0813,382.7813 Q412.9125,382.95 412.65,382.95 Q412.4156,382.95 412.2656,382.8469 Q412.1156,382.7438 412.05,382.4719 Q412.0219,382.2844 411.9188,382.1813 Q411.7313,381.9844 411.3938,381.8719 Q411.0563,381.75 410.7188,381.75 Q410.2969,381.75 409.9406,381.9188 Q409.5938,382.0875 409.3219,382.4625 Q409.05,382.8375 409.05,383.3531 L409.05,383.9063 Q409.05,384.525 409.5563,384.9375 Q410.0625,385.35 410.9625,385.35 Q411.4969,385.35 411.8719,385.2281 Q412.0875,385.1625 412.3313,384.9469 Q412.4906,384.825 412.575,384.7875 Q412.6594,384.75 412.7625,384.75 Q412.9594,384.75 413.1,384.9094 Q413.25,385.0594 413.25,385.275 Q413.25,385.4813 413.0438,385.725 Q412.7438,386.0813 412.2656,386.2781 Q411.6375,386.55 410.8688,386.55 Q409.9688,386.55 409.2469,386.1937 Q408.6656,385.9125 408.2531,385.3031 Q407.85,384.6937 407.85,383.9719 L407.85,383.3156 Q407.85,382.5656 408.2063,381.9094 Q408.5719,381.2531 409.2,380.9063 Q409.8375,380.55 410.55,380.55 Q410.9813,380.55 411.3563,380.7 Q411.7313,380.85 412.05,381.15 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="88.8" x="423.15" y="386.6871">InMemoryTaskManager</text><line style="stroke:#181818;stroke-width:0.3;" x1="355.2" x2="560.4" y1="392.85" y2="392.85"/><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="359.4" y="399.6328"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="190.8" x="366.6" y="403.9699">Map&lt;TaskType, Map&lt;String, Task&gt;&gt; tasksByType</text><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="359.4" y="410.1984"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="120.6" x="366.6" y="414.5355">HistoryManager historyManager</text><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="359.4" y="420.7641"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="32.4" x="366.6" y="425.1012">int lastID</text><line style="stroke:#181818;stroke-width:0.3;" x1="355.2" x2="560.4" y1="429.3469" y2="429.3469"/><rect fill="#F24D5C" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="359.4" y="436.1297"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="118.2" x="366.6" y="440.4668">add(Task task, TaskType type)</text><rect fill="#F24D5C" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="359.4" y="446.6953"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="76.8" x="366.6" y="451.0324">newTaskID() : String</text><rect fill="#F24D5C" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="359.4" y="457.2609"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="106.8" x="366.6" y="461.598">updateEpicStatus(Epic epic)</text></g><!--MD5=[1f60bf47324cceb6d6adf48256fa1245]
+class InMemoryHistoryManager--><g id="elem_InMemoryHistoryManager"><rect codeLine="37" fill="#F1F1F1" height="49.9313" id="InMemoryHistoryManager" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="122.4" x="365.4" y="106.65"/><ellipse cx="377.64" cy="116.25" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M378.84,114.15 Q378.9619,113.85 379.1025,113.7 Q379.2431,113.55 379.4025,113.55 Q379.6838,113.55 379.8619,113.7188 Q380.04,113.8875 380.04,114.2813 L380.04,115.2188 Q380.04,115.6125 379.8713,115.7813 Q379.7025,115.95 379.44,115.95 Q379.2056,115.95 379.0556,115.8469 Q378.9056,115.7437 378.84,115.4719 Q378.8119,115.2844 378.7087,115.1812 Q378.5212,114.9844 378.1838,114.8719 Q377.8463,114.75 377.5087,114.75 Q377.0869,114.75 376.7306,114.9188 Q376.3837,115.0875 376.1119,115.4625 Q375.84,115.8375 375.84,116.3531 L375.84,116.9063 Q375.84,117.525 376.3463,117.9375 Q376.8525,118.35 377.7525,118.35 Q378.2869,118.35 378.6619,118.2281 Q378.8775,118.1625 379.1213,117.9469 Q379.2806,117.825 379.365,117.7875 Q379.4494,117.75 379.5525,117.75 Q379.7494,117.75 379.89,117.9094 Q380.04,118.0594 380.04,118.275 Q380.04,118.4812 379.8337,118.725 Q379.5338,119.0813 379.0556,119.2781 Q378.4275,119.55 377.6588,119.55 Q376.7587,119.55 376.0369,119.1938 Q375.4556,118.9125 375.0431,118.3031 Q374.64,117.6938 374.64,116.9719 L374.64,116.3156 Q374.64,115.5656 374.9963,114.9094 Q375.3619,114.2531 375.99,113.9063 Q376.6275,113.55 377.34,113.55 Q377.7712,113.55 378.1462,113.7 Q378.5212,113.85 378.84,114.15 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="96" x="386.76" y="119.6871">InMemoryHistoryManager</text><line style="stroke:#181818;stroke-width:0.3;" x1="366" x2="487.2" y1="125.85" y2="125.85"/><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="370.2" y="132.6328"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="106.8" x="377.4" y="136.9699">final int HISTORY_SIZE = 10</text><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="370.2" y="143.1984"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="69" x="377.4" y="147.5355">List&lt;Task&gt; history</text><line style="stroke:#181818;stroke-width:0.3;" x1="366" x2="487.2" y1="151.7813" y2="151.7813"/></g><!--MD5=[b34797a66dc35cbf1d65f7e3ca75530e]
+class Task--><g id="elem_Task"><rect codeLine="51" fill="#F1F1F1" height="145.0219" id="Task" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="141.6" x="100.8" y="58.95"/><ellipse cx="159.75" cy="68.55" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M160.95,66.45 Q161.0719,66.15 161.2125,66 Q161.3531,65.85 161.5125,65.85 Q161.7938,65.85 161.9719,66.0188 Q162.15,66.1875 162.15,66.5813 L162.15,67.5188 Q162.15,67.9125 161.9813,68.0813 Q161.8125,68.25 161.55,68.25 Q161.3156,68.25 161.1656,68.1469 Q161.0156,68.0438 160.95,67.7719 Q160.9219,67.5844 160.8188,67.4813 Q160.6313,67.2844 160.2938,67.1719 Q159.9562,67.05 159.6188,67.05 Q159.1969,67.05 158.8406,67.2188 Q158.4938,67.3875 158.2219,67.7625 Q157.95,68.1375 157.95,68.6531 L157.95,69.2063 Q157.95,69.825 158.4562,70.2375 Q158.9625,70.65 159.8625,70.65 Q160.3969,70.65 160.7719,70.5281 Q160.9875,70.4625 161.2313,70.2469 Q161.3906,70.125 161.475,70.0875 Q161.5594,70.05 161.6625,70.05 Q161.8594,70.05 162,70.2094 Q162.15,70.3594 162.15,70.575 Q162.15,70.7813 161.9438,71.025 Q161.6437,71.3813 161.1656,71.5781 Q160.5375,71.85 159.7687,71.85 Q158.8688,71.85 158.1469,71.4937 Q157.5656,71.2125 157.1531,70.6031 Q156.75,69.9937 156.75,69.2719 L156.75,68.6156 Q156.75,67.8656 157.1063,67.2094 Q157.4719,66.5531 158.1,66.2063 Q158.7375,65.85 159.45,65.85 Q159.8813,65.85 160.2563,66 Q160.6313,66.15 160.95,66.45 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="18.6" x="172.05" y="71.9871">Task</text><line style="stroke:#181818;stroke-width:0.3;" x1="101.4" x2="241.8" y1="78.15" y2="78.15"/><polygon fill="none" points="107.4,83.7328,109.8,86.1328,107.4,88.5328,105,86.1328" style="stroke:#B38D22;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="48" x="112.8" y="89.2699">String taskID</text><polygon fill="none" points="107.4,94.2984,109.8,96.6984,107.4,99.0984,105,96.6984" style="stroke:#B38D22;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="45.6" x="112.8" y="99.8355">String name</text><polygon fill="none" points="107.4,104.8641,109.8,107.2641,107.4,109.6641,105,107.2641" style="stroke:#B38D22;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="66" x="112.8" y="110.4012">String description</text><polygon fill="none" points="107.4,115.4297,109.8,117.8297,107.4,120.2297,105,117.8297" style="stroke:#B38D22;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="84.6" x="112.8" y="120.9668">TaskStatus taskStatus</text><line style="stroke:#181818;stroke-width:0.3;" x1="101.4" x2="241.8" y1="125.2125" y2="125.2125"/><ellipse cx="107.4" cy="133.7953" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="76.2" x="112.8" y="136.3324">getTaskID() : String;</text><ellipse cx="107.4" cy="144.3609" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="69" x="112.8" y="146.898">getName() : String</text><ellipse cx="107.4" cy="154.9266" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="84.6" x="112.8" y="157.4637">setName(String name)</text><ellipse cx="107.4" cy="165.4922" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="90" x="112.8" y="168.0293">getDescription() : String</text><ellipse cx="107.4" cy="176.0578" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="126" x="112.8" y="178.5949">setDescription(String description)</text><ellipse cx="107.4" cy="186.6234" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="91.8" x="112.8" y="189.1605">getStatus() : TaskStatus</text><ellipse cx="107.4" cy="197.1891" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="126" x="112.8" y="199.7262">setStatus(TaskStatus taskStatus)</text></g><!--MD5=[f81be1fbd46493d858421a41b924a0bc]
+class Epic--><g id="elem_Epic"><rect codeLine="64" fill="#F1F1F1" height="60.4969" id="Epic" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="132" x="19.2" y="240.15"/><ellipse cx="74.55" cy="249.75" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M75.75,247.65 Q75.8719,247.35 76.0125,247.2 Q76.1531,247.05 76.3125,247.05 Q76.5938,247.05 76.7719,247.2188 Q76.95,247.3875 76.95,247.7813 L76.95,248.7188 Q76.95,249.1125 76.7813,249.2813 Q76.6125,249.45 76.35,249.45 Q76.1156,249.45 75.9656,249.3469 Q75.8156,249.2437 75.75,248.9719 Q75.7219,248.7844 75.6187,248.6812 Q75.4312,248.4844 75.0938,248.3719 Q74.7563,248.25 74.4188,248.25 Q73.9969,248.25 73.6406,248.4188 Q73.2938,248.5875 73.0219,248.9625 Q72.75,249.3375 72.75,249.8531 L72.75,250.4063 Q72.75,251.025 73.2563,251.4375 Q73.7625,251.85 74.6625,251.85 Q75.1969,251.85 75.5719,251.7281 Q75.7875,251.6625 76.0313,251.4469 Q76.1906,251.325 76.275,251.2875 Q76.3594,251.25 76.4625,251.25 Q76.6594,251.25 76.8,251.4094 Q76.95,251.5594 76.95,251.775 Q76.95,251.9813 76.7437,252.225 Q76.4438,252.5812 75.9656,252.7781 Q75.3375,253.05 74.5688,253.05 Q73.6688,253.05 72.9469,252.6938 Q72.3656,252.4125 71.9531,251.8031 Q71.55,251.1938 71.55,250.4719 L71.55,249.8156 Q71.55,249.0656 71.9063,248.4094 Q72.2719,247.7531 72.9,247.4063 Q73.5375,247.05 74.25,247.05 Q74.6812,247.05 75.0562,247.2 Q75.4312,247.35 75.75,247.65 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="16.2" x="86.85" y="253.1871">Epic</text><line style="stroke:#181818;stroke-width:0.3;" x1="19.8" x2="150.6" y1="259.35" y2="259.35"/><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="24" y="266.1328"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="91.8" x="31.2" y="270.4699">List&lt;String&gt; subTasksID</text><line style="stroke:#181818;stroke-width:0.3;" x1="19.8" x2="150.6" y1="274.7156" y2="274.7156"/><ellipse cx="25.8" cy="283.2984" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="116.4" x="31.2" y="285.8355">addSubtask(SubTask subtask)</text><ellipse cx="25.8" cy="293.8641" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="115.8" x="31.2" y="296.4012">getSubTasksID() : List&lt;String&gt;</text></g><!--MD5=[308c48e8c0c37152b6480438f66b2b89]
+class Subtask--><g id="elem_Subtask"><rect codeLine="69" fill="#F1F1F1" height="49.9313" id="Subtask" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="87" x="172.5" y="245.55"/><ellipse cx="198.24" cy="255.15" fill="#ADD1B2" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M199.44,253.05 Q199.5619,252.75 199.7025,252.6 Q199.8431,252.45 200.0025,252.45 Q200.2837,252.45 200.4619,252.6187 Q200.64,252.7875 200.64,253.1812 L200.64,254.1187 Q200.64,254.5125 200.4712,254.6812 Q200.3025,254.85 200.04,254.85 Q199.8056,254.85 199.6556,254.7469 Q199.5056,254.6437 199.44,254.3719 Q199.4119,254.1844 199.3087,254.0812 Q199.1212,253.8844 198.7837,253.7719 Q198.4463,253.65 198.1088,253.65 Q197.6869,253.65 197.3306,253.8188 Q196.9838,253.9875 196.7119,254.3625 Q196.44,254.7375 196.44,255.2531 L196.44,255.8062 Q196.44,256.425 196.9463,256.8375 Q197.4525,257.25 198.3525,257.25 Q198.8869,257.25 199.2619,257.1281 Q199.4775,257.0625 199.7212,256.8469 Q199.8806,256.725 199.965,256.6875 Q200.0494,256.65 200.1525,256.65 Q200.3494,256.65 200.49,256.8094 Q200.64,256.9594 200.64,257.175 Q200.64,257.3812 200.4337,257.625 Q200.1338,257.9813 199.6556,258.1781 Q199.0275,258.45 198.2588,258.45 Q197.3588,258.45 196.6369,258.0938 Q196.0556,257.8125 195.6431,257.2031 Q195.24,256.5938 195.24,255.8719 L195.24,255.2156 Q195.24,254.4656 195.5962,253.8094 Q195.9619,253.1531 196.59,252.8062 Q197.2275,252.45 197.94,252.45 Q198.3712,252.45 198.7462,252.6 Q199.1212,252.75 199.44,253.05 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="30.6" x="210.36" y="258.5871">Subtask</text><line style="stroke:#181818;stroke-width:0.3;" x1="173.1" x2="258.9" y1="264.75" y2="264.75"/><rect fill="none" height="3.6" style="stroke:#C82930;stroke-width:0.6;" width="3.6" x="177.3" y="271.5328"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="48" x="184.5" y="275.8699">String epicID</text><line style="stroke:#181818;stroke-width:0.3;" x1="173.1" x2="258.9" y1="280.1156" y2="280.1156"/><ellipse cx="179.1" cy="288.6984" fill="#84BE84" rx="1.8" ry="1.8" style="stroke:#038048;stroke-width:0.6;"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="71.4" x="184.5" y="291.2355">getEpicID() : String</text></g><!--MD5=[007b513da6771087a86fbb3bd355c48d]
+class TaskStatus--><g id="elem_TaskStatus"><rect codeLine="79" fill="#F1F1F1" height="60.4969" id="TaskStatus" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="66" x="13.8" y="101.25"/><ellipse cx="24.69" cy="110.85" fill="#EB937F" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M23.79,111.45 L23.79,112.65 L26.19,112.65 L26.19,112.05 L26.19,111.7594 L26.565,111.45 L26.79,111.45 L27.015,111.45 L27.39,111.7594 L27.39,112.05 L27.39,113.85 L22.59,113.85 L22.2994,113.85 L21.99,113.475 L21.99,113.25 L21.99,113.025 L22.2994,112.65 L22.59,112.65 L22.59,112.65 L22.59,109.05 L22.59,109.05 L22.2994,109.05 L21.99,108.675 L21.99,108.45 L21.99,108.225 L22.2994,107.85 L22.59,107.85 L27.39,107.85 L27.39,109.65 L27.39,109.9406 L27.015,110.25 L26.79,110.25 L26.565,110.25 L26.19,109.9406 L26.19,109.65 L26.19,109.05 L23.79,109.05 L23.79,110.25 L24.39,110.25 L24.39,109.9594 L24.39,109.9594 L24.765,109.65 L24.99,109.65 L25.215,109.65 L25.59,109.9594 L25.59,110.25 L25.59,111.45 L25.59,111.7406 L25.215,112.05 L25.215,112.05 L24.99,112.05 L24.765,112.05 L24.39,111.7406 L24.39,111.7406 L24.39,111.45 L23.79,111.45 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="42.6" x="33.51" y="114.2871">TaskStatus</text><line style="stroke:#181818;stroke-width:0.3;" x1="14.4" x2="79.2" y1="120.45" y2="120.45"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="18.6" x="17.4" y="131.5699">NEW</text><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="58.8" x="17.4" y="142.1355">IN_PROGRESS</text><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="23.4" x="17.4" y="152.7012">DONE</text><line style="stroke:#181818;stroke-width:0.3;" x1="14.4" x2="79.2" y1="156.9469" y2="156.9469"/></g><!--MD5=[88ee21eff3843b66d49ba6da731dc29a]
+class TaskType--><g id="elem_TaskType"><rect codeLine="84" fill="#F1F1F1" height="60.4969" id="TaskType" rx="1.5" ry="1.5" style="stroke:#181818;stroke-width:0.3;" width="57" x="263.7" y="101.25"/><ellipse cx="272.7" cy="110.85" fill="#EB937F" rx="6.6" ry="6.6" style="stroke:#181818;stroke-width:0.6;"/><path d="M271.8,111.45 L271.8,112.65 L274.2,112.65 L274.2,112.05 L274.2,111.7594 L274.575,111.45 L274.8,111.45 L275.025,111.45 L275.4,111.7594 L275.4,112.05 L275.4,113.85 L270.6,113.85 L270.3094,113.85 L270,113.475 L270,113.25 L270,113.025 L270.3094,112.65 L270.6,112.65 L270.6,112.65 L270.6,109.05 L270.6,109.05 L270.3094,109.05 L270,108.675 L270,108.45 L270,108.225 L270.3094,107.85 L270.6,107.85 L275.4,107.85 L275.4,109.65 L275.4,109.9406 L275.025,110.25 L274.8,110.25 L274.575,110.25 L274.2,109.9406 L274.2,109.65 L274.2,109.05 L271.8,109.05 L271.8,110.25 L272.4,110.25 L272.4,109.9594 L272.4,109.9594 L272.775,109.65 L273,109.65 L273.225,109.65 L273.6,109.9594 L273.6,110.25 L273.6,111.45 L273.6,111.7406 L273.225,112.05 L273.225,112.05 L273,112.05 L272.775,112.05 L272.4,111.7406 L272.4,111.7406 L272.4,111.45 L271.8,111.45 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="37.8" x="281.1" y="114.2871">TaskType</text><line style="stroke:#181818;stroke-width:0.3;" x1="264.3" x2="320.1" y1="120.45" y2="120.45"/><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="24" x="267.3" y="131.5699">TASK,</text><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="21" x="267.3" y="142.1355">EPIC,</text><text fill="#000000" font-family="sans-serif" font-size="8.4" lengthAdjust="spacing" textLength="42.6" x="267.3" y="152.7012">SUB_TASK</text><line style="stroke:#181818;stroke-width:0.3;" x1="264.3" x2="320.1" y1="156.9469" y2="156.9469"/></g><!--MD5=[7fbe610942711e6f5cfc7da5cd56bed3]
+reverse link Managers to Manager--><g id="link_Managers_Manager"><path codeLine="42" d="M580.2,164.274 C580.2,193.266 580.2,234.534 580.2,255.87 " fill="none" id="Managers-backto-Manager" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="#181818" points="580.2,156.45,577.8,160.05,580.2,163.65,582.6,160.05,580.2,156.45" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[28d8b5ac7419ebffb6f69a2846bab86d]
+reverse link Manager to TaskManager--><g id="link_Manager_TaskManager"><path codeLine="43" d="M595.512,295.29 C602.838,306.894 612.09,321.54 621.642,336.66 " fill="none" id="Manager-backto-TaskManager" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="none" points="591.864,297.378,589.008,284.994,598.962,292.896,591.864,297.378" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[7d3d3574fc80c7f06e2781542eb17f34]
+link HistoryManager to Manager--><g id="link_HistoryManager_Manager"><path codeLine="44" d="M511.83,270.45 C521.7,270.45 531.576,270.45 541.446,270.45 " fill="none" id="HistoryManager-to-Manager" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="none" points="541.494,266.25,553.494,270.45,541.494,274.65,541.494,266.25" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[69a89661efaa4f60683666ea5ca11c70]
+reverse link TaskManager to InMemoryTaskManager--><g id="link_TaskManager_InMemoryTaskManager"><path codeLine="45" d="M570.234,419.85 C567.21,419.85 564.186,419.85 561.162,419.85 " fill="none" id="TaskManager-backto-InMemoryTaskManager" style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/><polygon fill="none" points="570.282,415.65,582.282,419.85,570.282,424.05,570.282,415.65" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[6fe6eb51d3bc3acf6a28c3b0ddf1acc8]
+link InMemoryHistoryManager to HistoryManager--><g id="link_InMemoryHistoryManager_HistoryManager"><path codeLine="46" d="M432.108,156.45 C436.944,177.804 444.054,209.172 449.568,233.508 " fill="none" id="InMemoryHistoryManager-to-HistoryManager" style="stroke:#181818;stroke-width:0.6;stroke-dasharray:7.0,7.0;"/><polygon fill="none" points="453.69,232.698,452.244,245.328,445.494,234.552,453.69,232.698" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[7581860b49dc68024d92687f9663a0e5]
+link HistoryManager to InMemoryTaskManager--><g id="link_HistoryManager_InMemoryTaskManager"><path codeLine="47" d="M457.8,295.356 C457.8,314.394 457.8,341.598 457.8,365.664 " fill="none" id="HistoryManager-to-InMemoryTaskManager" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="#181818" points="457.8,373.524,460.2,369.924,457.8,366.324,455.4,369.924,457.8,373.524" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[f78e57e9e47c94fa31f956d8456898f8]
+reverse link Task to Epic--><g id="link_Task_Epic"><path d="M119.886,214.566 C114.198,223.632 108.714,232.374 103.854,240.126 " fill="none" id="Task-backto-Epic" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="none" points="116.442,212.16,126.378,204.228,123.558,216.624,116.442,212.16" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[7a8f2c8699e6bc5a104955e89515cf99]
+reverse link Task to Subtask--><g id="link_Task_Subtask"><path d="M198.528,215.664 C202.026,226.506 205.356,236.844 208.158,245.526 " fill="none" id="Task-backto-Subtask" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="none" points="194.526,216.936,194.838,204.228,202.518,214.356,194.526,216.936" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[58ba425d6961622ad77d98aa528a2323]
+link Epic to Subtask--><g id="link_Epic_Subtask"><path codeLine="74" d="M151.368,270.45 C158.352,270.45 165.336,270.45 172.32,270.45 " fill="none" id="Epic-Subtask" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[667064c297592160201ebcf27f824fa3]
+reverse link TaskStatus to Task--><g id="link_TaskStatus_Task"><path codeLine="75" d="M83.034,131.55 C88.926,131.55 94.818,131.55 100.716,131.55 " fill="none" id="TaskStatus-backto-Task" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="#181818" points="79.95,131.55,85.35,133.95,82.95,131.55,85.35,129.15,79.95,131.55" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[05b12dffb3caeafaed42b6705d548696]
+link Task to InMemoryTaskManager--><g id="link_Task_InMemoryTaskManager"><path codeLine="76" d="M238.134,204.192 C270.138,238.308 309.342,279.336 345.6,315.15 C363.426,332.76 383.34,351.522 401.388,368.196 " fill="none" id="Task-to-InMemoryTaskManager" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="#181818" points="407.178,373.53,406.1588,369.3251,401.8853,368.6487,402.9045,372.8536,407.178,373.53" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[56688c03d4dbc99b87e5016c80d4fc1b]
+link Task to InMemoryHistoryManager--><g id="link_Task_InMemoryHistoryManager"><path codeLine="77" d="M212.448,58.896 C226.254,41.124 243.408,24.402 263.7,14.55 C286.248,3.6 297.174,4.416 320.1,14.55 C359.208,31.836 390.132,71.358 408.366,99.684 " fill="none" id="Task-to-InMemoryHistoryManager" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="#181818" points="412.614,106.446,412.7326,102.121,408.7859,100.348,408.6673,104.673,412.614,106.446" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[17ebb280108e63375ee19adf813b2434]
+link TaskType to InMemoryTaskManager--><g id="link_TaskType_InMemoryTaskManager"><path codeLine="78" d="M308.112,161.868 C327.732,198.27 362.328,261.696 393.6,315.15 C404.328,333.492 416.484,353.4 427.302,370.854 " fill="none" id="TaskType-to-InMemoryTaskManager" style="stroke:#181818;stroke-width:0.6;"/><polygon fill="#181818" points="428.892,373.41,428.0971,367.5544,427.3159,370.8574,424.0129,370.0762,428.892,373.41" style="stroke:#181818;stroke-width:0.6;"/></g><!--MD5=[c8eb68c3473beb60ce1bd27dd135f37e]
+@startuml
+'https://plantuml.com/class-diagram
+
+package ru.yandex.practicum.kanban.managers <<Frame>> #DDDDDD {
+interface Manager #aliceblue ##[dotted]blue
+interface HistoryManager #aliceblue ##[dotted]blue{
+    +getHistory() : List<Task>
+    +add(Task task)
+}
+interface TaskManager #aliceblue ##[dotted]blue{
+    +addTask(Task task)
+    +addEpic(Epic task)
+    +addSubtask(SubTask task)
+    +removeAllTasks()
+    +removeTaskByID(String taskID)
+    +getAllSubtaskByEpic(Epic epic) :List<Task>
+    +getAllTasks() :List<Task>
+    +getById(String taskID) : Task
+    +getTask(String taskID) : Task
+    +getEpic(String taskID) : Task
+    +getSubtask(String taskID) : Task
+    +updateTask(Task task, TaskType taskType)
+    +getHistoryManager() : HistoryManager
+}
+
+class Managers <T extends Manager> {
+    -T manager
+    +getDefault() : T
+}
+class InMemoryTaskManager{
+    -Map<TaskType, Map<String, Task>> tasksByType
+    -HistoryManager historyManager
+    -int lastID
+    -add(Task task, TaskType type)
+    - newTaskID() : String
+    -updateEpicStatus(Epic epic)
+}
+class InMemoryHistoryManager{
+    -final int HISTORY_SIZE = 10
+    - List<Task> history
+}
+
+Managers *- - Manager
+Manager <|- - TaskManager
+HistoryManager -|> Manager
+TaskManager  <|. InMemoryTaskManager
+InMemoryHistoryManager ..|> HistoryManager
+HistoryManager  -* InMemoryTaskManager
+}
+
+package ru.yandex.practicum.kanban.model <<Frame>>{
+    class Task{
+    # String taskID
+    # String name
+    # String description
+    # TaskStatus taskStatus
+    + getTaskID() : String;
+    + getName() : String
+    + setName(String name)
+    + getDescription() : String
+    + setDescription(String description)
+    + getStatus() : TaskStatus
+    + setStatus(TaskStatus taskStatus)
+    }
+    class Epic extends Task{
+    -List<String> subTasksID
+    +addSubtask(SubTask subtask)
+    +getSubTasksID() : List<String>
+    }
+    class Subtask extends Task{
+    -String epicID
+    +getEpicID() : String
+    }
+
+    Epic  -  Subtask
+    TaskStatus <- Task
+    Task  -*  InMemoryTaskManager
+    Task  -*  InMemoryHistoryManager
+    TaskType -> InMemoryTaskManager
+    enum TaskStatus {
+             NEW
+             IN_PROGRESS
+             DONE
+    }
+    enum TaskType {
+        TASK,
+        EPIC,
+        SUB_TASK
+    }
+}
+
+
+
+@enduml
+
+@startuml
+
+package ru.yandex.practicum.kanban.managers <<Frame>> #DDDDDD {
+interface Manager #aliceblue ##[dotted]blue
+interface HistoryManager #aliceblue ##[dotted]blue{
+    +getHistory() : List<Task>
+    +add(Task task)
+}
+interface TaskManager #aliceblue ##[dotted]blue{
+    +addTask(Task task)
+    +addEpic(Epic task)
+    +addSubtask(SubTask task)
+    +removeAllTasks()
+    +removeTaskByID(String taskID)
+    +getAllSubtaskByEpic(Epic epic) :List<Task>
+    +getAllTasks() :List<Task>
+    +getById(String taskID) : Task
+    +getTask(String taskID) : Task
+    +getEpic(String taskID) : Task
+    +getSubtask(String taskID) : Task
+    +updateTask(Task task, TaskType taskType)
+    +getHistoryManager() : HistoryManager
+}
+
+class Managers <T extends Manager> {
+    -T manager
+    +getDefault() : T
+}
+class InMemoryTaskManager{
+    -Map<TaskType, Map<String, Task>> tasksByType
+    -HistoryManager historyManager
+    -int lastID
+    -add(Task task, TaskType type)
+    - newTaskID() : String
+    -updateEpicStatus(Epic epic)
+}
+class InMemoryHistoryManager{
+    -final int HISTORY_SIZE = 10
+    - List<Task> history
+}
+
+Managers *- - Manager
+Manager <|- - TaskManager
+HistoryManager -|> Manager
+TaskManager  <|. InMemoryTaskManager
+InMemoryHistoryManager ..|> HistoryManager
+HistoryManager  -* InMemoryTaskManager
+}
+
+package ru.yandex.practicum.kanban.model <<Frame>>{
+    class Task{
+    # String taskID
+    # String name
+    # String description
+    # TaskStatus taskStatus
+    + getTaskID() : String;
+    + getName() : String
+    + setName(String name)
+    + getDescription() : String
+    + setDescription(String description)
+    + getStatus() : TaskStatus
+    + setStatus(TaskStatus taskStatus)
+    }
+    class Epic extends Task{
+    -List<String> subTasksID
+    +addSubtask(SubTask subtask)
+    +getSubTasksID() : List<String>
+    }
+    class Subtask extends Task{
+    -String epicID
+    +getEpicID() : String
+    }
+
+    Epic  -  Subtask
+    TaskStatus <- Task
+    Task  -*  InMemoryTaskManager
+    Task  -*  InMemoryHistoryManager
+    TaskType -> InMemoryTaskManager
+    enum TaskStatus {
+             NEW
+             IN_PROGRESS
+             DONE
+    }
+    enum TaskType {
+        TASK,
+        EPIC,
+        SUB_TASK
+    }
+}
+
+
+
+@enduml
+
+PlantUML version 1.2022.12(Sun Oct 23 21:12:26 MSK 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: ru
+Country: RU
+--></g></svg>

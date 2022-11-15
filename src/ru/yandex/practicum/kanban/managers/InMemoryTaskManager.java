@@ -5,8 +5,6 @@ import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.util.*;
 
-import static ru.yandex.practicum.kanban.utils.Helper.printMessage;
-
 public class InMemoryTaskManager implements TaskManager {
     private final Map<TaskType, Map<String, Task>> tasksByType;
     private final HistoryManager historyManager;
@@ -198,30 +196,34 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateEpicStatus(Epic epic) {
-        int countDone = 0;
-        int countNew = 0;
         ArrayList<String> allSubTasks = new ArrayList<>(epic.getSubTasksID());
 
         if (allSubTasks.isEmpty()) {
-            printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
+            Helper.printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
             epic.setStatus(TaskStatus.NEW);
             return;
         }
 
+        boolean isDone = true;
+        boolean isNew = true;
         for (String subTaskId : allSubTasks) {
-            if (getSubtask(subTaskId).getStatus() == TaskStatus.DONE) {
-                countDone++;
-            }
-            if (getSubtask(subTaskId).getStatus() == TaskStatus.NEW) {
-                countNew++;
+            TaskStatus currentStatus = getSubtask(subTaskId).getStatus();
+
+            isDone = (currentStatus == TaskStatus.DONE);
+            isNew = (currentStatus == TaskStatus.NEW);
+            boolean isInProgress = (!isDone && !isNew) || (currentStatus == TaskStatus.IN_PROGRESS);
+
+            if (isInProgress) {
+                epic.setStatus(TaskStatus.IN_PROGRESS);
+                return;
             }
         }
-        if (countNew == epic.getSubTasksID().size()) {
+        if (isNew) {
             epic.setStatus(TaskStatus.NEW);
-        } else if (countDone == epic.getSubTasksID().size()) {
+        } else /*if (isDone)*/ {
             epic.setStatus(TaskStatus.DONE);
-        } else {
+        } /*else {
             epic.setStatus(TaskStatus.IN_PROGRESS);
-        }
+        }*/
     }
 }

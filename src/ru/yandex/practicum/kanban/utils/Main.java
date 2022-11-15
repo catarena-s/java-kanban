@@ -1,10 +1,10 @@
 package ru.yandex.practicum.kanban.utils;
 
-import ru.yandex.practicum.kanban.managers.HistoryManager;
-import ru.yandex.practicum.kanban.managers.InMemoryTaskManager;
-import ru.yandex.practicum.kanban.managers.Managers;
-import ru.yandex.practicum.kanban.managers.TaskManager;
+import ru.yandex.practicum.kanban.managers.*;
 import ru.yandex.practicum.kanban.model.*;
+import ru.yandex.practicum.kanban.model.Epic;
+import ru.yandex.practicum.kanban.model.SubTask;
+import ru.yandex.practicum.kanban.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,10 @@ public class Main {
         TaskManager taskManager = managers.getDefault();
 
         initTaskManager(taskManager);
-        printTaskByID("0004",taskManager);
-        printTaskByID("0005",taskManager);
-        printTaskByID("0006",taskManager);
+        printHistory(taskManager);
+        printTaskByID(taskManager.getEpic("0004"),taskManager);
+        printTaskByID(taskManager.getSubtask("0005"),taskManager);
+        printTaskByID(taskManager.getSubtask("0006"),taskManager);
 
         Helper.printMessage(Helper.MSG_SEPARATOR);
         testUpdateTasks(taskManager);
@@ -40,22 +41,22 @@ public class Main {
         List<Task> allTasks;
 
         currentID = "0001";
-        printTaskByID(currentID, taskManager);
+        printTaskByID(taskManager.getTask(currentID), taskManager);
         printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0003";
-        printTaskByID(currentID, taskManager);
+        printTaskByID(taskManager.getById(currentID), taskManager);
         printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0005";
-        printTaskByID(currentID, taskManager);
+        printTaskByID(taskManager.getById(currentID), taskManager);
         printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0015";
-        printTaskByID(currentID, taskManager);
+        printTaskByID(taskManager.getById(currentID), taskManager);
         printHistory(taskManager);
         Helper.printEmptySting();
 
@@ -154,9 +155,10 @@ public class Main {
         Helper.printMessage("Все задачи удалены!\n");
     }
 
-    private static void printTaskByID(String currentID, TaskManager taskManager) {
+    private static void printTaskByID(Task task, TaskManager taskManager) {
+        String currentID = task.getTaskID();
         Helper.printMessage(Helper.MSG_GET_TASK_BY_ID, "задачу", currentID);
-        Task task = taskManager.getById(currentID);
+     //   Task task = taskManager.getById(currentID);
         if (task == null) {
             Helper.printMessage(Helper.MSG_TASK_WITH_ID_NOT_EXIST, currentID);
         } else {
