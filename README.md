@@ -5,14 +5,16 @@ ___
 Репозиторий для домашнего проекта - Трекер задач.
 
 **Оглавление**
-1. [Типы задач](README.md#Типы задач)
-2. [Менеджер]()
-3. [Истории просмотров задач]()
+1. [Типы задач](https://github.com/catarena-s/java-kanban/blob/main/README.md#Типы-задач)
+2. [Менеджер](https://github.com/catarena-s/java-kanban/blob/main/README.md#Менеджер)
+3. [Истории просмотров задач](https://github.com/catarena-s/java-kanban/blob/main/README.md#Истории-просмотров-задач)
+4. [UML](https://github.com/catarena-s/java-kanban/blob/main/README.md#uml)
+5. [Диаграмма](https://github.com/catarena-s/java-kanban/blob/main/README.md#Диаграмма)
 
-<img src="F:\YandexPracticum\java-kanban\src\ru\yandex\practicum\kanban\res\kanbat_task_manager.png" width="80%"/>
+<img src="https://raw.githubusercontent.com/catarena-s/java-kanban/main/src/ru/yandex/practicum/kanban/res/kanbat_task_manager.png?token=GHSAT0AAAAAABYYWDKXNRBSYFQGZQXTTIWQY3VADUQ" width="80%"/>
 
 
-### Типы задач
+### **Типы задач**[]()
 ___
 Простейшим кирпичиком системы является задача (англ. task). У задачи есть следующие свойства:
 
@@ -33,7 +35,7 @@ ___
     Каждый эпик знает, какие подзадачи в него входят.
     Завершение всех подзадач эпика считается завершением эпика.
 
-### **Менеджер**
+### **Менеджер**[]()
 ___
 Менеджер запускается на старте программы и управлять всеми задачами. 
 В нём реализованы следующие функции:
@@ -57,19 +59,19 @@ ___
         если все подзадачи имеют статус DONE, то и эпик считается завершённым — со статусом DONE.
         во всех остальных случаях статус должен быть IN_PROGRESS.
 
-### **Истории просмотров задач**
+### **Истории просмотров задач**[]()
 ___
 Пример формирования истории просмотров задач после вызовов методов менеджера:
 
-<img src="F:\YandexPracticum\java-kanban\src\ru\yandex\practicum\kanban\res\history_task_manager.png" width="60%"/>
+<img src="https://raw.githubusercontent.com/catarena-s/java-kanban/main/src/ru/yandex/practicum/kanban/res/history_task_manager.png?token=GHSAT0AAAAAABYYWDKXWI2UXBIHUDSCZORIY3VAHIQ" width="60%"/>
 
-### UML
+### **UML**[]()
 
-![](F:\YandexPracticum\java-kanban\src\ru\yandex\practicum\kanban\res\UML_task.svg)
+![](https://raw.githubusercontent.com/catarena-s/java-kanban/248dda7c437508b7ec8bc6f793823d4f281f3fa6/src/ru/yandex/practicum/kanban/res/UML_task.svg?token=A2GDMWJSDNOBLOD4XL5AW7DDOUBGU)
 
-### **Диаграмма**
+### **Диаграмма**[]()
 
-![](F:\YandexPracticum\java-kanban\src\ru\yandex\practicum\kanban\res\classes.svg)
+![](https://raw.githubusercontent.com/catarena-s/java-kanban/248dda7c437508b7ec8bc6f793823d4f281f3fa6/src/ru/yandex/practicum/kanban/res/classes.svg?token=A2GDMWNHTBGPI5J4WY5ME2TDOUBDM)
 
 
 
