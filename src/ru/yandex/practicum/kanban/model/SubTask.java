@@ -22,4 +22,10 @@ public class SubTask extends Task {
                 ", status=" + getStatus() +
                 " }";
     }
+    @Override
+    public String toStringShort(){
+        return "SubTask{ "+
+                "ID=" +taskID +
+                " }";
+    }
 }

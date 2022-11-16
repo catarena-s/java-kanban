@@ -3,7 +3,6 @@ package ru.yandex.practicum.kanban.managers;
 import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
-import ru.yandex.practicum.kanban.model.TaskType;
 
 import java.util.List;
 
@@ -14,19 +13,29 @@ public interface TaskManager extends Manager {
 
     void addSubtask(SubTask task);
 
+    void clear();
+
     void removeAllTasks();
 
-    void removeAllTasks(TaskType taskType);
+    void removeAllEpics();
 
-    void removeTaskByID(String taskID);
+    void removeAllSubtasks();
 
-    void removeTaskByID(String taskID, TaskType taskType);
+    void removeTask(String taskID);
 
-    List<Task> getAllSubtaskByEpic(Epic epic);
+    void removeEpic(String taskID);
+
+    void removeSubtask(String taskID);
+
+    List<SubTask> getAllSubtaskByEpic(Epic epic);
+
+    List<Task> getAll();
 
     List<Task> getAllTasks();
 
-    List<Task> getAllTasks(TaskType taskType);
+    List<Task> getAllEpics();
+
+    List<Task> getAllSubTasks();
 
     Task getById(String taskID);
 
@@ -36,7 +45,7 @@ public interface TaskManager extends Manager {
 
     Task getSubtask(String taskID);
 
-    void updateTask(Task task, TaskType taskType);
+    void updateTask(Task task);
 
-    HistoryManager getHistoryManager();
+    List<Task> getHistory();
 }

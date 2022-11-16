@@ -22,6 +22,12 @@ public class Task {
                 " }";
     }
 
+     public String toStringShort(){
+         return "Task{ "+
+                 "ID=" +taskID +
+         " }";
+     }
+
     public String getTaskID() {
         return taskID;
     }

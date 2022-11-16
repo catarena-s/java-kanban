@@ -2,20 +2,29 @@ package ru.yandex.practicum.kanban.managers;
 
 import ru.yandex.practicum.kanban.model.Task;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int HISTORY_SIZE = 10;
-    private final LinkedList<Task> history;
+    private final CustomLinkedList<Task> history;
 
     public InMemoryHistoryManager() {
-        this.history = new LinkedList<>();
+        this.history = new CustomLinkedList<>();
     }
 
     @Override
     public List<Task> getHistory() {
-        return history;
+        return history.getTasks();
+    }
+
+    @Override
+    public void clear() {
+        history.clear();
+    }
+
+    @Override
+    public void remove(String id) {
+        history.removeTask(id);
     }
 
     @Override
