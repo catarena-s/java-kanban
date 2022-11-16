@@ -11,7 +11,7 @@ ___
 4. [UML](https://github.com/catarena-s/java-kanban/blob/main/README.md#uml)
 5. [Диаграмма](https://github.com/catarena-s/java-kanban/blob/main/README.md#Диаграмма)
 
-<img src="https://raw.githubusercontent.com/catarena-s/java-kanban/main/src/ru/yandex/practicum/kanban/res/kanbat_task_manager.png?token=GHSAT0AAAAAABYYWDKXNRBSYFQGZQXTTIWQY3VADUQ" width="80%"/>
+<img src="https://github.com/catarena-s/java-kanban/blob/main/src/ru/yandex/practicum/kanban/res/kanbat_task_manager.png?token=GHSAT0AAAAAABYYWDKXNRBSYFQGZQXTTIWQY3VADUQ" width="80%"/>
 
 
 ### **Типы задач**[]()
@@ -63,15 +63,15 @@ ___
 ___
 Пример формирования истории просмотров задач после вызовов методов менеджера:
 
-<img src="https://raw.githubusercontent.com/catarena-s/java-kanban/main/src/ru/yandex/practicum/kanban/res/history_task_manager.png?token=GHSAT0AAAAAABYYWDKXWI2UXBIHUDSCZORIY3VAHIQ" width="60%"/>
+<img src="https://github.com/catarena-s/java-kanban/blob/main/src/ru/yandex/practicum/kanban/res/history_task_manager.png?token=GHSAT0AAAAAABYYWDKXWI2UXBIHUDSCZORIY3VAHIQ" width="60%"/>
 
 ### **UML**[]()
 
-![](https://raw.githubusercontent.com/catarena-s/java-kanban/248dda7c437508b7ec8bc6f793823d4f281f3fa6/src/ru/yandex/practicum/kanban/res/UML_task.svg?token=A2GDMWJSDNOBLOD4XL5AW7DDOUBGU)
+![](https://github.com/catarena-s/java-kanban/blob/main//src/ru/yandex/practicum/kanban/res/UML_task.svg?token=A2GDMWJSDNOBLOD4XL5AW7DDOUBGU)
 
 ### **Диаграмма**[]()
 
-![](https://raw.githubusercontent.com/catarena-s/java-kanban/248dda7c437508b7ec8bc6f793823d4f281f3fa6/src/ru/yandex/practicum/kanban/res/classes.svg?token=A2GDMWNHTBGPI5J4WY5ME2TDOUBDM)
+![](https://github.com/catarena-s/java-kanban/blob/main/src/ru/yandex/practicum/kanban/res/classes.svg?token=A2GDMWNHTBGPI5J4WY5ME2TDOUBDM)
 
 
 
