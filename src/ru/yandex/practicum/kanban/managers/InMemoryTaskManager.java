@@ -55,7 +55,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<SubTask> getAllSubtaskByEpic(Epic epic) {
-        return epic.getSubTasks();
+        List<SubTask> subTasks = epic.getSubTasks();
+        subTasks.forEach(s -> historyManager.add(s));
+        return subTasks;
     }
 
     @Override
@@ -204,7 +206,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void removeAnyById(String taskID) {
-        for (Map.Entry<TaskType, Map<String, Task>> entry  : tasksByType.entrySet()) {
+        for (Map.Entry<TaskType, Map<String, Task>> entry : tasksByType.entrySet()) {
             Map<String, Task> tasks = entry.getValue();
             if (tasks.isEmpty()) continue;
             if (tasks.containsKey(taskID)) {
@@ -237,9 +239,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void removeAllSubtasksForEpic(Epic epic) {
-        List<SubTask> subtasks = epic.getSubTasks();
-        for (SubTask sub : subtasks) {
-            remove(sub.getTaskID(), TaskType.SUB_TASK);
+        Map<String, Task> subtasks = tasksByType.get(TaskType.SUB_TASK);
+
+        for (SubTask subTask : epic.getSubTasks()) {
+            historyManager.remove(subTask.getTaskID());
+            subtasks.remove(subTask.getTaskID());
         }
         epic.getSubTasks().clear();
     }

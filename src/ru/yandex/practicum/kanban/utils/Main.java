@@ -33,7 +33,7 @@ public class Main {
         List<Task> historyManager = taskManager.getHistory();
         List<String> history = new ArrayList<>();
         Helper.printMessage("(%d)", historyManager.size());
-        if(historyManager.isEmpty()) return;
+        if (historyManager.isEmpty()) return;
         for (Task task : historyManager) {
             history.add(task.getTaskID());
         }
@@ -200,16 +200,16 @@ public class Main {
 
     private static void printAllTaskManagerList(TaskManager taskManager) {
         List<Task> allTasks = taskManager.getAllTasks();
-        if(allTasks != null && !allTasks.isEmpty()) {
+        if (allTasks != null && !allTasks.isEmpty()) {
             printSortedTasks(allTasks);
         }
 
         allTasks = taskManager.getAllEpics();
-        if(allTasks != null && !allTasks.isEmpty()) {
+        if (allTasks != null && !allTasks.isEmpty()) {
             printSortedTasks(allTasks);
         }
         allTasks = taskManager.getAllSubTasks();
-        if(allTasks != null && !allTasks.isEmpty()) {
+        if (allTasks != null && !allTasks.isEmpty()) {
             printSortedTasks(allTasks);
         }
     }
