@@ -31,39 +31,17 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void remove(String id) {
-        if (!history.containsKey(id)) return;
-        Node node = history.get(id);
-        history.remove(id);
-        removeNode(node);
-    }
-
-    @Override
     public void add(Task task) {
-        if(history.containsKey(task.getTaskID())) {
-            remove(task.getTaskID());
-        }
+        remove(task.getTaskID());
+
         if (size() == HISTORY_SIZE) {
             removeFirst();
         }
         addLast(task);
     }
 
-    public int size() {
+    private int size() {
         return history.size();
-    }
-
-    public void removeFirst() {
-        if (first == null) return;
-        history.remove(first.getID());
-        removeNode(first);
-    }
-
-    public void addLast(Task task) {
-        if (history.containsKey(task.getTaskID())) {
-            remove(task.getTaskID());
-        }
-        history.put(task.getTaskID(), linkLast(task));
     }
 
     @Override
@@ -73,23 +51,34 @@ public class InMemoryHistoryManager implements HistoryManager {
         last = null;
     }
 
-    private Node linkLast(Task task) {
-        String id = task.getTaskID();
+    @Override
+    public void remove(String id) {
         if (history.containsKey(id)) {
             removeNode(history.get(id));
             history.remove(id);
         }
+    }
+
+    private void addLast(Task task) {
+        linkLast(task);
+        history.put(task.getTaskID(), last);
+    }
+
+    private void removeFirst() {
+        if (first == null) return;
+        remove(first.getID());
+    }
+
+    private void linkLast(Task task) {
+        remove(task.getTaskID());
 
         Node newNode = new Node(task, last, null);
         if (first == null && last == null) {
             first = newNode;
         } else {
-            Node tmp = last;
-            tmp.next = newNode;
+            last.next = newNode;
         }
         last = newNode;
-
-        return newNode;
     }
 
     private void removeNode(Node node) {
