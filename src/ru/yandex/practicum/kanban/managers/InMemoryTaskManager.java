@@ -36,13 +36,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void add(Task task, TaskType type) {
         Map<String, Task> tasks;
-        task.setTaskID(newTaskID());
 
         if (tasksByType.containsKey(type)) {
             tasks = tasksByType.get(type);
         } else {
             tasks = new HashMap<>();
         }
+
+        if (tasks.containsKey(task.getTaskID())) {
+            task = new Task(task.getName(), task.getDescription());
+        }
+        task.setTaskID(newTaskID());
 
         tasks.put(task.getTaskID(), task);
         tasksByType.put(type, tasks);
