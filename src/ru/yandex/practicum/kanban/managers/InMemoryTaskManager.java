@@ -1,6 +1,7 @@
 package ru.yandex.practicum.kanban.managers;
 
 import ru.yandex.practicum.kanban.model.*;
+
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.util.*;
@@ -18,24 +19,46 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
+        if (isContain(task)) {
+            task = new Task(task.getName(), task.getDescription());
+        }
         add(task, TaskType.TASK);
     }
 
     @Override
     public void addEpic(Epic task) {
+        if (isContain(task)) {
+            task = new Epic(task.getName(), task.getDescription());
+        }
         add(task, TaskType.EPIC);
     }
 
     @Override
     public void addSubtask(SubTask task) {
+        if (isContain(task)) {
+            task = new SubTask(task.getName(), task.getDescription(), task.getEpicID());
+        }
         add(task, TaskType.SUB_TASK);
         Epic epic = (Epic) getEpic(task.getEpicID());
         epic.addSubtask(task);
         updateEpicStatus(epic);
     }
 
+    private boolean isContain(Task task) {
+        Map<String, Task> tasks;
+        if (task instanceof SubTask) {
+            tasks = tasksByType.get(TaskType.SUB_TASK);
+        } else if (task instanceof Epic) {
+            tasks = tasksByType.get(TaskType.EPIC);
+        } else {
+            tasks = tasksByType.get(TaskType.TASK);
+        }
+        return tasks != null && tasks.containsKey(task.getTaskID());
+    }
+
     private void add(Task task, TaskType type) {
         Map<String, Task> tasks;
+
         task.setTaskID(newTaskID());
 
         if (tasksByType.containsKey(type)) {
@@ -56,7 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<SubTask> getAllSubtaskByEpic(Epic epic) {
         List<SubTask> subTasks = epic.getSubTasks();
-        subTasks.forEach(s -> historyManager.add(s));
+        subTasks.forEach(historyManager::add);
         return subTasks;
     }
 
