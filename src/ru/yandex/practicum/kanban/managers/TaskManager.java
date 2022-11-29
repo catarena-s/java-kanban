@@ -12,6 +12,7 @@ public interface TaskManager extends Manager {
     void addEpic(Epic task);
 
     void addSubtask(SubTask task);
+    void clone(Task task);
 
     void clear();
 

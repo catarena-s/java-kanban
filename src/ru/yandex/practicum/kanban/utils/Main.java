@@ -1,18 +1,40 @@
 package ru.yandex.practicum.kanban.utils;
 
-import ru.yandex.practicum.kanban.managers.InMemoryTaskManager;
+import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.*;
+import ru.yandex.practicum.kanban.test.TestEdit;
+import ru.yandex.practicum.kanban.test.TesterFileBackend;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
+
 
 public class Main {
 
     public static void main(String[] args) {
-        Managers<TaskManager> managers = new Managers<>(new InMemoryTaskManager());
+        Managers<TaskManager> managers = new Managers<>(new FileBackedTasksManager());
+        TaskManager taskManager = managers.getDefault();
+
+        TestEdit tester = new TesterFileBackend(taskManager);
+        UserMenu.setTester(tester);
+        int answer;
+        Scanner scanner = new Scanner(System.in);
+        do {
+            UserMenu.printMenu();
+            answer = UserMenu.getUserAnswer(scanner);
+            if (answer > 0)
+                UserMenu.run(answer, taskManager);
+
+        } while (answer > 0);
+        /*printAllTaskManagerList(taskManager);
+         */
+//        initTaskManager(taskManager);
+//        testUpdateTasks(taskManager);
+     /*   Managers<TaskManager> managers = new Managers<>(new InMemoryTaskManager());
         TaskManager taskManager = managers.getDefault();
 
 ///-----добавляем задачи в менеджер
@@ -25,7 +47,7 @@ public class Main {
         testGetTasksByID(taskManager);
 
         Helper.printMessage("REMOVE " + Helper.MSG_SEPARATOR);
-        testRemoveTasks(taskManager);
+        testRemoveTasks(taskManager);*/
     }
 
     public static void printHistory(TaskManager taskManager) {
@@ -72,15 +94,26 @@ public class Main {
     }
 
     private static void testUpdateTasks(TaskManager taskManager) {
-        String currentID = "0004";
+        String currentID = "0001";
+        Task task = taskManager.getTask(currentID);
+        task.setName("New name 001");
+        task.setStatus(TaskStatus.DONE);
+//        epic.setStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateTask(task);
+       /* Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
+        printHistory(taskManager);
+        Helper.printEmptySting();*/
+        ///------------------
+    /*    currentID = "0004";
         Epic epic = (Epic) taskManager.getEpic(currentID);
         epic.setName("New nape 004");
+//        epic.setStatus(TaskStatus.IN_PROGRESS);
         taskManager.updateTask(epic);
         Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
         printHistory(taskManager);
         Helper.printEmptySting();
 //------Обновляем подзадачу
-        currentID = "0005";
+     /*  currentID = "0005";
         SubTask subTask = (SubTask) taskManager.getSubtask(currentID);
         Helper.printMessage(Helper.MSG_UPDATE_TASK_BY_ID, currentID, subTask);
 
@@ -89,30 +122,30 @@ public class Main {
         subTask.setStatus(TaskStatus.IN_PROGRESS);
         taskManager.updateTask(subTask);
         subTask = (SubTask) taskManager.getSubtask(currentID);
-
+/*
         Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, subTask);
         Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
 
         printHistory(taskManager);
-        Helper.printEmptySting();
+        Helper.printEmptySting();*/
 //------Обновляем подзадачу
         currentID = "0006";
-        subTask = (SubTask) taskManager.getSubtask(currentID);
+        SubTask subTask = (SubTask) taskManager.getSubtask(currentID);
         Helper.printMessage(Helper.MSG_UPDATE_TASK_BY_ID, currentID, subTask);
 
         subTask.setName("new subTaskName" + currentID);
-        subTask.setDescription("new subTask Description " + currentID);
+        subTask.setDescription("new subTask Description +++++++++++++++" + currentID);
         subTask.setStatus(TaskStatus.DONE);
         taskManager.updateTask(subTask);
         subTask = (SubTask) taskManager.getSubtask(currentID);
 
-        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, subTask);
-        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
+//        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, subTask);
+//        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
 
         printHistory(taskManager);
-        Helper.printEmptySting();
+        Helper.printEmptySting();/**/
 //------Удаляем подзадачу
-        currentID = "0005";
+ /*      currentID = "0005";
         Helper.printMessage(Helper.MSG_DELETE_BY_ID, currentID);
         Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
         taskManager.removeSubtask(currentID);
@@ -121,7 +154,7 @@ public class Main {
         Helper.printEmptySting();
 
 //------Добавляем подзадачу
-        subTask = new SubTask("Подзадача 1-3", "Описание подзадачи 1-3", subTask.getEpicID());
+   /*     subTask = new SubTask("Подзадача 1-3", "Описание подзадачи 1-3", subTask.getEpicID());
         taskManager.addSubtask(subTask);
         printHistory(taskManager);
         Helper.printMessage(Helper.MSG_ADD_TASK, subTask.getTaskID(), subTask);
@@ -135,7 +168,7 @@ public class Main {
         taskManager.removeSubtask(currentID);
         Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
         printHistory(taskManager);
-        Helper.printEmptySting();
+        Helper.printEmptySting();*/
     }
 
     private static void testRemoveTasks(TaskManager taskManager) {
@@ -216,7 +249,7 @@ public class Main {
 
     private static void printSortedTasks(List<Task> allTasks) {
         Collections.sort(allTasks, (t1, t2) -> String.CASE_INSENSITIVE_ORDER.compare(t1.getTaskID(), t2.getTaskID()));
-        allTasks.forEach(t -> Helper.printMessage("%s ", t.toStringShort()));
+        allTasks.forEach(t -> Helper.printMessage(t.toCompactString()));
         Helper.printEmptySting();
     }
 
@@ -240,9 +273,12 @@ public class Main {
         taskManager.addSubtask(subTask);
 
         subTask = new SubTask("Подзадача 1-3", "Описание подзадачи 1-2", epic.getTaskID());
+        taskManager.clone(subTask);
+
         taskManager.addSubtask(subTask);
         taskManager.addSubtask(subTask);
-        taskManager.addSubtask(subTask);
+        taskManager.clone(subTask);
+        taskManager.clone(subTask);
 
         epic = new Epic("Эпик 2", "Описание эпика 2");
         taskManager.addEpic(epic);

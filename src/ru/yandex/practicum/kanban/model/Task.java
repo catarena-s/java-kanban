@@ -1,5 +1,7 @@
 package ru.yandex.practicum.kanban.model;
 
+import ru.yandex.practicum.kanban.utils.Helper;
+
 public class Task {
     protected String taskID = "0";
     protected String name;
@@ -22,11 +24,14 @@ public class Task {
                 " }";
     }
 
-     public String toStringShort(){
-         return "Task{ "+
+    public String toCompactString() {
+        String resFormat = Helper.DEFAULT_FORMAT_OUT_DATA + "%n";
+
+        return String.format(resFormat, taskID, TaskType.TASK, taskStatus, name, description);
+         /*return "Task{ "+
                  "ID=" +taskID +
-         " }";
-     }
+         " }";*/
+    }
 
     public String getTaskID() {
         return taskID;
