@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int HISTORY_SIZE = 1000;
+    private static final int HISTORY_SIZE = 100;
     private final Map<String, Node> history;
     private Node first;
     private Node last;

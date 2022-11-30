@@ -1,5 +1,6 @@
 package ru.yandex.practicum.kanban.managers;
 
+import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.model.*;
 
 import ru.yandex.practicum.kanban.utils.Helper;
@@ -42,10 +43,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addSubtask(SubTask task) {
+    public void addSubtask(SubTask task) throws TaskGetterException {
         Epic epic = (Epic) getEpic(task.getEpicID());
         if (epic == null) {
-            Helper.printMessage("Ошибка добавления subtask: epic с id=%s отсутвует", task.getEpicID());
+            Helper.printMessage("Ошибка добавления subtask: Эпик с id=%s отсутвует\n", task.getEpicID());
             return;
         }
         if (add(task, TaskType.SUB_TASK)) {
@@ -55,7 +56,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clone(Task task) {
+    public void clone(Task task) throws TaskGetterException {
         if (task instanceof SubTask) {
             task = new SubTask(task.getName(), task.getDescription(), ((SubTask) task).getEpicID());
         } else if (task instanceof Epic) {
@@ -66,7 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
         add(task);
     }
 
-    private void add(Task task) {
+    private void add(Task task) throws TaskGetterException {
         if (task instanceof SubTask) {
             addSubtask((SubTask) task);
         } else if (task instanceof Epic) {
@@ -151,18 +152,24 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(String taskID) {
-        return getByIdAndType(taskID, TaskType.TASK);
+    public Task getTask(String taskID) throws TaskGetterException {
+        Task task = getByIdAndType(taskID, TaskType.TASK);
+        if (task == null) throw new TaskGetterException("Задача с id=" + taskID + " не найдена.\n");
+        return task;
     }
 
     @Override
-    public Task getEpic(String taskID) {
-        return getByIdAndType(taskID, TaskType.EPIC);
+    public Task getEpic(String taskID) throws TaskGetterException {
+        Task task = getByIdAndType(taskID, TaskType.EPIC);
+        if (task == null) throw new TaskGetterException("Эпик с id=" + taskID + " не найден.\n");
+        return task;
     }
 
     @Override
-    public Task getSubtask(String taskID) {
-        return getByIdAndType(taskID, TaskType.SUB_TASK);
+    public Task getSubtask(String taskID) throws TaskGetterException {
+        Task task = getByIdAndType(taskID, TaskType.SUB_TASK);
+        if (task == null) throw new TaskGetterException("Подзадача с id=" + taskID + " не найдена.\n");
+        return task;
     }
 
     private List<Task> getAllByType(TaskType taskType) {
@@ -171,7 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws TaskGetterException {
         if (task == null) return;
         Map<String, Task> taskByType;
         if (task instanceof SubTask) {
@@ -200,36 +207,36 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void removeAllEpics() {
+    public void removeAllEpics() throws TaskGetterException {
         removeAllTasks(TaskType.EPIC);
     }
 
     @Override
-    public void removeAllTasks() {
+    public void removeAllTasks() throws TaskGetterException {
         removeAllTasks(TaskType.TASK);
     }
 
     @Override
-    public void removeAllSubtasks() {
+    public void removeAllSubtasks() throws TaskGetterException {
         removeAllTasks(TaskType.SUB_TASK);
     }
 
     @Override
-    public void removeTask(String taskID) {
+    public void removeTask(String taskID) throws TaskGetterException {
         remove(taskID, TaskType.TASK);
     }
 
     @Override
-    public void removeEpic(String taskID) {
+    public void removeEpic(String taskID) throws TaskGetterException {
         remove(taskID, TaskType.EPIC);
     }
 
     @Override
-    public void removeSubtask(String taskID) {
+    public void removeSubtask(String taskID) throws TaskGetterException {
         remove(taskID, TaskType.SUB_TASK);
     }
 
-    private void removeAllTasks(TaskType taskType) {
+    private void removeAllTasks(TaskType taskType) throws TaskGetterException {
         if (!tasksByType.containsKey(taskType)) return;
 
         if (taskType == TaskType.SUB_TASK) {
@@ -252,7 +259,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasksByType.remove(taskType);
     }
 
-    private void removeAnyById(String taskID) {
+    private void removeAnyById(String taskID) throws TaskGetterException {
         for (Map.Entry<TaskType, Map<String, Task>> entry : tasksByType.entrySet()) {
             Map<String, Task> tasks = entry.getValue();
             if (tasks.isEmpty()) continue;
@@ -263,14 +270,15 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void remove(String taskID, TaskType taskType) {
+    private void remove(String taskID, TaskType taskType) throws TaskGetterException {
         Map<String, Task> tasks = tasksByType.get(taskType);
-        if (!tasks.containsKey(taskID)) return;
+        if (!tasks.containsKey(taskID))
+            throw new TaskGetterException("Ошибка удаления."+taskType+" c id="+taskID+" не найден\n");
 
         remove(taskID, taskType, tasks);
     }
 
-    private void remove(String taskID, TaskType taskType, Map<String, Task> tasks) {
+    private void remove(String taskID, TaskType taskType, Map<String, Task> tasks) throws TaskGetterException {
         if (taskType == TaskType.EPIC) {
             Epic epic = (Epic) tasks.get(taskID);
             removeAllSubtasksForEpic(epic);
@@ -328,7 +336,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private Task getByIdAndType(String taskID, TaskType type) {
+    private Task getByIdAndType(String taskID, TaskType type){
         Map<String, Task> tasks = tasksByType.get(type);
         if (tasks.containsKey(taskID)) {
             Task task = tasks.get(taskID);

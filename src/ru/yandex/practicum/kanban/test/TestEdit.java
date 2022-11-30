@@ -4,6 +4,6 @@ public interface TestEdit extends Test{
     void initTaskManager();
     void testUpdateTasks();
     void testRemoveTasks();
-
-    void testMixOperation();
+    void testGetOperations();
+    void testMixOperations();
 }

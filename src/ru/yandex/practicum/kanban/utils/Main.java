@@ -1,14 +1,12 @@
 package ru.yandex.practicum.kanban.utils;
 
-import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
+import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
+import ru.yandex.practicum.kanban.managers.InMemoryTaskManager;
 import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.*;
-import ru.yandex.practicum.kanban.test.TestEdit;
-import ru.yandex.practicum.kanban.test.TesterFileBackend;
+import ru.yandex.practicum.kanban.test.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,10 +14,12 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        Managers<TaskManager> managers = new Managers<>(new FileBackedTasksManager());
+        Managers<TaskManager> managers = new Managers<>(new InMemoryTaskManager());
         TaskManager taskManager = managers.getDefault();
 
-        TestEdit tester = new TesterFileBackend(taskManager);
+        Test tester = managers.getTester();
+        if (tester == null) return;
+
         UserMenu.setTester(tester);
         int answer;
         Scanner scanner = new Scanner(System.in);
@@ -30,70 +30,40 @@ public class Main {
                 UserMenu.run(answer, taskManager);
 
         } while (answer > 0);
-        /*printAllTaskManagerList(taskManager);
-         */
-//        initTaskManager(taskManager);
-//        testUpdateTasks(taskManager);
-     /*   Managers<TaskManager> managers = new Managers<>(new InMemoryTaskManager());
-        TaskManager taskManager = managers.getDefault();
-
-///-----добавляем задачи в менеджер
-        initTaskManager(taskManager);
-        printAllTaskManagerList(taskManager);
-        printHistory(taskManager);
-        Helper.printEmptySting();
-
-        Helper.printMessage("-- GET " + Helper.MSG_SEPARATOR);
-        testGetTasksByID(taskManager);
-
-        Helper.printMessage("REMOVE " + Helper.MSG_SEPARATOR);
-        testRemoveTasks(taskManager);*/
     }
 
-    public static void printHistory(TaskManager taskManager) {
-        Helper.printMessage("History: ");
-        List<Task> historyManager = taskManager.getHistory();
-        List<String> history = new ArrayList<>();
-        Helper.printMessage("(%d)", historyManager.size());
-        if (historyManager.isEmpty()) return;
-        for (Task task : historyManager) {
-            history.add(task.getTaskID());
-        }
-        Helper.printMessage(" '%s'\n", String.join("' -> '", history));
-    }
-
-    private static void testGetTasksByID(TaskManager taskManager) {
+    private static void testGetTasksByID(TaskManager taskManager) throws TaskGetterException {
         String currentID = "0001";
         Helper.printMessage(Helper.MSG_GET_TASK_BY_ID, "задачу ", currentID);
-        printTaskByID(currentID, taskManager);
-        printHistory(taskManager);
+        Printer.printTaskByID(currentID, taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0005";
         Helper.printMessage(Helper.MSG_GET_TASK_BY_ID, "подзадачу ", currentID);
-        printTaskByID(currentID, taskManager);
-        printHistory(taskManager);
+        Printer.printTaskByID(currentID, taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0015";
         Helper.printMessage(Helper.MSG_GET_TASK_BY_ID, "задачу ", currentID);
-        printTaskByID(currentID, taskManager);
-        printHistory(taskManager);
+        Printer.printTaskByID(currentID, taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0004";
         Helper.printMessage(Helper.MSG_GET_TASK_BY_ID, "подзадачи эпика", currentID);
         Epic epic = (Epic) taskManager.getEpic(currentID);
-        printHistory(taskManager);
+        Printer.printHistory(taskManager);
         List<SubTask> allSubtaskByEpic = taskManager.getAllSubtaskByEpic(epic);
         if (!allSubtaskByEpic.isEmpty()) {
             allSubtaskByEpic.forEach(t -> Helper.printMessage("%s\n", t));
         }
-        printHistory(taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
     }
 
-    private static void testUpdateTasks(TaskManager taskManager) {
+    private static void testUpdateTasks(TaskManager taskManager) throws TaskGetterException {
         String currentID = "0001";
         Task task = taskManager.getTask(currentID);
         task.setName("New name 001");
@@ -142,7 +112,7 @@ public class Main {
 //        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, subTask);
 //        Helper.printMessage(Helper.MSG_TEMPLATE_TASK_PRINT, epic);
 
-        printHistory(taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();/**/
 //------Удаляем подзадачу
  /*      currentID = "0005";
@@ -171,29 +141,29 @@ public class Main {
         Helper.printEmptySting();*/
     }
 
-    private static void testRemoveTasks(TaskManager taskManager) {
+    private static void testRemoveTasks(TaskManager taskManager) throws TaskGetterException {
         String currentID = "0003";
         Helper.printMessage(Helper.MSG_DELETE_BY_ID, currentID);
-        printTaskByID(currentID, taskManager);
+        Printer.printTaskByID(currentID, taskManager);
         taskManager.removeTask(currentID);
-        printAllTaskManagerList(taskManager);
-        printHistory(taskManager);
+        Printer.printAllTaskManagerList(taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0005";
         Helper.printMessage(Helper.MSG_DELETE_BY_ID, currentID);
-        printTaskByID(currentID, taskManager);
+        Printer.printTaskByID(currentID, taskManager);
         taskManager.removeSubtask(currentID);
-        printAllTaskManagerList(taskManager);
-        printHistory(taskManager);
+        Printer.printAllTaskManagerList(taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
 
         currentID = "0004";
         Helper.printMessage(Helper.MSG_DELETE_BY_ID, currentID);
-        printTaskByID(currentID, taskManager);
+        Printer.printTaskByID(currentID, taskManager);
         taskManager.removeEpic(currentID);
-        printAllTaskManagerList(taskManager);
-        printHistory(taskManager);
+        Printer.printAllTaskManagerList(taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
 
         //добавили эпиков
@@ -204,56 +174,25 @@ public class Main {
         taskManager.addEpic(epic);
         epic = new Epic("Эпик 5", "Описание эпика 5");
         taskManager.addEpic(epic);
-        printAllTaskManagerList(taskManager);
-        printHistory(taskManager);
+        Printer.printAllTaskManagerList(taskManager);
+        Printer.printHistory(taskManager);
 
         Helper.printEmptySting();
         Helper.printMessage(">>Удаляем все %s \n", TaskType.EPIC);
         taskManager.removeAllEpics();
-        printAllTaskManagerList(taskManager);
-        printHistory(taskManager);
+        Printer.printAllTaskManagerList(taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
 ///----->>Удаляем все задач------------------------------------------
         Helper.printMessage(">>Удаляем все задачи\n");
         taskManager.clear();
         Helper.printMessage("Все задачи удалены!\n");
-        printHistory(taskManager);
+        Printer.printHistory(taskManager);
         Helper.printEmptySting();
         Helper.printEmptySting();
     }
 
-    private static void printTaskByID(String currentID, TaskManager taskManager) {
-        Task task = taskManager.getById(currentID);
-        if (task == null) {
-            Helper.printMessage(Helper.MSG_TASK_WITH_ID_NOT_EXIST, currentID);
-        } else {
-            Helper.printMessage("%s\n", task);
-        }
-    }
-
-    private static void printAllTaskManagerList(TaskManager taskManager) {
-        List<Task> allTasks = taskManager.getAllTasks();
-        if (allTasks != null && !allTasks.isEmpty()) {
-            printSortedTasks(allTasks);
-        }
-
-        allTasks = taskManager.getAllEpics();
-        if (allTasks != null && !allTasks.isEmpty()) {
-            printSortedTasks(allTasks);
-        }
-        allTasks = taskManager.getAllSubTasks();
-        if (allTasks != null && !allTasks.isEmpty()) {
-            printSortedTasks(allTasks);
-        }
-    }
-
-    private static void printSortedTasks(List<Task> allTasks) {
-        Collections.sort(allTasks, (t1, t2) -> String.CASE_INSENSITIVE_ORDER.compare(t1.getTaskID(), t2.getTaskID()));
-        allTasks.forEach(t -> Helper.printMessage(t.toCompactString()));
-        Helper.printEmptySting();
-    }
-
-    private static void initTaskManager(TaskManager taskManager) {
+    private static void initTaskManager(TaskManager taskManager) throws TaskGetterException {
         Task task = new Task("Задача 1", "Описание задачи 1");
         taskManager.addTask(task);
 
