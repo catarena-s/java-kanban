@@ -29,84 +29,16 @@ public class TesterBackend implements TestEdit {
     @Override
     public void initTaskManager() {
         testOperations("add");
-/*
-        Epic lastEpic = null;
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_ADD_TEST_DATA))) {
-            while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                if (line.isBlank()) continue;
-
-                String[] records = line.split(",");
-                String[] typeSting = records[0].split("=");
-                TaskType type = TaskType.valueOf(typeSting[1].trim().toUpperCase());
-
-                switch (type) {
-                    case EPIC: {
-                        lastEpic = (Epic) insertDate(records, 0, null);
-                        break;
-                    }
-                    case SUB_TASK: {
-                        if (lastEpic == null) {
-                            Helper.printMessage("Не добавлено ни одного эпика %n");
-                        }
-                        insertDate(records, 0, lastEpic);
-                        break;
-                    }
-                    case TASK: {
-                        insertDate(records, 0, null);
-                        break;
-                    }
-                    default:
-                        Helper.printMessage(WRONG_RECORD, line);
-                }
-            }
-        } catch (IOException ex) {
-            Helper.printMessage(ERROR_FILE_READING, FILE_ADD_TEST_DATA);
-        }
-*/
     }
 
     @Override
     public void testGetOperations() {
         testOperations("get");
-       /* try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_GET_DATA))) {
-            while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                if (!line.isBlank()) {
-
-                    String[] records = line.split(" ");
-                    if (!TestValidator.validateGetLine(records, 0)) {
-                        Helper.printMessage(WRONG_RECORD, line);
-                        continue;
-                    }
-
-                    getTask(records, 0);
-                }
-            }
-
-        } catch (IOException ex) {
-            Helper.printMessage(ERROR_FILE_READING, FILE_MIX_TEST_DATA);
-        }*/
     }
 
     @Override
     public void testRemoveTasks() {
         testOperations("del");
-      /*  try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_REMOVE_TEST_DATA))) {
-            while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                if (line.isBlank()) continue;
-
-                String[] records = line.split(" ");
-                if (!TestValidator.validateRemoveLine(records, 0)) {
-                    Helper.printMessage(WRONG_RECORD, line);
-                    continue;
-                }
-                remove(records, 0);
-            }
-        } catch (IOException ex) {
-            Helper.printMessage(ERROR_FILE_READING, FILE_REMOVE_TEST_DATA);
-        }*/
     }
 
     @Override
@@ -117,22 +49,6 @@ public class TesterBackend implements TestEdit {
     @Override
     public void testUpdateTasks() {
         testOperations("upd");
-/*        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_UPDATE_TEST_DATA))) {
-            while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                if (line.isBlank()) continue;
-
-                String[] records = line.split(",");
-                if (!TestValidator.validateUpdateLine(records)) {
-                    Helper.printMessage(WRONG_RECORD, line);
-                    continue;
-                }
-
-                update(records, 0);
-            }
-        } catch (IOException ex) {
-            Helper.printMessage(ERROR_FILE_READING, FILE_UPDATE_TEST_DATA);
-        }*/
     }
 
     private void testOperations(String operation) {
@@ -193,26 +109,6 @@ public class TesterBackend implements TestEdit {
             default:
                 Helper.printMessage(WRONG_RECORD, line);
         }
-        /*switch (records[0].trim().toLowerCase()) {
-            case "add": {
-                epic = insertDate(records, 1, (Epic) epic);
-                break;
-            }
-            case "upd": {
-                update(records, 1);
-                break;
-            }
-            case "del": {
-                remove(records, 1);
-                break;
-            }
-            case "get": {
-                getTask(records, 1);
-                break;
-            }
-            default:
-                Helper.printMessage(WRONG_RECORD, line);
-        }*/
         return epic;
     }
 
