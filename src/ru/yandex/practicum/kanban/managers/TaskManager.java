@@ -39,7 +39,7 @@ public interface TaskManager extends Manager {
 
     List<Task> getAllSubTasks();
 
-    Task getById(String taskID);
+    Task getById(String taskID) throws TaskGetterException;
 
     Task getTask(String taskID) throws TaskGetterException;
 

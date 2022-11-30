@@ -1,5 +1,6 @@
 package ru.yandex.practicum.kanban.utils;
 
+import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.Task;
 
@@ -21,7 +22,7 @@ public class Printer {
         Helper.printMessage(" '%s'%n", String.join("' -> '", history));
     }
 
-    static void printTaskByID(String currentID, TaskManager taskManager) {
+    static void printTaskByID(String currentID, TaskManager taskManager) throws TaskGetterException {
         Task task = taskManager.getById(currentID);
         if (task == null) {
             Helper.printMessage(Helper.MSG_TASK_WITH_ID_NOT_EXIST, currentID);

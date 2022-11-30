@@ -27,9 +27,7 @@ public class TestValidator {
                 return validateAddLine(records, 1);
             }
             case "upd": {
-                return /*records[1].toLowerCase().trim().startsWith("type=") &&
-                        records[2].toLowerCase().trim().startsWith("id=") &&*/
-                        validateUpdateLine(records,1)&&
+                return  validateUpdateLine(records,1)&&
                         records.length > 3;
             }
             case "del": {

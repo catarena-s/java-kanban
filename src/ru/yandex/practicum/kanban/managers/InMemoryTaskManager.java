@@ -46,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubtask(SubTask task) throws TaskGetterException {
         Epic epic = (Epic) getEpic(task.getEpicID());
         if (epic == null) {
-            Helper.printMessage("Ошибка добавления subtask: Эпик с id=%s отсутвует\n", task.getEpicID());
+            Helper.printMessage(">>Ошибка добавления subtask: Эпик с id=%s отсутвует\n", task.getEpicID());
             return;
         }
         if (add(task, TaskType.SUB_TASK)) {
@@ -83,7 +83,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (tasksByType.containsKey(type)) {
             tasks = tasksByType.get(type);
             if (tasks.containsKey(task.getTaskID())) {
-                Helper.printMessage("Задача с id=" + task.getTaskID() + " уже существует.\n");
+                Helper.printMessage(">>Задача с id=" + task.getTaskID() + " уже существует.\n");
                 return false;
             }
         } else {
@@ -140,39 +140,41 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getById(String taskID) {
+    public Task getById(String taskID) throws TaskGetterException {
+        TaskType type;
         for (Map<String, Task> map : tasksByType.values()) {
             if (map.containsKey(taskID)) {
+//                type = map.g
                 Task task = map.get(taskID);
                 historyManager.add(task);
                 return task;
             }
         }
-        return null;
+        throw new TaskGetterException(">>Задача с id=" + taskID + " не найдена.\n");
     }
 
     @Override
     public Task getTask(String taskID) throws TaskGetterException {
         Task task = getByIdAndType(taskID, TaskType.TASK);
-        if (task == null) throw new TaskGetterException("Задача с id=" + taskID + " не найдена.\n");
+        if (task == null) throw new TaskGetterException(">>Задача с id=" + taskID + " не найдена.\n");
         return task;
     }
 
     @Override
     public Task getEpic(String taskID) throws TaskGetterException {
         Task task = getByIdAndType(taskID, TaskType.EPIC);
-        if (task == null) throw new TaskGetterException("Эпик с id=" + taskID + " не найден.\n");
+        if (task == null) throw new TaskGetterException(">>Эпик с id=" + taskID + " не найден.\n");
         return task;
     }
 
     @Override
     public Task getSubtask(String taskID) throws TaskGetterException {
         Task task = getByIdAndType(taskID, TaskType.SUB_TASK);
-        if (task == null) throw new TaskGetterException("Подзадача с id=" + taskID + " не найдена.\n");
+        if (task == null) throw new TaskGetterException(">>Подзадача с id=" + taskID + " не найдена.\n");
         return task;
     }
 
-    private List<Task> getAllByType(TaskType taskType) {
+    protected List<Task> getAllByType(TaskType taskType) {
         if (tasksByType.get(taskType) == null || tasksByType.get(taskType).isEmpty()) return new ArrayList<>();
         return new ArrayList<>(tasksByType.get(taskType).values());
     }
@@ -273,7 +275,7 @@ public class InMemoryTaskManager implements TaskManager {
     private void remove(String taskID, TaskType taskType) throws TaskGetterException {
         Map<String, Task> tasks = tasksByType.get(taskType);
         if (!tasks.containsKey(taskID))
-            throw new TaskGetterException("Ошибка удаления."+taskType+" c id="+taskID+" не найден\n");
+            throw new TaskGetterException(">>Ошибка удаления. " + taskType + " c id=" + taskID + " не найден\n");
 
         remove(taskID, taskType, tasks);
     }
@@ -336,9 +338,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private Task getByIdAndType(String taskID, TaskType type){
+    private Task getByIdAndType(String taskID, TaskType type) {
         Map<String, Task> tasks = tasksByType.get(type);
-        if (tasks.containsKey(taskID)) {
+        if (tasks != null && tasks.containsKey(taskID)) {
             Task task = tasks.get(taskID);
             historyManager.add(task);
             return task;

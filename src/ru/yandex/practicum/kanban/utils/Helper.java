@@ -1,6 +1,7 @@
 package ru.yandex.practicum.kanban.utils;
 
 public class Helper {
+    public static final String WRONG_RECORD = "Некорректная тестовая строка: '%s'%n";
     private static final String MSG_SEPARATOR = "---------------------------------------------------------------------------\n";
     public static final String MSG_ADD_TASK = "Добавлена задача: %s - %s\n";
     public static final String MSG_TASK_WITH_ID_NOT_EXIST = "Задачи с ID = %s  не существует \n";
@@ -26,4 +27,20 @@ public class Helper {
         System.out.printf(messageTemplate, args);
     }
 
+    public static String getFile(String operation) {
+        switch (operation) {
+            case "add":
+                return FileHelper.FILE_ADD_TEST_DATA;
+            case "del":
+                return FileHelper.FILE_REMOVE_TEST_DATA;
+            case "upd":
+                return FileHelper.FILE_UPDATE_TEST_DATA;
+            case "get":
+                return FileHelper.FILE_GET_DATA;
+            case "mix":
+                return FileHelper.FILE_MIX_TEST_DATA;
+            default:
+                return "";
+        }
+    }
 }

@@ -4,7 +4,7 @@ import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.Printer;
 
-public class TesterInMemory extends TesterBackend implements TestEdit {
+public class TesterInMemory extends TesterBackend implements Test {
 
     public TesterInMemory(TaskManager taskManager) {
         super(taskManager);
@@ -51,13 +51,6 @@ public class TesterInMemory extends TesterBackend implements TestEdit {
         Printer.printHistory(taskManager);
         Helper.printSeparator();
     }
-//    @Override
-//    public void testOperations(String operation) {
-//        super.testOperations(operation);
-//        Priner.printAllTaskManagerList(taskManager);
-//        Helper.printSeparator();
-//        Priner.printHistory(taskManager);
-//        Helper.printSeparator();
-//    }
+
 
 }

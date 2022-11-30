@@ -3,6 +3,7 @@ package ru.yandex.practicum.kanban.managers;
 import ru.yandex.practicum.kanban.exceptions.ManagerSaveException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.model.*;
+import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.io.*;
@@ -21,37 +22,44 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     private void loadFromFile() throws ManagerSaveException {
         Path file = Paths.get(Helper.DATA_FILE_NAME);
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Helper.DATA_FILE_NAME))) {
-            String head = bufferedReader.readLine();
-            if (Helper.DATA_HEAD.equals(head)) {
-                String line;
-                int maxId = 0;
-                while (bufferedReader.ready()) {
-                    line = bufferedReader.readLine();
-                    if (line.isBlank()) break;
+//        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Helper.DATA_FILE_NAME))) {
+//            String head = bufferedReader.readLine();
+        try {
+            List<String> lines = FileHelper.readFromFile(Helper.DATA_FILE_NAME);
+            if (lines.isEmpty() || lines.size() == 1) return;
+            String head = lines.get(0);
+            if (!Helper.DATA_HEAD.equals(head)) return;
+            lines.remove(0);
+            boolean isHistory = false;
+            int index = 0;
+            int maxId = 0;
+            for (String line : lines) {
+                if (line.isBlank()) break;
 
-                    String[] data = line.split(",");
+                String[] data = line.split(",");
 
-                    int current = Integer.parseInt(data[0].trim());
-                    if (maxId < Integer.parseInt(data[0])) maxId = current;
+                int current = Integer.parseInt(data[0].trim());
+                if (maxId < Integer.parseInt(data[0])) maxId = current;
 
-                    loadData(data);
-                }
-                setLastID(maxId);
-                loadHistory(bufferedReader);
+                loadData(data);
+                index++;
             }
+            setLastID(maxId);
+            loadHistory(lines, index);
+//            }
 
         } catch (FileNotFoundException e) {
-            Helper.printMessage("Ошибка загрузки данных: файл " + file.getFileName() + " не найден.\n");
+            Helper.printMessage("Ошибка загрузки данных: файл " + file + " не найден.\n");
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка во время чтения в файл.");
+        } catch (TaskGetterException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void loadHistory(BufferedReader bufferedReader) throws IOException {
-        String line;
-        while (bufferedReader.ready()) {
-            line = bufferedReader.readLine();
+    private void loadHistory(List<String> lines, int index) throws IOException, TaskGetterException {
+        for (int i = index; i < lines.size(); i++) {
+            String line = lines.get(i);
             if (line.isBlank()) continue;
 
             String[] data = line.split(" ");
@@ -95,7 +103,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         task.setStatus(TaskStatus.valueOf(data[2].trim()));
     }
 
-    private void initHistory(String[] data) {
+    private void initHistory(String[] data) throws TaskGetterException {
         HistoryManager historyManager = getHistoryManager();
         for (String id : data) {
             historyManager.add(getById(id));
@@ -112,9 +120,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         try (FileWriter fw = new FileWriter(Helper.DATA_FILE_NAME)) {
             fw.write(Helper.DATA_HEAD + "\n");
-            writeTasksToFile(fw, getAllTasks());
-            writeTasksToFile(fw, getAllEpics());
-            writeTasksToFile(fw, getAllSubTasks());
+            writeTasksToFile(fw, getAllByType(TaskType.TASK));
+            writeTasksToFile(fw, getAllByType(TaskType.EPIC));
+            writeTasksToFile(fw, getAllByType(TaskType.SUB_TASK));
 
             fw.write("\n");
 
@@ -236,7 +244,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public Task getById(String taskID) {
+    public Task getById(String taskID) throws TaskGetterException {
         Task task = super.getById(taskID);
         try {
             save();

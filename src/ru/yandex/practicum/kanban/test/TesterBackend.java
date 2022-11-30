@@ -7,19 +7,18 @@ import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.Printer;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TesterBackend implements TestEdit {
-    public static final String FILE_ADD_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_just_additional.csv";
-    public static final String FILE_UPDATE_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_just_update.csv";
-    public static final String FILE_REMOVE_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_just_remove.csv";
-    public static final String FILE_MIX_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_mix_operations.csv";
-    public static final String FILE_GET_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_get_task.csv";
-    public static final String WRONG_RECORD = "Некорректная запись: %s%n";
+/***
+ * Изначально, хотелось упростить себе тестирования.
+ * Что-бы не в коде искать, где какие тестовые данные, а читать их из файла, ну и не перезапускать каждый раз программу
+ * для новых тестовых...
+ * и слегка увлеклась...
+ *
+ */
+public class TesterBackend implements Test {
     protected TaskManager taskManager;
 
     public TesterBackend(TaskManager taskManager) {
@@ -52,47 +51,28 @@ public class TesterBackend implements TestEdit {
     }
 
     private void testOperations(String operation) {
-        String file = getFile(operation);
+        String file = Helper.getFile(operation);
         Epic lastEpic = null;
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-            while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                if (!line.isBlank()) {
-
-                    if (!TestValidator.validateLine(line)) {
-                        Helper.printMessage(WRONG_RECORD, line);
-                        continue;
-                    }
-
-                    lastEpic = (Epic) runTestOperation(line, lastEpic);
+        try {
+            List<String> lines = FileHelper.readFromFile(file);
+            for (String line : lines) {
+                if (line.isBlank()) continue;
+                if (!TestValidator.validateLine(line)) {
+                    Helper.printMessage(Helper.WRONG_RECORD, line);
+                    continue;
                 }
+
+                lastEpic = (Epic) runTestOperation(line, lastEpic);
             }
         } catch (IOException ex) {
-            Helper.printMessage(FileHelper.ERROR_FILE_READING, FILE_MIX_TEST_DATA);
-        }
-    }
-
-    private String getFile(String operation) {
-        switch (operation) {
-            case "add":
-                return FILE_ADD_TEST_DATA;
-            case "del":
-                return FILE_REMOVE_TEST_DATA;
-            case "upd":
-                return FILE_UPDATE_TEST_DATA;
-            case "get":
-                return FILE_GET_DATA;
-            case "mix":
-                return FILE_MIX_TEST_DATA;
-            default:
-                return "";
+            Helper.printMessage(FileHelper.ERROR_FILE_READING, file);
         }
     }
 
     private Task runTestOperation(String line, Task epic) {
         String[] records = line.split(",");
         OperationType operationType = OperationType.getByName(records[0].trim().toLowerCase());
-
+        Helper.printMessage("Test: [ %s ]%n", line);
         switch (operationType) {
             case ADD:
                 epic = insert(records, 1, (Epic) epic);
@@ -107,7 +87,7 @@ public class TesterBackend implements TestEdit {
                 get(records, 1);
                 break;
             default:
-                Helper.printMessage(WRONG_RECORD, line);
+                Helper.printMessage(Helper.WRONG_RECORD, line);
         }
         return epic;
     }

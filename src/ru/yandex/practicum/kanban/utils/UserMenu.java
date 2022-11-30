@@ -1,16 +1,21 @@
 package ru.yandex.practicum.kanban.utils;
 
 import ru.yandex.practicum.kanban.managers.TaskManager;
+import ru.yandex.practicum.kanban.test.solid.operations.AdditionalTest;
+import ru.yandex.practicum.kanban.test.solid.operations.RemoveTest;
 import ru.yandex.practicum.kanban.test.Test;
-import ru.yandex.practicum.kanban.test.TestEdit;
+import ru.yandex.practicum.kanban.test.solid.Test1;
+import ru.yandex.practicum.kanban.test.solid.operations.UpdateTest;
 
 import java.util.Scanner;
 
 public class UserMenu {
-    private UserMenu(){}
+    private UserMenu() {
+    }
+
     public static final String NUMBER_FORMAT_EXCEPTION = "Введено некорректное значение.";
 
-    public static void printMenu(){
+    public static void printMenu() {
         Helper.printMessage("--- Веберите что протестировать: ----------------------------\n"
                 + "1 - Добавление задач\n"
                 + "2 - Обновление задач.\n"
@@ -30,46 +35,79 @@ public class UserMenu {
                 userInput = Integer.parseInt(answer);
                 isCorrectAnswer = true;
             } catch (NumberFormatException ex) {
-                System.out.println(NUMBER_FORMAT_EXCEPTION);
+                Helper.printMessage(NUMBER_FORMAT_EXCEPTION);
                 isCorrectAnswer = false;
             }
         } while (!isCorrectAnswer);
         return userInput;
     }
 
-    public static void run(int menuNumber, TaskManager taskManager){
-        switch (menuNumber){
+    public static void run(int menuNumber, TaskManager manager) {
+        Menu menu = Menu.getMenu(menuNumber);
+        if(menu == null) return;
+        menu.test.runTest(manager);
+   /*     switch (menuNumber){
             case 1 : {
+                Menu.Add.test.runTest(true);
                 tester.initTaskManager();
-//                tester.testOperations("add");
                 break;
             }
             case 2: {
                 tester.testUpdateTasks();
-//                tester.testOperations("upd");
                 break;
             }
             case 3: {
                 tester.testRemoveTasks();
-//                tester.testOperations("del");
                 break;
             }
             case 4: {
                 tester.testMixOperations();
-//                tester.testOperations("mix");
                 break;
             }
             case 5: {
                 tester.testGetOperations();
-//                tester.testOperations("get");
                 break;
             }
             case 0: return;
             default: Helper.printMessage("Некорректная команда.");
+        }*/
+    }
+
+    static Test tester;
+
+    public static void setTester(Test currentTester) {
+        tester = (Test) currentTester;
+    }
+
+    enum Menu {
+        Add(1, new AdditionalTest()), Update(2, new UpdateTest()), Remuve(3,new RemoveTest());
+
+        private Test1 test;
+        private int number;
+
+        Menu(int i, Test1 test) {
+            this.test = test;
+            this.number = i;
+        }
+
+        public static Menu getMenu(int menuNumber) {
+            switch (menuNumber) {
+                case 1:
+                    return Add;
+                case 2:
+                    return Update;
+                case 3:
+                    return Remuve;
+                default:
+                    return null;
+            }
+        }
+
+        private Test1 get() {
+            return this.test;
         }
     }
-    static TestEdit tester;
-    public static void setTester(Test currentTester) {
-        tester = (TestEdit) currentTester;
-    }
+
 }
+
+

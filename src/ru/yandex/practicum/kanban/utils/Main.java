@@ -1,11 +1,14 @@
 package ru.yandex.practicum.kanban.utils;
 
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
+import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.managers.InMemoryTaskManager;
 import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.*;
 import ru.yandex.practicum.kanban.test.Test;
+import ru.yandex.practicum.kanban.test.TestMenager;
+import ru.yandex.practicum.kanban.test.solid.TestBackend;
 
 import java.util.List;
 import java.util.Scanner;
@@ -16,8 +19,9 @@ public class Main {
     public static void main(String[] args) {
         Managers<TaskManager> managers = new Managers<>(new InMemoryTaskManager());
         TaskManager taskManager = managers.getDefault();
-
         Test tester = managers.getTester();
+        TestBackend t = TestMenager.get(taskManager);
+
         if (tester == null) return;
 
         UserMenu.setTester(tester);
@@ -27,7 +31,9 @@ public class Main {
             UserMenu.printMenu();
             answer = UserMenu.getUserAnswer(scanner);
             if (answer > 0)
-                UserMenu.run(answer, taskManager);
+                t.runTest(answer);
+//                UserMenu.run(answer,taskManager);
+//            Test1 test =
 
         } while (answer > 0);
     }
