@@ -1,12 +1,5 @@
 package ru.yandex.practicum.kanban.utils;
 
-import ru.yandex.practicum.kanban.managers.TaskManager;
-import ru.yandex.practicum.kanban.test.solid.operations.AdditionalTest;
-import ru.yandex.practicum.kanban.test.solid.operations.RemoveTest;
-import ru.yandex.practicum.kanban.test.Test;
-import ru.yandex.practicum.kanban.test.solid.Test1;
-import ru.yandex.practicum.kanban.test.solid.operations.UpdateTest;
-
 import java.util.Scanner;
 
 public class UserMenu {
@@ -40,72 +33,6 @@ public class UserMenu {
             }
         } while (!isCorrectAnswer);
         return userInput;
-    }
-
-    public static void run(int menuNumber, TaskManager manager) {
-        Menu menu = Menu.getMenu(menuNumber);
-        if(menu == null) return;
-        menu.test.runTest(manager);
-   /*     switch (menuNumber){
-            case 1 : {
-                Menu.Add.test.runTest(true);
-                tester.initTaskManager();
-                break;
-            }
-            case 2: {
-                tester.testUpdateTasks();
-                break;
-            }
-            case 3: {
-                tester.testRemoveTasks();
-                break;
-            }
-            case 4: {
-                tester.testMixOperations();
-                break;
-            }
-            case 5: {
-                tester.testGetOperations();
-                break;
-            }
-            case 0: return;
-            default: Helper.printMessage("Некорректная команда.");
-        }*/
-    }
-
-    static Test tester;
-
-    public static void setTester(Test currentTester) {
-        tester = (Test) currentTester;
-    }
-
-    enum Menu {
-        Add(1, new AdditionalTest()), Update(2, new UpdateTest()), Remuve(3,new RemoveTest());
-
-        private Test1 test;
-        private int number;
-
-        Menu(int i, Test1 test) {
-            this.test = test;
-            this.number = i;
-        }
-
-        public static Menu getMenu(int menuNumber) {
-            switch (menuNumber) {
-                case 1:
-                    return Add;
-                case 2:
-                    return Update;
-                case 3:
-                    return Remuve;
-                default:
-                    return null;
-            }
-        }
-
-        private Test1 get() {
-            return this.test;
-        }
     }
 
 }

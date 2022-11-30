@@ -1,15 +1,15 @@
 package ru.yandex.practicum.kanban.utils;
 
-import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.Task;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Printer {
-    private Printer(){}
+    private Printer() {
+    }
+
     public static void printHistory(TaskManager taskManager) {
         Helper.printMessage("History: ");
         List<Task> historyManager = taskManager.getHistory();
@@ -20,15 +20,6 @@ public class Printer {
             history.add(task.getTaskID());
         }
         Helper.printMessage(" '%s'%n", String.join("' -> '", history));
-    }
-
-    static void printTaskByID(String currentID, TaskManager taskManager) throws TaskGetterException {
-        Task task = taskManager.getById(currentID);
-        if (task == null) {
-            Helper.printMessage(Helper.MSG_TASK_WITH_ID_NOT_EXIST, currentID);
-        } else {
-            Helper.printMessage("%s%n", task);
-        }
     }
 
     public static void printAllTaskManagerList(TaskManager taskManager) {

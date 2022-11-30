@@ -3,3 +3,5 @@ get, epic    , 0004 ,0051
 get, Sub_TASK,  0005
 get, allepic,
 get, all,
+
+get, epicSubtask, 0004

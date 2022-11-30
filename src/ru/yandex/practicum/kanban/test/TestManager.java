@@ -3,10 +3,14 @@ package ru.yandex.practicum.kanban.test;
 import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.managers.InMemoryTaskManager;
 import ru.yandex.practicum.kanban.managers.TaskManager;
-import ru.yandex.practicum.kanban.test.solid.*;
-import ru.yandex.practicum.kanban.utils.UserMenu;
 
-public class TestMenager {
+/***
+ * Изначально, всего лишь хотелось упростить себе тестирования, считывая тестовые данные из файла.
+ * И лень было каждый раз перезапускать код.
+ * Но что-то пошло ни так, и Остапа понесло ....
+ */
+public class TestManager {
+    private TestManager(){}
 
     public static TestBackend get(TaskManager manager)
     {

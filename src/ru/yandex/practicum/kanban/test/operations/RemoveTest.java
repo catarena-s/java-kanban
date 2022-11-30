@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.test.solid.operations;
+package ru.yandex.practicum.kanban.test.operations;
 
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.TaskManager;
@@ -10,53 +10,58 @@ import java.io.IOException;
 import java.util.List;
 
 public class RemoveTest extends Tester {
-    public RemoveTest(TaskManager taskManager) {
-        super(taskManager);
+    public RemoveTest() {
     }
 
-    public RemoveTest() {
+    public RemoveTest(TaskManager taskManager, boolean isPrintHistory) {
+        super(taskManager, isPrintHistory);
     }
 
     @Override
     public void runTest(TaskManager taskManager, boolean isPrintHistory) {
-        this.taskManager = taskManager;
+        this.isPrintHistory = isPrintHistory;
+        run(taskManager,"del", RemoveTest::remove);
+/*        this.taskManager = taskManager;
         String file = Helper.getFile("del");
         try {
             List<String> lines = FileHelper.readFromFile(file);
             for (String line : lines) {
-                if (line.isBlank()) continue;
-                if (!TestValidator.validateLine(line)) {
-                    Helper.printMessage(Helper.WRONG_RECORD, line);
-                    continue;
+                if (!line.isBlank()) {
+                    if (TestValidator.validateLine(line)) {
+                        Helper.printMessage(Helper.WRONG_RECORD, line);
+                        continue;
+                    }
+                    Helper.printMessage(Helper.TEST_LINE_MESSAGE, line);
+                    String[] records = line.split(",");
+                    remove(line);
                 }
-                String[] records = line.split(",");
-                remove(records, 1);
             }
         } catch (IOException ex) {
             Helper.printMessage(FileHelper.ERROR_FILE_READING, file);
-        }
+        }*/
     }
 
     @Override
     public void runTest(TaskManager taskManager) {
         runTest(taskManager,false);
     }
-    protected void remove(String[] records, int index) {
+    protected static void remove(String line) {
+        String[] records = line.split(",");
         try {
-            if (index == records.length - 1) {
-                runSimpleRemoveOperation(records, index);
+            if (records.length == 2) {
+                runSimpleRemoveOperation(records);
                 return;
             }
-            removeTaskById(records, index);
+            removeTaskById(records);
         } catch (TaskGetterException e) {
             Helper.printMessage(e.getMessage());
         }
     }
 
-    private void removeTaskById(String[] records, int index) throws TaskGetterException {
-        for (int i = index + 1; i < records.length; i++) {
+    private static void removeTaskById(String[] records) throws TaskGetterException {
+        for (int i = 2; i < records.length; i++) {
             if (records[i].isBlank()) continue;
-            String typeOperation = records[index].trim().toLowerCase();
+            String typeOperation = records[1].trim().toLowerCase();
             switch (typeOperation) {
                 case "task":
                     taskManager.removeTask(records[i].trim());
@@ -73,8 +78,8 @@ public class RemoveTest extends Tester {
         }
     }
 
-    private void runSimpleRemoveOperation(String[] records, int index) throws TaskGetterException {
-        switch (records[index].trim().toLowerCase()) {
+    private static void runSimpleRemoveOperation(String[] records) throws TaskGetterException {
+        switch (records[1].trim().toLowerCase()) {
             case "allepic": {
                 taskManager.removeAllEpics();
                 return;

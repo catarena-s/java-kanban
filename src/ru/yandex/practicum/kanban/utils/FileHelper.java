@@ -8,11 +8,11 @@ import java.util.List;
 
 public class FileHelper {
     public static final String ERROR_FILE_READING = "Ошибка чтения файла : %s%n";
-    public static final String FILE_ADD_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_just_additional.csv";
-    public static final String FILE_UPDATE_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_just_update.csv";
-    public static final String FILE_REMOVE_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_just_remove.csv";
-    public static final String FILE_MIX_TEST_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_mix_operations.csv";
-    public static final String FILE_GET_DATA = "src/ru/yandex/practicum/kanban/test/test_data/test_get_task.csv";
+    public static final String FILE_ADD_TEST_DATA = "src/ru/yandex/practicum/kanban/test/data_for_test/test_just_additional.csv";
+    public static final String FILE_UPDATE_TEST_DATA = "src/ru/yandex/practicum/kanban/test/data_for_test/test_just_update.csv";
+    public static final String FILE_REMOVE_TEST_DATA = "src/ru/yandex/practicum/kanban/test/data_for_test/test_just_remove.csv";
+    public static final String FILE_MIX_TEST_DATA = "src/ru/yandex/practicum/kanban/test/data_for_test/test_mix_operations.csv";
+    public static final String FILE_GET_DATA = "src/ru/yandex/practicum/kanban/test/data_for_test/test_get_task.csv";
 
     private FileHelper(){}
 

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.test.solid;
+package ru.yandex.practicum.kanban.test;
 
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.utils.Helper;
@@ -11,11 +11,13 @@ public class TestInMemory extends TestBackend{
     }
 
     @Override
-    public void runTest(int answer) {
-        super.runTest(answer);
+    public void runTest(int answer, boolean printToConsole) {
+        super.runTest(answer,true);
         Helper.printSeparator();
-        Printer.printAllTaskManagerList(taskManager);
-        Helper.printSeparator();
+        if(answer != TestOperation.GET.getValue()) {
+            Printer.printAllTaskManagerList(taskManager);
+            Helper.printSeparator();
+        }
         Printer.printHistory(taskManager);
         Helper.printSeparator();
     }

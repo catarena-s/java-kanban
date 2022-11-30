@@ -2,6 +2,7 @@ package ru.yandex.practicum.kanban.utils;
 
 public class Helper {
     public static final String WRONG_RECORD = "Некорректная тестовая строка: '%s'%n";
+    public static final String TEST_LINE_MESSAGE = "Test: [ %s ]%n";
     private static final String MSG_SEPARATOR = "---------------------------------------------------------------------------\n";
     public static final String MSG_ADD_TASK = "Добавлена задача: %s - %s\n";
     public static final String MSG_TASK_WITH_ID_NOT_EXIST = "Задачи с ID = %s  не существует \n";
