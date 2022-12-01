@@ -5,11 +5,13 @@ import ru.yandex.practicum.kanban.utils.Helper;
 
 public enum TestCommand {
     ADD(new TestAddCommand(), 1),
-    CLONE(new TestCloneCommand(),6),
+    CLONE(new TestCloneCommand(), 7),
     UPDATE(new TestUpdateCommand(), 2),
     REMOVE(new TestRemoveCommand(), 3),
     MIX(new TestMixCommand(), 4),
+    PRINT(null, 6),
     GET(new TestGetCommand(), 5);
+
 
     private final Test test;
     private final int value;
@@ -31,6 +33,8 @@ public enum TestCommand {
                 return MIX;
             case 5:
                 return GET;
+            case 6:
+                return PRINT;
             default:
                 Helper.printMessage("Такая команда отсутствует. \n");
                 return null;
