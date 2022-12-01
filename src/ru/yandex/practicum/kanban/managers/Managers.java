@@ -11,12 +11,4 @@ public class Managers<T extends Manager> {
         return manager;
     }
 
-//    public Test getTester() {
-//        if (manager instanceof FileBackedTasksManager) {
-//            return new TesterBackend((TaskManager) manager);
-//        } else if (manager instanceof InMemoryTaskManager) {
-//            return new TesterInMemory((TaskManager) manager);
-//        }
-//        return null;
-//    }
 }

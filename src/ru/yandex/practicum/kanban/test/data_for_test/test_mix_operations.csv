@@ -1,9 +1,0 @@
-add , type=TASK , name=TAsk NAme 1111 , description =TAsk Description 111
-add , type=EPIC , name=Epic NAme 232 , description =Epic Description 222
-add , type=Sub_TASK , name=TAsk NAme 8881 , description =TAsk Description 881,
-upd , type=TASK , id=0112  , name=12 , description = 1111 , status=IN_PROGRESS
-del , EPIC , 0014 ,
-del , TASK , 0013
---del , Sub_TASK , 0007
---del , allepic
-

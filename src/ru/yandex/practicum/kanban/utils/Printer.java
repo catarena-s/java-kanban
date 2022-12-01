@@ -9,7 +9,6 @@ import java.util.List;
 public class Printer {
     private Printer() {
     }
-
     public static void printHistory(TaskManager taskManager) {
         Helper.printMessage("History: ");
         List<Task> historyManager = taskManager.getHistory();

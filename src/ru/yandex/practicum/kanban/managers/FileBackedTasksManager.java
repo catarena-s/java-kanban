@@ -1,7 +1,6 @@
 package ru.yandex.practicum.kanban.managers;
 
-import ru.yandex.practicum.kanban.exceptions.ManagerSaveException;
-import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
+import ru.yandex.practicum.kanban.exceptions.*;
 import ru.yandex.practicum.kanban.model.*;
 import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
@@ -21,16 +20,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     private void loadFromFile() throws ManagerSaveException {
-        Path file = Paths.get(Helper.DATA_FILE_NAME);
-//        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Helper.DATA_FILE_NAME))) {
-//            String head = bufferedReader.readLine();
+        Path file = Paths.get(FileHelper.DATA_FILE_NAME);
         try {
-            List<String> lines = FileHelper.readFromFile(Helper.DATA_FILE_NAME);
+            List<String> lines = FileHelper.readFromFile(file);
             if (lines.isEmpty() || lines.size() == 1) return;
             String head = lines.get(0);
             if (!Helper.DATA_HEAD.equals(head)) return;
             lines.remove(0);
-            boolean isHistory = false;
             int index = 0;
             int maxId = 0;
             for (String line : lines) {
@@ -46,18 +42,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             }
             setLastID(maxId);
             loadHistory(lines, index);
-//            }
 
         } catch (FileNotFoundException e) {
-            Helper.printMessage("Ошибка загрузки данных: файл " + file + " не найден.\n");
+            Helper.printMessage("Ошибка загрузки данных: файл '" + file.toAbsolutePath() + "' не найден.\n");
         } catch (IOException e) {
-            throw new ManagerSaveException("Произошла ошибка во время чтения в файл.");
+            throw new ManagerSaveException("Ошибка чтения из файл.");
         } catch (TaskGetterException e) {
-            throw new RuntimeException(e);
+            Helper.printMessage(e.getDetailMessage());
         }
     }
 
-    private void loadHistory(List<String> lines, int index) throws IOException, TaskGetterException {
+    private void loadHistory(List<String> lines, int index) throws TaskGetterException {
         for (int i = index; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.isBlank()) continue;
@@ -118,7 +113,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     private void save() throws ManagerSaveException {
 
-        try (FileWriter fw = new FileWriter(Helper.DATA_FILE_NAME)) {
+        try (FileWriter fw = new FileWriter(FileHelper.DATA_FILE_NAME)) {
             fw.write(Helper.DATA_HEAD + "\n");
             writeTasksToFile(fw, getAllByType(TaskType.TASK));
             writeTasksToFile(fw, getAllByType(TaskType.EPIC));
@@ -142,14 +137,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     private void writeTasksToFile(FileWriter fw, List<Task> tasks) throws IOException {
-        Collections.sort(tasks, (t1, t2) -> String.CASE_INSENSITIVE_ORDER.compare(t1.getTaskID(), t2.getTaskID()));
+        tasks.sort((t1, t2) -> String.CASE_INSENSITIVE_ORDER.compare(t1.getTaskID(), t2.getTaskID()));
         for (Task t : tasks) {
             fw.write(t.toCompactString());
         }
     }
 
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws TaskAddException {
         super.addTask(task);
         try {
             save();
@@ -159,7 +154,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void addEpic(Epic task) {
+    public void addEpic(Epic task) throws TaskAddException {
         super.addEpic(task);
         try {
             save();
@@ -169,7 +164,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void addSubtask(SubTask task) throws TaskGetterException {
+    public void addSubtask(SubTask task) throws TaskGetterException, TaskAddException {
         super.addSubtask(task);
         try {
             save();
@@ -179,13 +174,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void clone(Task task) throws TaskGetterException {
-        super.clone(task);
+    public Task clone(Task task) throws TaskGetterException, TaskAddException {
+        Task newTask = super.clone(task);
         try {
             save();
         } catch (ManagerSaveException e) {
             Helper.printMessage(e.getMessage());
         }
+        return newTask;
     }
 
     @Override
@@ -340,7 +336,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void removeTask(String taskID) throws TaskGetterException {
+    public void removeTask(String taskID) throws TaskGetterException, TaskRemoveException {
         super.removeTask(taskID);
         try {
             save();
@@ -350,7 +346,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void removeEpic(String taskID) throws TaskGetterException {
+    public void removeEpic(String taskID) throws TaskGetterException, TaskRemoveException {
         super.removeEpic(taskID);
         try {
             save();
@@ -360,7 +356,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void removeSubtask(String taskID) throws TaskGetterException {
+    public void removeSubtask(String taskID) throws TaskGetterException, TaskRemoveException {
         super.removeSubtask(taskID);
         try {
             save();

@@ -9,34 +9,31 @@ public class TestValidator {
     private static final Set<String> removeRow = Set.of("task", "epic", "sub_task", "allepic", "all", "alltask", "allsubtask");
     private static final Set<String> getRow = Set.of("task", "epic", "sub_task", "allepic", "all", "alltask", "allsubtask", "epicsubtask");
 
-    public static boolean validateLine(String line) {
+    public static boolean validateLine(String line) throws IllegalArgumentException {
         String[] records = line.split(",");
-        final Set<String> firstRow = Set.of("add", "upd", "del", "get");
-
-        boolean isFirstCorrect = firstRow.contains(records[0].trim().toLowerCase());
-        if (!isFirstCorrect) return true;
-
-        switch (records[0].trim().toLowerCase()) {
-            case "add": {
-                return !validateAddLine(records);
+        TestCommand command = TestCommand.valueOf(records[0].trim().toUpperCase());
+        switch (command) {
+            case ADD: {
+                return validateAddLine(records);
             }
-            case "upd": {
-                return !validateUpdateLine(records);
+            case UPDATE: {
+                return validateUpdateLine(records);
             }
-            case "del": {
-                return !validateRemoveLine(records);
+            case REMOVE: {
+                return validateRemoveLine(records);
             }
-            case "get": {
-                return !validateGetLine(records);
+            case GET: {
+                return validateGetLine(records);
             }
-            default:
-                return true;
+            case CLONE: {
+                return records.length > 2;
+            }
+            default: return false;
         }
     }
 
     private static boolean validateUpdateLine(String[] records) {
-        return records[1].toLowerCase().trim().startsWith("type=")
-                && records[2].toLowerCase().trim().startsWith("id=") && records.length > 3;
+        return records[2].toLowerCase().trim().startsWith("id=") && records.length > 3;
     }
 
     private static boolean validateGetLine(String[] records) {
@@ -44,7 +41,7 @@ public class TestValidator {
     }
 
     private static boolean validateAddLine(String[] records) {
-        return records[1].trim().toLowerCase().startsWith("type=") && records.length > 2;
+        return records.length > 2;
     }
 
     private static boolean validateRemoveLine(String[] records) {

@@ -105,7 +105,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    private class Node {
+    private static class Node {
         Task task;
         Node prev;
         Node next;

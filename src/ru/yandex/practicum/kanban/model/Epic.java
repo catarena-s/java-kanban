@@ -22,8 +22,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        List<String> listSubTaskId = new ArrayList<>();
-        listSubTaskId.addAll(subTasks.stream().map(s -> s.taskID).collect(Collectors.toList()));
+        List<String> listSubTaskId = subTasks.stream().map(s -> s.taskID).collect(Collectors.toList());
         return "Epic{ " +
                 "ID=" + getTaskID() +
                 ", name='" + getName() + '\'' +

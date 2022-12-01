@@ -1,56 +1,31 @@
-package ru.yandex.practicum.kanban.test.operations;
+package ru.yandex.practicum.kanban.test.commands;
 
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.Task;
-import ru.yandex.practicum.kanban.test.TestValidator;
-import ru.yandex.practicum.kanban.utils.FileHelper;
+import ru.yandex.practicum.kanban.test.TestCommand;
 import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.Printer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetTest extends Tester {
-    public GetTest() {
+public class TestGetCommand extends AbstractTest {
+    public TestGetCommand() {
     }
 
-    public GetTest(TaskManager taskManager, boolean isPrintHistory) {
+    public TestGetCommand(TaskManager taskManager, boolean isPrintHistory) {
         super(taskManager, isPrintHistory);
     }
 
     @Override
     public void runTest(TaskManager taskManager, boolean isPrintHistory) {
         this.isPrintHistory = isPrintHistory;
-        run(taskManager, "get",GetTest::get);
- /*       this.taskManager = taskManager;
-        String file = Helper.getFile("get");
-        try {
-            List<String> lines = FileHelper.readFromFile(file);
-            for (String line : lines) {
-                if (!line.isBlank()) {
-                    if (TestValidator.validateLine(line)) {
-                        Helper.printMessage(Helper.WRONG_RECORD, line);
-                        continue;
-                    }
-                    Helper.printMessage(Helper.TEST_LINE_MESSAGE, line);
-                    String[] records = line.split(",");
-                    get(records,isPrintHistory);
-                }
-            }
-        } catch (IOException ex) {
-            Helper.printMessage(FileHelper.ERROR_FILE_READING, file);
-        }*/
+        run(taskManager, TestCommand.GET,this::get);
     }
 
-    @Override
-    public void runTest(TaskManager taskManager) {
-        runTest(taskManager, false);
-    }
-
-    protected static void get(String line) {
+    protected void get(String line) {
         String[] records = line.split(",");
         List<Task> tasks = new ArrayList<>();
         String objectType = records[1].trim().toLowerCase();
@@ -63,7 +38,7 @@ public class GetTest extends Tester {
         if (isPrintHistory) Printer.printSortedTasks(tasks);
     }
 
-    private static List<Task> getWithParams(String[] records, String objectType) {
+    private List<Task> getWithParams(String[] records, String objectType) {
         List<Task> tasks = new ArrayList<>();
         for (int i = 2; i < records.length; i++) {
             if (records[i].isBlank()) continue;
@@ -85,13 +60,13 @@ public class GetTest extends Tester {
                         break;
                 }
             } catch (TaskGetterException e) {
-                Helper.printMessage(e.getMessage());
+                Helper.printMessage(e.getDetailMessage());
             }
         }
         return tasks;
     }
 
-    private static List<Task> testShortOperation(String objectType) {
+    private List<Task> testShortOperation(String objectType) {
         switch (objectType) {
             case "all":
                 return taskManager.getAll();
