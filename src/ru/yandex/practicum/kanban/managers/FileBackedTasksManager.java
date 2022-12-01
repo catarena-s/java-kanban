@@ -58,7 +58,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             if (line.isBlank()) continue;
 
             String[] data = line.split(" ");
-            initHistory(data);
+            initHistory(data, getHistoryManager());
         }
     }
 
@@ -98,8 +98,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         task.setStatus(TaskStatus.valueOf(data[2].trim()));
     }
 
-    private void initHistory(String[] data) throws TaskGetterException {
-        HistoryManager historyManager = getHistoryManager();
+    private void initHistory(String[] data, HistoryManager historyManager) throws TaskGetterException {
         for (String id : data) {
             historyManager.add(getById(id));
         }
