@@ -23,9 +23,9 @@ public class SubTask extends Task {
                 " }";
     }
     @Override
-    public String toStringShort(){
-        return "SubTask{ "+
-                "ID=" +taskID +
-                " }";
+    public String toCompactString(){
+        String resFormat = DEFAULT_FORMAT_OUT_DATA + "%6s %n";
+
+        return String.format(resFormat, taskID, TaskType.SUB_TASK, taskStatus, name, description,epicID);
     }
 }

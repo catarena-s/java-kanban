@@ -5,6 +5,7 @@ public class Task {
     protected String name;
     protected String description;
     protected TaskStatus taskStatus;
+    protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-8s, %-12s, %-15s, %-25s,";
 
     public Task(String name, String description) {
         this.name = name;
@@ -22,11 +23,11 @@ public class Task {
                 " }";
     }
 
-     public String toStringShort(){
-         return "Task{ "+
-                 "ID=" +taskID +
-         " }";
-     }
+    public String toCompactString() {
+        String resFormat = DEFAULT_FORMAT_OUT_DATA + "%n";
+
+        return String.format(resFormat, taskID, TaskType.TASK, taskStatus, name, description);
+    }
 
     public String getTaskID() {
         return taskID;

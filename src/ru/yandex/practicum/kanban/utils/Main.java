@@ -241,8 +241,6 @@ public class Main {
 
         subTask = new SubTask("Подзадача 1-3", "Описание подзадачи 1-2", epic.getTaskID());
         taskManager.addSubtask(subTask);
-        taskManager.addSubtask(subTask);
-        taskManager.addSubtask(subTask);
 
         epic = new Epic("Эпик 2", "Описание эпика 2");
         taskManager.addEpic(epic);

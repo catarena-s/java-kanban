@@ -1,0 +1,17 @@
+add      , TASK     , name=Task MIX 1 , description =Task MIX Description 1
+add      , TASK     , name=Task MIX 2 , description =Task MIX Description 2
+add      , TASK     , name=Task MIX 5 , description =Task MIX Description 5
+add      , EPIC     , name=Epic MIX 3 , description =Epic MIX Description 3
+add      , Sub_TASK , name=Task MIX 4 , description =Task MIX Description 4 ,
+
+update   , TASK     , id=0002  , name=12 , description = new MIX Description 1111 , status=IN_PROGRESS
+
+clone    , task     , 0001
+clone    , epic     , 0004
+clone    , epic     , 0040
+clone    , Sub_TASK , 0006
+get      , EPIC     , 0023
+--REMOVE , EPIC     , 0014                ,
+REMOVE , TASK     , 0002
+--REMOVE , Sub_TASK , 0007
+--REMOVE , allepic

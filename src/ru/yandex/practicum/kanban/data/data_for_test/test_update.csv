@@ -1,0 +1,5 @@
+update , TASK    , id=0002 , status=DONE        , name=New name 001
+update , EPIC    , id=0004 , name=New name 004
+update , SUB_TASK , id=0007 , status=IN_PROGRESS , name=New name 005 , description=new subTask Description 005
+update , SUB_TASK , id=0006 , status=DONE        , name=New name 006 , description=new subTask Description 006
+update , TASK    , id=0003 , status=IN_PROGRESS

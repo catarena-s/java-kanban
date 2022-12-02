@@ -10,4 +10,5 @@ public class Managers<T extends Manager> {
     public T getDefault() {
         return manager;
     }
+
 }
