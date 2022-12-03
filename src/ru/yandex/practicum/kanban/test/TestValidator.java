@@ -41,7 +41,7 @@ public class TestValidator {
     }
 
     private static boolean validateAddLine(String[] records) {
-        return records.length > 2;
+        return records.length >= 2;
     }
 
     private static boolean validateRemoveLine(String[] records) {

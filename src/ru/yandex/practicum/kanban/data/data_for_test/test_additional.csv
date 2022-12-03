@@ -6,5 +6,5 @@ add , epic     , name=Эпик 1        , description=Описание эпик�
 add , SUB_TASK , name=Подзадача 1-2 , description=Описание подзадачи 1-2
 add , SUB_TASK , name=Подзадача 1-3 , description=Описание подзадачи 1-3
 add , epic     , name=Эпик 2        , description=Описание эпика 2
-
+add , TASK
 add , epic     , id=0003            , name=Эпик 2                        , description=Описание эпика 2

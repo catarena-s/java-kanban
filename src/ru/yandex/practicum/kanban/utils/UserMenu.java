@@ -8,7 +8,7 @@ public class UserMenu {
 
     public static final String NUMBER_FORMAT_EXCEPTION = "Введено некорректное значение.\n";
 
-    public static void printMenu() {
+    public static void printMainMenu() {
         Helper.printMessage("--- Веберите что протестировать: ----------------------------\n"
                 + "1 - Добавление задач\n"
                 + "2 - Обновление задач.\n"
@@ -18,6 +18,12 @@ public class UserMenu {
                 + "6 - Печать всех задач \n"
                 + "0 - Завершить тестирование.\n"
                 + "---------------------------------------------------\n");
+    }
+
+    public static void printChooseTaskManager() {
+        Helper.printMessage("1 - InMemoryTaskManager\n");
+        Helper.printMessage("2 - FileBackedTasksManager \n");
+        Helper.printMessage("0 - выход\n");
     }
 
     public static int getUserAnswer(Scanner scanner) {
@@ -35,7 +41,6 @@ public class UserMenu {
         } while (!isCorrectAnswer);
         return userInput;
     }
-
 }
 
 

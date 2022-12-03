@@ -38,8 +38,7 @@ public class Printer {
     }
 
     public static void printSortedTasks(List<Task> allTasks) {
-        allTasks.sort((t1, t2) -> String.CASE_INSENSITIVE_ORDER.compare(t1.getTaskID(), t2.getTaskID()));
-        allTasks.forEach(t -> Helper.printMessage(t.toCompactString()));
+        allTasks.stream().sorted().forEach(t -> Helper.printMessage(t.toCompactString()));
         Helper.printEmptySting();
     }
 }

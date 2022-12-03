@@ -14,4 +14,13 @@ public enum TaskType {
     TaskType(String value) {
         this.value=value;
     }
+
+    public Task create(){
+        switch (this){
+            case TASK: return new Task();
+            case EPIC: return new Epic();
+            case SUB_TASK:return new SubTask();
+        }
+        return null;
+    }
 }

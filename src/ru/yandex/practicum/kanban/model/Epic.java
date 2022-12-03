@@ -7,9 +7,18 @@ import java.util.stream.Collectors;
 public class Epic extends Task {
     private final List<SubTask> subTasks;
 
+    public Epic() {
+        super();
+        subTasks = new ArrayList<>();
+    }
     public Epic(String name, String description) {
         super(name, description);
         subTasks = new ArrayList<>();
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
     public void addSubtask(SubTask subtask) {

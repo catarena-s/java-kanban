@@ -1,2 +1,10 @@
 id,type,status,name,description,epic
+0001, TASK    , NEW         , Task MIX 1     , Task MIX Description 1   ,
+0003, TASK    , NEW         , Task MIX 5     , Task MIX Description 5   ,
+0006, TASK    , NEW         , Task MIX 1     , Task MIX Description 1   ,
+0004, EPIC    , NEW         , Epic MIX 3     , Epic MIX Description 3   ,
+0007, EPIC    , NEW         , Epic MIX 3     , Epic MIX Description 3   ,
+0005, SUB_TASK, NEW         , Task MIX 4     , Task MIX Description 4   ,  0004 
+0008, SUB_TASK, NEW         , Task MIX 4     , Task MIX Description 4   ,  0007 
 
+0003 0005 0001 0006 0004 0007 0008

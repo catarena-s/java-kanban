@@ -2,11 +2,12 @@ package ru.yandex.practicum.kanban.utils;
 
 import ru.yandex.practicum.kanban.test.TestCommand;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FileHelper {
@@ -18,16 +19,18 @@ public class FileHelper {
     private static final String FILE_MIX_TEST_DATA = "src/ru/yandex/practicum/kanban/data/data_for_test/test_mix_commands.csv";
     private static final String FILE_GET_DATA = "src/ru/yandex/practicum/kanban/data/data_for_test/test_get_task.csv";
 
-    private FileHelper(){}
+    private FileHelper() {
+    }
 
-    public static List<String> readFromFile(Path file) throws IOException{
-        List<String> inputData = new ArrayList<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file.toString()))) {
-            while (bufferedReader.ready()) {
-                inputData.add(bufferedReader.readLine());
-            }
+    public static List<String> readFromFile(Path file) throws IOException {
+        String[] dataFromFile = Files.readString(file).split(System.lineSeparator());
+        return new ArrayList<>(Arrays.asList(dataFromFile));
+    }
+
+    public static void saveToFile(Path file, String data) throws IOException {
+        try (FileWriter fw = new FileWriter(file.toString())) {
+            fw.write(data);
         }
-        return inputData;
     }
 
     public static String getFile(TestCommand comand) {

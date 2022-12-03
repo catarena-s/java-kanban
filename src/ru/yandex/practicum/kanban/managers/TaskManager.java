@@ -10,22 +10,8 @@ import ru.yandex.practicum.kanban.model.Task;
 import java.util.List;
 
 public interface TaskManager extends Manager {
-/*
-У меня сомнения в целесообразности наличия 3-х отдельных методов для добавления задач.
-По-моему, это увеличивает шансы на ошибку пользователя.
-Например, в addTask передать эпик, или в addEpic - передать сабтаск.
 
-Мне кажется, было бы лучше иметь один метод add(Task task), а уже внутри, по переданному объекту определять,
-кого добавляем и вызывать соответствующий метод(addTask, addEpic, addSubtask - которые будут скрыты от пользователя).
-Но, из-за того, что в ТЗ каждый раз указывают на необходимость иметь отдельные методы, они ещё есть.
-
-Насколько важно пользователю видеть эти отдельные методы? Или всё же один универсальный метод не гуд?
-*/
-    void addTask(Task task) throws TaskAddException;
-
-    void addEpic(Epic task) throws TaskAddException;
-
-    void addSubtask(SubTask task) throws TaskGetterException, TaskAddException;
+    void add(Task task) throws TaskGetterException, TaskAddException;
     Task clone(Task task) throws TaskGetterException, TaskAddException;
 
     void clear();

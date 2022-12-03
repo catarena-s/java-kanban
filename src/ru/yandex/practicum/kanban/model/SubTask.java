@@ -1,11 +1,27 @@
 package ru.yandex.practicum.kanban.model;
 
 public class SubTask extends Task {
-    private final String epicID;
+    private String epicID;
+
+    public SubTask() {
+        super();
+        this.epicID = "0";
+    }
 
     public SubTask(String name, String description, String epicID) {
         super(name, description);
         this.epicID = epicID;
+    }
+
+    @Override
+    public void init(String... args) {
+        super.init(args);
+        epicID = args[3];
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.SUB_TASK;
     }
 
     public String getEpicID() {
