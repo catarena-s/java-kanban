@@ -5,9 +5,11 @@ import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.test.TestManager;
 import ru.yandex.practicum.kanban.test.Tester;
+import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.UserMenu;
 
+import java.time.Clock;
 import java.util.Scanner;
 
 public class Main {
@@ -20,17 +22,17 @@ public class Main {
         do {
             Helper.printMessage("Что тестируем?: ");
             answer = UserMenu.getUserAnswer(scanner);
-            if (answer < 0 || answer > 2) Helper.printMessage("\033[35mНекорректная команда. \n\033[0m");
+            if (answer < 0 || answer > 2)
+                Helper.printMessage(Helper.getColoredString("Некорректная команда. \n",Colors.CYAN));
         } while (answer < 0 || answer > 2);
-
         if (answer == 0) return;
 
-        Managers managers = new Managers(answer);
+        Managers managers = new Managers(1);
         TaskManager taskManager = managers.getDefault();
         Tester test = TestManager.get(taskManager);
 
         if (test == null) {
-            Helper.printMessage("\033[35mОшибка получения TestManager.\n\033[0m");
+            Helper.printMessageColored(Colors.CYAN,"Ошибка получения TestManager.\n");
             return;
         }
 

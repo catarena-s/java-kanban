@@ -6,7 +6,7 @@ public class UserMenu {
     private UserMenu() {
     }
 
-    public static final String NUMBER_FORMAT_EXCEPTION = "Введено некорректное значение.\n";
+    public static final String NUMBER_FORMAT_EXCEPTION = "\033[36mВведено некорректное значение.\n\033[0m";
 
     public static void printMainMenu() {
         Helper.printMessage("--- Веберите что протестировать: ----------------------------\n"
