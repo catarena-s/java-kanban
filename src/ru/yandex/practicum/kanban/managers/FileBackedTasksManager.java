@@ -23,16 +23,22 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    public FileBackedTasksManager(HistoryManager historyManager) {
+    private FileBackedTasksManager(HistoryManager historyManager) {
         super(historyManager);
+    }
+
+    public static FileBackedTasksManager loadFromFile(Path file) {
+        FileBackedTasksManager manager = new FileBackedTasksManager(Managers.getDefaultHistory());
+        manager.load(file);
+        return manager;
     }
 
     public static void main(String[] args) {
         Path file = Paths.get(FileHelper.DATA_FILE_NAME);
-        FileBackedTasksManager f1 = Managers.loadFromFile(file);
+        FileBackedTasksManager f1 = FileBackedTasksManager.loadFromFile(file);
         Helper.printMessage("Тестируем 1-й FileBackedTasksManager:\n");
         Tester test = TestManager.get(f1);
-        if(test == null) return;
+        if (test == null) return;
         test.runTest(TestCommand.MIX.getValue());
         Helper.printMessage("");
         Helper.printMessage("Печать содержимого менеджера 1 \n");
@@ -41,28 +47,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         Helper.printSeparator();
         Helper.printMessage("Тестируем 2-й FileBackedTasksManager:\n");
-        FileBackedTasksManager f2 = Managers.loadFromFile(file);
+        FileBackedTasksManager f2 = FileBackedTasksManager.loadFromFile(file);
         Helper.printMessage("Печать содержимого менеджера 2 \n");
         Printer.printAllTaskManagerList(f2);
-        Printer.printHistory(f2);
+        Printer.printHistory(f2);/**/
     }
 
     /**
      * загружаем данные из файла таск-менеджер
      */
-    public void load(Path file) {
+    private void load(Path file) {
         try {
             List<String> lines = FileHelper.readFromFile(file);
 
             if (lines.isEmpty() || lines.size() == 1) return;
             String head = lines.get(0);
             if (!Helper.DATA_HEAD.equals(head)) return;
-            lines.remove(0);
-            int index = 0;
-            for (String line : lines) {
-                if (line.isBlank()) break;
-                loadData(line);
-                index++;
+            int index = 1;
+            while (!lines.get(index).isBlank() && index < lines.size()) {
+                loadData(lines.get(index++));
             }
             loadHistory(lines, index);
         } catch (FileNotFoundException e) {

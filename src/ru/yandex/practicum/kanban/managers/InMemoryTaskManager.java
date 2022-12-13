@@ -349,6 +349,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(task);
             return task;
         }
+        if(tasks == null || tasks.isEmpty()) throw new TaskGetterException("%s - отсутствуют %n",type.getValue());
         throw new TaskGetterException("%s c id =%s не найдена %n", type.getValue(), taskID);
     }
 }
