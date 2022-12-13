@@ -14,18 +14,21 @@ public class SubTask extends Task {
     }
 
     @Override
-    public void init(String... args) {
-        super.init(args);
-        epicID = args[3];
-    }
-
-    @Override
     public TaskType getType() {
         return TaskType.SUB_TASK;
+    }
+    @Override
+    public void init(String... args) {
+        super.init(args);
+        builder().epic(args[3]);
     }
 
     public String getEpicID() {
         return epicID;
+    }
+
+    public void setEpicID(String epicID) {
+        this.epicID = epicID;
     }
 
     @Override
@@ -38,10 +41,32 @@ public class SubTask extends Task {
                 ", status=" + getStatus() +
                 " }";
     }
+
     @Override
-    public String toCompactString(){
+    public Builder builder() {
+        return new Builder(this);
+    }
+
+    @Override
+    public String toCompactString() {
         String resFormat = DEFAULT_FORMAT_OUT_DATA + "%6s %n";
 
-        return String.format(resFormat, taskID, TaskType.SUB_TASK, taskStatus, name, description,epicID);
+        return String.format(resFormat, taskID, TaskType.SUB_TASK, taskStatus, name, description, epicID);
+    }
+
+    public class Builder extends Task.Builder {
+        public Builder(Task task) {
+            super(task);
+        }
+
+        @Override
+        public Task build() {
+            return super.build();
+        }
+
+        public Builder epic(String epicID) {
+            ((SubTask) task).setEpicID(epicID);
+            return this;
+        }
     }
 }

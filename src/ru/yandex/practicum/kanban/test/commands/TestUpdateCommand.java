@@ -63,13 +63,13 @@ public class TestUpdateCommand extends AbstractTest {
     private void setNewDataTask(Task task, String[] data) {
         switch (data[0].trim()) {
             case "name":
-                task.setName(data[1].trim());
+                task.builder().name(data[1].trim());
                 break;
             case "status":
-                task.setStatus(TaskStatus.valueOf(data[1].toUpperCase().trim()));
+                task.builder().status(TaskStatus.valueOf(data[1].toUpperCase().trim()));
                 break;
             case "description":
-                task.setDescription(data[1].trim());
+                task.builder().description(data[1].trim());
                 break;
             default:
                 break;

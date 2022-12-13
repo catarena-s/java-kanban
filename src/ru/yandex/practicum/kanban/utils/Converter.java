@@ -1,6 +1,7 @@
 package ru.yandex.practicum.kanban.utils;
 
 import ru.yandex.practicum.kanban.managers.HistoryManager;
+import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.model.TaskStatus;
 import ru.yandex.practicum.kanban.model.TaskType;
@@ -28,7 +29,7 @@ public class Converter {
         Task task = type.create();
         if (task != null) {
             task.init(id, name, description, epcId);
-            task.setStatus(status);
+            task.builder().status(status);
         }
         return task;
     }

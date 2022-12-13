@@ -2,8 +2,8 @@ package ru.yandex.practicum.kanban.model;
 
 public class Task implements Comparable<Task> {
     protected String taskID = "";
-    protected String name="";
-    protected String description="";
+    protected String name = "";
+    protected String description = "";
     protected TaskStatus taskStatus;
     protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-8s, %-12s, %-15s, %-25s,";
 
@@ -14,11 +14,6 @@ public class Task implements Comparable<Task> {
         this.name = name;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
-    }
-    public void init(String... args){
-        taskID = args[0];
-        name = args[1];
-        description = args[2];
     }
 
     @Override
@@ -37,11 +32,16 @@ public class Task implements Comparable<Task> {
         return String.format(resFormat, taskID, TaskType.TASK, taskStatus, name, description);
     }
 
+    @Override
+    public int compareTo(Task o) {
+        return String.CASE_INSENSITIVE_ORDER.compare(taskID, o.getTaskID());
+    }
+
     public String getTaskID() {
         return taskID;
     }
 
-    public void setTaskID(String taskID) {
+    protected void setTaskID(String taskID) {
         this.taskID = taskID;
     }
 
@@ -49,7 +49,7 @@ public class Task implements Comparable<Task> {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = name;
     }
 
@@ -57,7 +57,7 @@ public class Task implements Comparable<Task> {
         return description;
     }
 
-    public void setDescription(String description) {
+    protected void setDescription(String description) {
         this.description = description;
     }
 
@@ -65,17 +65,54 @@ public class Task implements Comparable<Task> {
         return taskStatus;
     }
 
-    public void setStatus(TaskStatus taskStatus) {
+    protected void setStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
-    }
-
-    @Override
-    public int compareTo(Task o) {
-        return String.CASE_INSENSITIVE_ORDER.compare(taskID, o.getTaskID());
     }
 
     public TaskType getType() {
         return TaskType.TASK;
+    }
+
+    public Builder builder() {
+        return new Builder(this);
+    }
+
+    public void init(String... args) {
+        builder().taskId(args[0])
+                .name(args[1])
+                .description(args[2]);
+    }
+
+    public class Builder {
+        protected Task task;
+
+        public Builder(Task task) {
+            this.task = task;
+        }
+
+        public Builder name(String name) {
+            task.setName(name);
+            return this;
+        }
+
+        public Builder taskId(String id) {
+            task.setTaskID(id);
+            return this;
+        }
+
+        public Builder description(String description) {
+            task.setDescription(description);
+            return this;
+        }
+
+        public Builder status(TaskStatus status) {
+            task.setStatus(status);
+            return this;
+        }
+
+        public Task build() {
+            return task;
+        }
     }
 
 }

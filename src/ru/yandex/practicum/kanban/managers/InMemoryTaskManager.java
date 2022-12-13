@@ -68,7 +68,7 @@ public class InMemoryTaskManager implements TaskManager {
         TaskType taskType = task.getType();
         Map<String, Task> tasks = tasksByType.getOrDefault(taskType, new HashMap<>());
         if (task.getTaskID().isBlank()) {
-            task.setTaskID(newTaskID());
+            task.builder().taskId(newTaskID());
         } else {
             int current = Integer.parseInt(task.getTaskID());
             if (lastID < current) lastID = current;
@@ -315,7 +315,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         if (allSubTasks.isEmpty()) {
             Helper.printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
-            epic.setStatus(TaskStatus.NEW);
+            epic.builder().status(TaskStatus.NEW);
             return;
         }
 
@@ -329,16 +329,16 @@ public class InMemoryTaskManager implements TaskManager {
             boolean isInProgress = (!isDone && !isNew) || (currentStatus == TaskStatus.IN_PROGRESS);
 
             if (isInProgress) {
-                epic.setStatus(TaskStatus.IN_PROGRESS);
+                epic.builder().status(TaskStatus.IN_PROGRESS);
                 return;
             }
         }
         if (isNew) {
-            epic.setStatus(TaskStatus.NEW);
+            epic.builder().status(TaskStatus.NEW);
         } else if (isDone) {
-            epic.setStatus(TaskStatus.DONE);
+            epic.builder().status(TaskStatus.DONE);
         } else {
-            epic.setStatus(TaskStatus.IN_PROGRESS);
+            epic.builder().status(TaskStatus.IN_PROGRESS);
         }
     }
 

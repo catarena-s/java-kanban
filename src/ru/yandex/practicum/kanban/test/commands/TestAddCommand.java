@@ -68,7 +68,7 @@ public class TestAddCommand extends AbstractTest {
         Task task = type.create();
         if (task != null) {
             task.init(newData.id, newData.name, newData.description, newData.epicID);
-            task.setStatus(TaskStatus.NEW);
+            task.builder().status(TaskStatus.NEW);
             taskManager.add(task);
         }
         return task;
