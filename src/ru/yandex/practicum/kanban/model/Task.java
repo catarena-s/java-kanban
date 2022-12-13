@@ -1,13 +1,23 @@
 package ru.yandex.practicum.kanban.model;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 public class Task implements Comparable<Task> {
     protected String taskID = "";
     protected String name = "";
     protected String description = "";
+    protected int duration = 0;
+    protected Instant startTime;
+    protected boolean sortByPriority = false;
     protected TaskStatus taskStatus;
     protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-8s, %-12s, %-15s, %-25s,";
 
     public Task() {
+    }
+
+    public Instant getEndTime() {
+        return startTime.plus(duration, ChronoUnit.MINUTES);
     }
 
     public Task(String name, String description) {
@@ -32,9 +42,36 @@ public class Task implements Comparable<Task> {
         return String.format(resFormat, taskID, TaskType.TASK, taskStatus, name, description);
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    protected void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    protected void setStartTime(Instant startTime) {
+        this.startTime = startTime;
+    }
+
+    public boolean isSortByPriority() {
+        return sortByPriority;
+    }
+
+    protected void setSortByPriority(boolean sortByPriority) {
+        this.sortByPriority = sortByPriority;
+    }
+
     @Override
     public int compareTo(Task o) {
-        return String.CASE_INSENSITIVE_ORDER.compare(taskID, o.getTaskID());
+        if (sortByPriority)
+            return startTime.compareTo(o.startTime);
+        else
+            return String.CASE_INSENSITIVE_ORDER.compare(taskID, o.getTaskID());
     }
 
     public String getTaskID() {
@@ -110,9 +147,25 @@ public class Task implements Comparable<Task> {
             return this;
         }
 
+        public Builder duration(int duration) {
+            task.setDuration(duration);
+            return this;
+        }
+
+        public Builder startTime(Instant startTime) {
+            task.setStartTime(startTime);
+            return this;
+        }
+
+        public Builder sortByPriority(boolean sortByPriority) {
+            task.setSortByPriority(sortByPriority);
+            return this;
+        }
+
         public Task build() {
             return task;
         }
+
     }
 
 }
