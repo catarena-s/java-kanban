@@ -54,9 +54,11 @@ public class Converter {
      * Формируем строку из списка задач
      */
     public static String taskListToString(List<Task> taskList) {
-        return taskList.stream().sorted()
+        String result = taskList.stream().sorted()
                 .map(Task::toCompactString)
                 .collect(Collectors.joining(System.lineSeparator()));
+
+        return result.isBlank() ? "" : result + System.lineSeparator();
     }
 
 }

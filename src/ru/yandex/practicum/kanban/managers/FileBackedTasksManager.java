@@ -91,11 +91,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             if (!tasksByType.isEmpty()) {
                 builder = Helper.DATA_HEAD + System.lineSeparator() +
                         Converter.taskListToString(getAllByType(TaskType.TASK)) +
-                        System.lineSeparator() +
                         Converter.taskListToString(getAllByType(TaskType.EPIC)) +
-                        System.lineSeparator() +
                         Converter.taskListToString(getAllByType(TaskType.SUB_TASK)) +
-                        System.lineSeparator() +
                         System.lineSeparator() +
                         Converter.historyToString(historyManager);
             }
