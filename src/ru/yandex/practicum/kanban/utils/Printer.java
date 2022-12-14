@@ -13,12 +13,11 @@ public class Printer {
         Helper.printMessage("History: ");
         List<Task> historyManager = taskManager.getHistory();
         List<String> history = new ArrayList<>();
-        Helper.printMessage("(%d)", historyManager.size());
         if (historyManager.isEmpty()) return;
         for (Task task : historyManager) {
             history.add(task.getTaskID());
         }
-        Helper.printMessage(" '%s'%n", String.join("' -> '", history));
+        Helper.printMessage("(%d) '%s'",historyManager.size(), String.join("' -> '", history));
     }
 
     public static void printAllTaskManagerList(TaskManager taskManager) {

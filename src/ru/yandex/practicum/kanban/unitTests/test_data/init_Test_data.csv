@@ -1,0 +1,11 @@
+add , TASK     , name=Задача 1      , description=Описание задачи 1
+add , TASK     , name=Задача 2      , description=Описание задачи 2
+add , TASK     , name=Задача 3      , description=Описание задачи 3
+add , epic     , name=Эпик 1        , description=Описание эпика 1
+add , SUB_TASK , name=Подзадача 1-2 , description=Описание подзадачи 1-2
+add , SUB_TASK , name=Подзадача 1-3 , description=Описание подзадачи 1-3
+add , SUB_TASK , name=Подзадача 1-1 , description=Описание подзадачи 1-1
+add , epic     , name=Эпик 2        , description=Описание эпика 2
+add , epic     , name=Эпик 2        , description=Описание эпика 2
+add , SUB_TASK , name=Подзадача 1-1 , description=Описание подзадачи 1-1,0009,status=IN_PROGRESS
+add , TASK

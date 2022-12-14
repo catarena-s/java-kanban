@@ -23,6 +23,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
+    private Path fileName;
+
     private FileBackedTasksManager(HistoryManager historyManager) {
         super(historyManager);
     }
@@ -34,21 +36,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
+
         Path file = Paths.get(FileHelper.DATA_FILE_NAME);
         FileBackedTasksManager f1 = FileBackedTasksManager.loadFromFile(file);
-        Helper.printMessage("Тестируем 1-й FileBackedTasksManager:\n");
+        Helper.printMessage("Тестируем 1-й FileBackedTasksManager:");
         Tester test = TestManager.get(f1);
         if (test == null) return;
         test.runTest(TestCommand.MIX.getValue());
         Helper.printMessage("");
-        Helper.printMessage("Печать содержимого менеджера 1 \n");
+        Helper.printMessage("Печать содержимого менеджера 1 ");
         Printer.printAllTaskManagerList(f1);
         Printer.printHistory(f1);
 
         Helper.printSeparator();
-        Helper.printMessage("Тестируем 2-й FileBackedTasksManager:\n");
+        Helper.printMessage("Тестируем 2-й FileBackedTasksManager:");
         FileBackedTasksManager f2 = FileBackedTasksManager.loadFromFile(file);
-        Helper.printMessage("Печать содержимого менеджера 2 \n");
+        Helper.printMessage("Печать содержимого менеджера 2");
         Printer.printAllTaskManagerList(f2);
         Printer.printHistory(f2);/**/
     }
@@ -58,18 +61,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
      */
     private void load(Path file) {
         try {
+            fileName = file;
             List<String> lines = FileHelper.readFromFile(file);
 
-            if (lines.isEmpty() || lines.size() == 1) return;
-            String head = lines.get(0);
+            if (lines.isEmpty() || lines.size() <= 1) return;
+            String head = lines.get(0).trim().toLowerCase().replace(" ", "");
             if (!Helper.DATA_HEAD.equals(head)) return;
             int index = 1;
-            while (!lines.get(index).isBlank() && index < lines.size()) {
+            if (lines.get(index).isBlank()) index++;
+            while (index < lines.size() && !lines.get(index).isBlank()) {
                 loadData(lines.get(index++));
             }
             loadHistory(lines, index);
         } catch (FileNotFoundException e) {
-            Helper.printMessage("Ошибка загрузки данных: файл '" + file.toAbsolutePath() + "' не найден.\n");
+            Helper.printMessage("Ошибка загрузки данных: файл '" + file.toAbsolutePath() + "' не найден.");
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения из файл.");
         } catch (TaskGetterException e) {
@@ -82,14 +87,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
      */
     private void save() {
         try {
-            String builder = Helper.DATA_HEAD + System.lineSeparator() +
-                    Converter.taskListToString(getAllByType(TaskType.TASK)) +
-                    Converter.taskListToString(getAllByType(TaskType.EPIC)) +
-                    Converter.taskListToString(getAllByType(TaskType.SUB_TASK)) +
-                    System.lineSeparator() +
-                    Converter.historyToString(historyManager);
+            String builder = new String("");
+            if (!tasksByType.isEmpty()) {
+                builder = Helper.DATA_HEAD + System.lineSeparator() +
+                        Converter.taskListToString(getAllByType(TaskType.TASK)) +
+                        System.lineSeparator() +
+                        Converter.taskListToString(getAllByType(TaskType.EPIC)) +
+                        System.lineSeparator() +
+                        Converter.taskListToString(getAllByType(TaskType.SUB_TASK)) +
+                        System.lineSeparator() +
+                        System.lineSeparator() +
+                        Converter.historyToString(historyManager);
+            }
 
-            FileHelper.saveToFile(Path.of(FileHelper.DATA_FILE_NAME), builder);
+            FileHelper.saveToFile(fileName, builder);
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка во время записи в файл.");
         }
@@ -142,8 +153,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public List<SubTask> getAllSubtaskByEpic(Epic epic) {
-        List<SubTask> list = super.getAllSubtaskByEpic(epic);
+    public List<Task> getAllSubtaskByEpic(Epic epic) {
+        List<Task> list = super.getAllSubtaskByEpic(epic);
         save();
         return list;
     }

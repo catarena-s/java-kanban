@@ -6,7 +6,7 @@ public class UserMenu {
     private UserMenu() {
     }
 
-    public static final String NUMBER_FORMAT_EXCEPTION = "\033[36mВведено некорректное значение.\n\033[0m";
+    public static final String NUMBER_FORMAT_EXCEPTION = "Введено некорректное значение.";
 
     public static void printMainMenu() {
         Helper.printMessage("--- Веберите что протестировать: ----------------------------\n"
@@ -17,13 +17,13 @@ public class UserMenu {
                 + "5 - Получение задач \n"
                 + "6 - Печать всех задач \n"
                 + "0 - Завершить тестирование.\n"
-                + "---------------------------------------------------\n");
+                + "---------------------------------------------------");
     }
 
     public static void printChooseTaskManager() {
-        Helper.printMessage("1 - InMemoryTaskManager\n");
-        Helper.printMessage("2 - FileBackedTasksManager \n");
-        Helper.printMessage("0 - выход\n");
+        Helper.printMessage("1 - InMemoryTaskManager");
+        Helper.printMessage("2 - FileBackedTasksManager");
+        Helper.printMessage("0 - выход");
     }
 
     public static int getUserAnswer(Scanner scanner) {

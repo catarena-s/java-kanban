@@ -12,7 +12,8 @@ public abstract class TaskException extends Exception {
     }
 
     public String getDetailMessage() {
-        String format = Helper.getColoredString(">> Ошибка: %s",Helper.getItalic(Colors.RED));
+//        String format = Helper.getColoredString(">> Ошибка: %s",Helper.getItalic(Colors.RED));
+        String format = "Ошибка: %s";
         return String.format(format, message);
     }
 }

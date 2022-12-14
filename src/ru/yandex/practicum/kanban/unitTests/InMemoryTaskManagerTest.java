@@ -1,17 +1,28 @@
 package ru.yandex.practicum.kanban.unitTests;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import ru.yandex.practicum.kanban.exceptions.TaskAddException;
+import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.InMemoryTaskManager;
-import ru.yandex.practicum.kanban.managers.Managers;
-import ru.yandex.practicum.kanban.managers.TaskManager;
+import ru.yandex.practicum.kanban.test.commands.TestAddCommand;
+import ru.yandex.practicum.kanban.utils.FileHelper;
+import ru.yandex.practicum.kanban.utils.Helper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.util.List;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
-    @BeforeAll
-    static void init(){
-       init(1);
+    @BeforeEach
+    void init(TestInfo info) throws IOException, TaskGetterException, TaskAddException {
+        init(1);
+        if (info.getTags().contains("InitData")) {
+            List<String> testLines = FileHelper.readFromFile(TestHelper.getPath(TestHelper.INIT_TEST_DATA));
+            for (String line : testLines) {
+                if (line.isBlank()) continue;
+                TestAddCommand.executeString(line, taskManager);
+            }
+        }
     }
 
 }

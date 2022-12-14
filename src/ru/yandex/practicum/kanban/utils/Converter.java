@@ -1,7 +1,6 @@
 package ru.yandex.practicum.kanban.utils;
 
 import ru.yandex.practicum.kanban.managers.HistoryManager;
-import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.model.TaskStatus;
 import ru.yandex.practicum.kanban.model.TaskType;
@@ -23,8 +22,10 @@ public class Converter {
         TaskType type = TaskType.valueOf(data[1].trim().toUpperCase());
         String id = data[0].trim();
         TaskStatus status = TaskStatus.valueOf(data[2].trim().toUpperCase());
-        String name = data[3].trim();
-        String description = data[4].trim();
+        String name = "";
+        if (data.length > 3) name = data[3].trim();
+        String description = "";
+        if (data.length > 4) description = data[4].trim();
         if (data.length == 6) epcId = data[5].trim();
         Task task = type.create();
         if (task != null) {
@@ -55,7 +56,7 @@ public class Converter {
     public static String taskListToString(List<Task> taskList) {
         return taskList.stream().sorted()
                 .map(Task::toCompactString)
-                .collect(Collectors.joining());
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
 }

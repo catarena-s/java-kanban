@@ -2,7 +2,9 @@ package ru.yandex.practicum.kanban.utils;
 
 public enum Colors {
     BLACK ("30m"),
+    UnderLine ("4m"),
     RED ("31m"),
+    UnderLinedRED ("4;31m"),
     GREEN ("32m"),
     YELLOW ("33m"),
     BLUE ("34m"),

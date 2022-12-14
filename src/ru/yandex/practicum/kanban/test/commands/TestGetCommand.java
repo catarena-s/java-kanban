@@ -37,7 +37,9 @@ public class TestGetCommand extends AbstractTest {
         if (tasks.isEmpty()) return;
         if (isPrintHistory) Printer.printSortedTasks(tasks);
     }
+/*    public static Task executeString(String line, TaskManager taskManager){
 
+    }*/
     private List<Task> getWithParams(String[] records, String objectType) {
         List<Task> tasks = new ArrayList<>();
         for (int i = 2; i < records.length; i++) {

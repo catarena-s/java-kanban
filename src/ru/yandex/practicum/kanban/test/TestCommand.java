@@ -1,6 +1,7 @@
 package ru.yandex.practicum.kanban.test;
 
 import ru.yandex.practicum.kanban.test.commands.*;
+import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 public enum TestCommand {
@@ -36,7 +37,7 @@ public enum TestCommand {
             case 6:
                 return PRINT;
             default:
-                Helper.printMessage("Такая команда отсутствует. \n");
+                Helper.printMessage(Colors.CYAN, "Такая команда отсутствует. ");
                 return null;
         }
     }

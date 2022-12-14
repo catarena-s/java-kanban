@@ -6,10 +6,10 @@ import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.test.TestManager;
 import ru.yandex.practicum.kanban.test.Tester;
 import ru.yandex.practicum.kanban.utils.Colors;
+import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.UserMenu;
 
-import java.time.Clock;
 import java.util.Scanner;
 
 public class Main {
@@ -23,16 +23,16 @@ public class Main {
             Helper.printMessage("Что тестируем?: ");
             answer = UserMenu.getUserAnswer(scanner);
             if (answer < 0 || answer > 2)
-                Helper.printMessage(Helper.getColoredString("Некорректная команда. \n",Colors.CYAN));
+                Helper.printMessage(Helper.getColoredString("Некорректная команда. ",Colors.CYAN));
         } while (answer < 0 || answer > 2);
         if (answer == 0) return;
 
-        Managers managers = new Managers(1);
+        Managers managers = new Managers(answer, FileHelper.DATA_FILE_NAME);
         TaskManager taskManager = managers.getDefault();
         Tester test = TestManager.get(taskManager);
 
         if (test == null) {
-            Helper.printMessageColored(Colors.CYAN,"Ошибка получения TestManager.\n");
+            Helper.printMessage(Colors.CYAN,"Ошибка получения TestManager.");
             return;
         }
 

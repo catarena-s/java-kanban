@@ -40,18 +40,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void addSubtask(SubTask task) throws TaskGetterException, TaskAddException {
         if (task.getEpicID().isBlank()) {
-            throw new TaskAddException("Нельзя добавить subtask - не указан id эпика.\n");
+            throw new TaskAddException("Нельзя добавить subtask - не указан id эпика.");
         }
         Epic epic = (Epic) getEpic(task.getEpicID());
         if (epic == null) {
-            throw new TaskAddException("Нельзя добавить subtask - Эпик с id=%s отсутвует\n", task.getEpicID());
+            throw new TaskAddException("Нельзя добавить subtask - Эпик с id=%s отсутвует", task.getEpicID());
         }
         add(task, TaskType.SUB_TASK);
     }
 
     private void add(Task task, TaskType type) throws TaskAddException, TaskGetterException {
         if (!task.getTaskID().isBlank() && allId.contains(task.getTaskID())) {
-            throw new TaskAddException("%s с id=%s уже существует.\n", type.getValue(), task.getTaskID());
+            throw new TaskAddException("%s с id=%s уже существует.", type.getValue(), task.getTaskID());
         }
 
         addTaskToTaskManager(task);
@@ -103,7 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         add(newTask);
         if (task instanceof Epic) {
-            for (SubTask subTask : ((Epic) task).getSubTasks()) {
+            for (Task subTask : ((Epic) task).getSubTasks()) {
                 SubTask newSubtask = new SubTask(subTask.getName(), subTask.getDescription(), newTask.getTaskID());
                 add(newSubtask);
             }
@@ -112,8 +112,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<SubTask> getAllSubtaskByEpic(Epic epic) {
-        List<SubTask> subTasks = epic.getSubTasks();
+    public List<Task> getAllSubtaskByEpic(Epic epic) {
+        List<Task> subTasks = epic.getSubTasks();
         subTasks.forEach(historyManager::add);
         return subTasks;
     }
@@ -157,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
                 return task;
             }
         }
-        throw new TaskGetterException("Задача с id=%s не найдена.\n", taskID);
+        throw new TaskGetterException("Задача с id=%s не найдена.", taskID);
     }
 
     @Override
@@ -176,7 +176,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected List<Task> getAllByType(TaskType taskType) {
-        if (tasksByType.get(taskType) == null || tasksByType.get(taskType).isEmpty()) return new ArrayList<>();
+        if (tasksByType.get(taskType) == null ||
+                tasksByType.get(taskType).isEmpty()) return new ArrayList<>();
         return new ArrayList<>(tasksByType.get(taskType).values());
     }
 
@@ -188,6 +189,7 @@ public class InMemoryTaskManager implements TaskManager {
             taskByType = tasksByType.get(TaskType.SUB_TASK);
             Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
             updateEpicStatus(epic);
+            epic.check();
         } else if (task instanceof Epic) {
             taskByType = tasksByType.get(TaskType.EPIC);
             updateEpicStatus((Epic) task);
@@ -300,7 +302,7 @@ public class InMemoryTaskManager implements TaskManager {
     private void removeAllSubtasksForEpic(Epic epic) {
         Map<String, Task> subtasks = tasksByType.get(TaskType.SUB_TASK);
 
-        for (SubTask subTask : epic.getSubTasks()) {
+        for (Task subTask : epic.getSubTasks()) {
             historyManager.remove(subTask.getTaskID());
             subtasks.remove(subTask.getTaskID());
         }
@@ -311,17 +313,17 @@ public class InMemoryTaskManager implements TaskManager {
      * Обновление статуса эпика
      */
     private void updateEpicStatus(Epic epic) {
-        ArrayList<SubTask> allSubTasks = new ArrayList<>(epic.getSubTasks());
+        ArrayList<Task> allSubTasks = new ArrayList<>(epic.getSubTasks());
 
         if (allSubTasks.isEmpty()) {
-            Helper.printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
             epic.builder().status(TaskStatus.NEW);
+//            Helper.printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
             return;
         }
 
         boolean isDone = true;
         boolean isNew = true;
-        for (SubTask subTask : allSubTasks) {
+        for (Task subTask : allSubTasks) {
             TaskStatus currentStatus = subTask.getStatus();
 
             isDone &= (currentStatus == TaskStatus.DONE);
@@ -349,7 +351,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(task);
             return task;
         }
-        if(tasks == null || tasks.isEmpty()) throw new TaskGetterException("%s - отсутствуют %n",type.getValue());
-        throw new TaskGetterException("%s c id =%s не найдена %n", type.getValue(), taskID);
+        if(tasks == null || tasks.isEmpty()) throw new TaskGetterException("%s - отсутствуют ",type.getValue());
+        throw new TaskGetterException("%s c id =%s не найдена ", type.getValue(), taskID);
     }
 }

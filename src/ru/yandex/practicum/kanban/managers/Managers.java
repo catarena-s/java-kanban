@@ -8,13 +8,13 @@ public class Managers {
     private final TaskManager taskManager;
     private static final HistoryManager historyManager = new InMemoryHistoryManager();
 
-    public Managers(int config) {
+    public Managers(int config, String... args) {
         switch (config) {
             case 1:
                 taskManager = new InMemoryTaskManager(historyManager);
                 break;
             case 2:
-                taskManager = FileBackedTasksManager.loadFromFile(Path.of(FileHelper.DATA_FILE_NAME));
+                taskManager = FileBackedTasksManager.loadFromFile(Path.of(args[0]));
                 break;
             default: taskManager = null;
         }

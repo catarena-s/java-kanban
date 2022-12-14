@@ -1,22 +1,23 @@
 package ru.yandex.practicum.kanban.model;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Epic extends Task {
-    private final List<SubTask> subTasks;
-    private Instant endTime;
+    private final List<Task> subTasks;
+    private LocalDateTime endTime;
 
     @Override
-    public Instant getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
     private void setDuration() {
         int durationSubtasks = 0;
-        for (SubTask subTask : subTasks) {
+        for (Task subTask : subTasks) {
             durationSubtasks += subTask.duration;
         }
         this.duration = durationSubtasks;
@@ -53,7 +54,7 @@ public class Epic extends Task {
         setDuration();
         setStartTime();
     }
-    public List<SubTask> getSubTasks() {
+    public List<Task> getSubTasks() {
         return subTasks;
     }
 
@@ -71,11 +72,14 @@ public class Epic extends Task {
 
     @Override
     public String toCompactString() {
-        String resFormat = DEFAULT_FORMAT_OUT_DATA + "%n";
+        String resFormat = DEFAULT_FORMAT_OUT_DATA ;
 
-        return String.format(resFormat, taskID, TaskType.EPIC, taskStatus, name, description);
+        return String.format(resFormat, taskID, TaskType.EPIC, getStatus(), name, description);
     }
-
-
+    @Override
+    public String toActualStringFoTest() {
+        String resFormat = "%s, %s, %s, %s, %s";
+        return String.format(resFormat, taskID, TaskType.EPIC, getStatus(), name, description, duration, startTime);
+    }
 
 }

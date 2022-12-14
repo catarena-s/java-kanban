@@ -3,6 +3,7 @@ package ru.yandex.practicum.kanban.test.commands;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.test.TestCommand;
 import ru.yandex.practicum.kanban.test.TestValidator;
+import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
 
@@ -32,7 +33,7 @@ public abstract class AbstractTest implements Test {
         try {
             lines = FileHelper.readFromFile(file);
         } catch (IOException ex) {
-            Helper.printMessage(FileHelper.ERROR_FILE_READING, file.toAbsolutePath());
+            Helper.printMessage(Colors.RED, FileHelper.ERROR_FILE_READING, file.toAbsolutePath());
         }
         for (String line : lines) {
             try {
@@ -41,11 +42,11 @@ public abstract class AbstractTest implements Test {
                         Helper.printMessage(Helper.WRONG_RECORD, line);
                         continue;
                     }
-                    Helper.printMessage(Helper.TEST_LINE_MESSAGE, line);
+
                     p.accept(line);
                 }
             } catch (IllegalArgumentException e) {
-                Helper.printMessage(Helper.WRONG_RECORD, line);
+                Helper.printMessage(Colors.CYAN, Helper.WRONG_RECORD, line);
             }
         }
     }

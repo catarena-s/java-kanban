@@ -10,7 +10,6 @@ public class TaskGetterException extends TaskException {
 
     @Override
     public String getDetailMessage(){
-        String format = Helper.getColoredString( ">> Ошибка получения: %s",Helper.getItalic(Colors.RED));
-        return String.format(format, message);
+        return String.format("Ошибка получения: %s", message);
     }
 }

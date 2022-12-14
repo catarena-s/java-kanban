@@ -28,7 +28,7 @@ public interface TaskManager extends Manager {
 
     void removeSubtask(String taskID) throws TaskGetterException, TaskRemoveException;
 
-    List<SubTask> getAllSubtaskByEpic(Epic epic);
+    List<Task> getAllSubtaskByEpic(Epic epic);
 
     List<Task> getAll();
 

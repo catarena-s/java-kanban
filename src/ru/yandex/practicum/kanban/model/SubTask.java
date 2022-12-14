@@ -1,5 +1,7 @@
 package ru.yandex.practicum.kanban.model;
 
+import java.time.Instant;
+
 public class SubTask extends Task {
     private String epicID;
 
@@ -49,9 +51,14 @@ public class SubTask extends Task {
 
     @Override
     public String toCompactString() {
-        String resFormat = DEFAULT_FORMAT_OUT_DATA + "%6s %n";
+        String resFormat = DEFAULT_FORMAT_OUT_DATA + ",%6s";
 
-        return String.format(resFormat, taskID, TaskType.SUB_TASK, taskStatus, name, description, epicID);
+        return String.format(resFormat, taskID, TaskType.SUB_TASK, getStatus(), name, description, epicID);
+    }
+    @Override
+    public String toActualStringFoTest() {
+        String resFormat = "%s, %s, %s, %s, %s, %s";
+        return String.format(resFormat, taskID, TaskType.SUB_TASK, getStatus(), name, description, epicID);
     }
 
     public class Builder extends Task.Builder {
@@ -63,7 +70,6 @@ public class SubTask extends Task {
         public Task build() {
             return super.build();
         }
-
         public Builder epic(String epicID) {
             ((SubTask) task).setEpicID(epicID);
             return this;

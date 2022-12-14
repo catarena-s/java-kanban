@@ -6,6 +6,7 @@ import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.model.TaskStatus;
 import ru.yandex.practicum.kanban.model.TaskType;
 import ru.yandex.practicum.kanban.test.TestCommand;
+import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 public class TestUpdateCommand extends AbstractTest {
@@ -23,20 +24,28 @@ public class TestUpdateCommand extends AbstractTest {
     }
 
     protected void update(String line) {
+        try {
+            executeString(line, taskManager,true);
+        } catch (TaskGetterException ex) {
+            Helper.printMessage(Colors.RED, ex.getDetailMessage());
+        }
+    }
+
+    public static Task executeString(String line, TaskManager taskManager, boolean isPrint) throws TaskGetterException {
         String[] records = line.split(",");
         TaskType type = TaskType.valueOf(records[1].toUpperCase().trim());
         String[] dataId = records[2].split("=");
         String id = dataId[1].trim();
-        try {
-            Task task = getTask(type, id);
-            if (task != null)
-                updateData(records, task);
-        } catch (TaskGetterException ex) {
-            Helper.printMessage(ex.getDetailMessage());
+        Task task = getTask(type, id, taskManager);
+        if (task != null) {
+            if (isPrint)
+                Helper.printMessage("Task before update: %s", task.toCompactString());
+            updateData(records, task, taskManager);
         }
+        return task;
     }
 
-    private Task getTask(TaskType type, String id) throws TaskGetterException {
+    private static Task getTask(TaskType type, String id, TaskManager taskManager) throws TaskGetterException {
         switch (type) {
             case TASK:
                 return taskManager.getTask(id);
@@ -48,7 +57,7 @@ public class TestUpdateCommand extends AbstractTest {
         return null;
     }
 
-    private void updateData(String[] records, Task task) {
+    private static void updateData(String[] records, Task task, TaskManager taskManager) {
         for (int i = 3; i < records.length; i++) {
             String[] data = records[i].split("=");
             setNewDataTask(task, data);
@@ -56,11 +65,11 @@ public class TestUpdateCommand extends AbstractTest {
         try {
             taskManager.updateTask(task);
         } catch (TaskGetterException e) {
-            Helper.printMessage(e.getDetailMessage());
+            Helper.printMessage(Colors.RED, e.getDetailMessage());
         }
     }
 
-    private void setNewDataTask(Task task, String[] data) {
+    private static void setNewDataTask(Task task, String[] data) {
         switch (data[0].trim()) {
             case "name":
                 task.builder().name(data[1].trim());

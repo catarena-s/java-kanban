@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FileHelper {
-    public static final String ERROR_FILE_READING = "\033[31m Ошибка чтения файла : '%s'%n\033[0m";
+    public static final String ERROR_FILE_READING = " Ошибка чтения файла : '%s'";
     public static final String DATA_FILE_NAME = "src/ru/yandex/practicum/kanban/data/task_manager_data.csv";
     private static final String FILE_ADD_TEST_DATA = "src/ru/yandex/practicum/kanban/data/data_for_test/test_additional.csv";
     private static final String FILE_UPDATE_TEST_DATA = "src/ru/yandex/practicum/kanban/data/data_for_test/test_update.csv";
@@ -25,6 +25,10 @@ public class FileHelper {
     public static List<String> readFromFile(Path file) throws IOException {
         String[] dataFromFile = Files.readString(file).split(System.lineSeparator());
         return new ArrayList<>(Arrays.asList(dataFromFile));
+    }
+
+    public static String[] readFromFileToArray(Path file) throws IOException {
+        return Files.readString(file).split(System.lineSeparator());
     }
 
     public static void saveToFile(Path file, String data) throws IOException {
