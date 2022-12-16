@@ -1,0 +1,3 @@
+id,type,status,name,description,epic,duration,start_data
+0007, TASK    , NEW         , Task MIX 3     , Epic MIX Description 3  , 0, 01-01-2222 00:00
+0004, EPIC    , NEW         , Epic MIX 3     , Epic MIX Description 3, 0, 01-01-2222 00:00
