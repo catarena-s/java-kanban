@@ -1,18 +1,19 @@
 package ru.yandex.practicum.kanban.managers;
 
 import ru.yandex.practicum.kanban.exceptions.TaskAddException;
+import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
 import ru.yandex.practicum.kanban.model.Epic;
-import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
+import ru.yandex.practicum.kanban.model.TaskType;
 
 import java.util.List;
 
 public interface TaskManager extends Manager {
 
-    void add(Task task) throws TaskGetterException, TaskAddException;
-    Task clone(Task task) throws TaskGetterException, TaskAddException;
+    void add(Task task) throws TaskException;
+    Task clone(Task task) throws TaskException;
 
     void clear();
 
@@ -28,7 +29,7 @@ public interface TaskManager extends Manager {
 
     void removeSubtask(String taskID) throws TaskGetterException, TaskRemoveException;
 
-    List<Task> getAllSubtaskByEpic(Epic epic);
+    List<Task> getAllSubtaskFromEpic(Epic epic);
 
     List<Task> getAll();
 
@@ -37,6 +38,7 @@ public interface TaskManager extends Manager {
     List<Task> getAllEpics();
 
     List<Task> getAllSubTasks();
+    List<Task> getPrioritizedTasks();
 
     Task getById(String taskID) throws TaskGetterException;
 
@@ -46,7 +48,8 @@ public interface TaskManager extends Manager {
 
     Task getSubtask(String taskID) throws TaskGetterException;
 
-    void updateTask(Task task) throws TaskGetterException;
+    void updateTask(Task task) throws TaskException;
 
     List<Task> getHistory();
+    public List<Task> getPrioritizedTasks(TaskType type);
 }

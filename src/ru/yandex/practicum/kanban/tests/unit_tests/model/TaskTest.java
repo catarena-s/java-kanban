@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.model.tests;
+package ru.yandex.practicum.kanban.tests.unit_tests.model;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.kanban.model.*;
@@ -30,10 +30,8 @@ class TaskTest<T extends Task> {
     }
 
     void getEndTime(String expectation) {
-        String endTime = task.getEndTime();
-        assertEquals(expectation, endTime);
-
-
+        LocalDateTime endTime = task.getEndTime();
+        assertEquals(expectation, endTime.format(formatter));
     }
 
     void init(String expectation) {

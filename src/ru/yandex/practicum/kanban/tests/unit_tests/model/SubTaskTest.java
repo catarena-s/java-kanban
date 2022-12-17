@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.model.tests;
+package ru.yandex.practicum.kanban.tests.unit_tests.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -46,12 +46,6 @@ class SubTaskTest extends TaskTest<SubTask> {
     @Tag(value = "Init")
     void toCompactString() {
         super.toCompactString(task.toCompactString());
-    }
-
-    @Test
-    @Tag(value = "Init")
-    void toCompactString2() {
-        super.toCompactString2(task.toCompactString2());
     }
 
     @Test

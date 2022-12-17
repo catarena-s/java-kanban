@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.tests.utils;
+package ru.yandex.practicum.kanban.tests;
 
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.utils.Helper;

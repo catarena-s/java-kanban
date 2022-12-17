@@ -1,11 +1,15 @@
-package ru.yandex.practicum.kanban.tests.utils.commands;
+package ru.yandex.practicum.kanban.tests.commands;
+
 
 import ru.yandex.practicum.kanban.exceptions.TaskAddException;
+import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.TaskManager;
-import ru.yandex.practicum.kanban.model.*;
-import ru.yandex.practicum.kanban.tests.utils.TestCommand;
+import ru.yandex.practicum.kanban.model.Task;
+import ru.yandex.practicum.kanban.model.TaskType;
+import ru.yandex.practicum.kanban.tests.TestCommand;
 import ru.yandex.practicum.kanban.utils.Colors;
+import ru.yandex.practicum.kanban.utils.Converter;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.util.Comparator;
@@ -31,25 +35,22 @@ public class TestAddCommand extends AbstractTest {
             executeString(line, taskManager);
         } catch (TaskGetterException | TaskAddException e) {
             Helper.printMessage(Colors.RED, e.getDetailMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static Task executeString(String line, TaskManager taskManager) throws TaskGetterException, TaskAddException {
+    public static Task executeString(String line, TaskManager taskManager) throws TaskException {
         Task newTask = parseLine(line, taskManager);
         taskManager.add(newTask);
 
         return newTask;
     }
 
-    public static Task parseLine(String line, TaskManager taskManager) throws TaskAddException {
+    public static Task parseLine(String line, TaskManager taskManager) throws TaskException {
         String[] records = line.split(",");
-        Record newData = new Record();
-        TaskType type = TaskType.valueOf(records[1].toUpperCase().trim());
-        if (TaskType.SUB_TASK.equals(type)) {
-            newData.epicID = getLastEpic(taskManager);
-        }
-        initTask(line, newData);
-        Task newTask = createNewTask(newData, type);
+        Converter.Record newData = initTask(line, taskManager);
+        Task newTask = Converter.createNewTask(newData);
         return newTask;
     }
 
@@ -63,8 +64,13 @@ public class TestAddCommand extends AbstractTest {
 
     }
 
-    private static void initTask(String line, Record newData) {
+    private static Converter.Record initTask(String line, TaskManager taskManager) {
+        Converter.Record newData = new Converter.Record();
         String[] records = line.split(",");
+        newData.type = TaskType.valueOf(records[1].toUpperCase().trim());
+        if (TaskType.SUB_TASK.equals(newData.type)) {
+            newData.epicID = getLastEpic(taskManager);
+        }
         for (int i = 2; i < records.length; i++) {
             String[] data = records[i].split("=");
             switch (data[0].trim()) {
@@ -98,36 +104,6 @@ public class TestAddCommand extends AbstractTest {
                 default:
             }
         }
-    }
-
-    private static Task createNewTask(Record newData, TaskType type) throws TaskAddException {
-        if (type == null) throw new TaskAddException("не указан тип задачи.");
-        Task task = type.create();
-        if (task != null) {
-            task.init(newData.id, newData.name, newData.description);
-            if (task instanceof Updateable) {
-                if (!newData.duration.isBlank())
-                    ((Updateable) task).updateDuration(Integer.parseInt(newData.duration));
-                if (!newData.status.isBlank())
-                    ((Updateable) task).updateStatus(TaskStatus.valueOf(newData.status));
-                if (!newData.startTime.isBlank())
-                    ((Updateable) task).updateStartTime(newData.startTime);
-            }
-            if (task instanceof SubTask) {
-                ((SubTask) task).builder().epic(newData.epicID);
-            }
-        }
-        return task;
-    }
-
-    private static class Record {
-        String id = "";
-        String name = "";
-        String description = "";
-        String epicID = "";
-        String status = "";
-        String duration = "0";
-        String startTime = "01-01-2222 00:00";
-
+        return newData;
     }
 }

@@ -7,8 +7,8 @@ import ru.yandex.practicum.kanban.model.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Printer {
-    private Printer() {
+public class TaskPrinter {
+    private TaskPrinter() {
     }
     public static void printHistory(TaskManager taskManager) {
         Helper.printMessage("History: ");
@@ -56,7 +56,7 @@ public class Printer {
         Helper.printEmptySting();
     }
     public static void printList(List<Task> allTasks) {
-        allTasks.stream().forEach(t -> Helper.printMessage(t.toCompactString2()));
+        allTasks.stream().forEach(t -> Helper.printMessage(t.toCompactString()));
         Helper.printEmptySting();
     }
     public static void printSortedTasksLong(List<Task> allTasks) {

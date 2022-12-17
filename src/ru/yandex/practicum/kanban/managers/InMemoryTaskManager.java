@@ -1,26 +1,35 @@
 package ru.yandex.practicum.kanban.managers;
 
 import ru.yandex.practicum.kanban.exceptions.TaskAddException;
+import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
+import ru.yandex.practicum.kanban.managers.schadule.ScheduleValidator;
 import ru.yandex.practicum.kanban.model.*;
-import ru.yandex.practicum.kanban.utils.Helper;
 
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<TaskType, Map<String, Task>> tasksByType;
+    protected final TreeSet<Task> prioritized;
     protected final HistoryManager historyManager;
+    private final ScheduleValidator schedule;
     private int lastID = 0;
     private final List<String> allId = new ArrayList<>();
 
     public InMemoryTaskManager(HistoryManager historyManager) {
-        tasksByType = new EnumMap<>(TaskType.class);
         this.historyManager = historyManager;
+
+        tasksByType = new EnumMap<>(TaskType.class);
+        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+
+        schedule = new ScheduleValidator();
     }
 
     @Override
-    public void add(Task task) throws TaskGetterException, TaskAddException {
+    public void add(Task task) throws TaskException {
         if (task instanceof SubTask) {
             addSubtask((SubTask) task);
         } else if (task instanceof Epic) {
@@ -30,15 +39,15 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void addTask(Task task) throws TaskAddException, TaskGetterException {
+    private void addTask(Task task) throws TaskException {
         add(task, TaskType.TASK);
     }
 
-    private void addEpic(Epic task) throws TaskAddException, TaskGetterException {
+    private void addEpic(Epic task) throws TaskException {
         add(task, TaskType.EPIC);
     }
 
-    private void addSubtask(SubTask task) throws TaskGetterException, TaskAddException {
+    private void addSubtask(SubTask task) throws TaskException {
         if (task.getEpicID().isBlank()) {
             throw new TaskAddException("Нельзя добавить subtask - не указан id эпика.");
         }
@@ -49,7 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
         add(task, TaskType.SUB_TASK);
     }
 
-    private void add(Task task, TaskType type) throws TaskAddException, TaskGetterException {
+    private void add(Task task, TaskType type) throws TaskException {
         if (!task.getTaskID().isBlank() && allId.contains(task.getTaskID())) {
             throw new TaskAddException("%s с id=%s уже существует.", type.getValue(), task.getTaskID());
         }
@@ -64,24 +73,49 @@ public class InMemoryTaskManager implements TaskManager {
     /**
      * добавляем задачу в таск-менеожер
      */
-    protected void addTaskToTaskManager(Task task) {
-        TaskType taskType = task.getType();
-        Map<String, Task> tasks = tasksByType.getOrDefault(taskType, new HashMap<>());
+    protected void addTaskToTaskManager(final Task task) throws TaskException {
+        checkTimeInScheduler(task, false);
+
+        final TaskType taskType = task.getType();
+        final Map<String, Task> tasks = tasksByType.getOrDefault(taskType, new HashMap<>());
         if (task.getTaskID().isBlank()) {
             task.builder().taskId(newTaskID());
         } else {
-            int current = Integer.parseInt(task.getTaskID());
+            final int current = Integer.parseInt(task.getTaskID());
             if (lastID < current) lastID = current;
         }
         tasks.put(task.getTaskID(), task);
         tasksByType.put(taskType, tasks);
         allId.add(task.getTaskID());
+
+        if (filterStartTimeOff(task)) return;
+
+        changePrioritizedList(task);
     }
 
-    protected void subtaskToEpic(SubTask task) throws TaskGetterException {
-        Epic epic = (Epic) getEpic(task.getEpicID());
+    private void changePrioritizedList(final Task task) {
+        if (filterStartTimeOff(task) && prioritized.contains(task)) prioritized.remove(task);
+        else
+            prioritized.add(task);
+    }
+
+    private void checkTimeInScheduler(final Task task, final boolean isUpdate) throws TaskException {
+        if (filterStartTimeOff(task)) return;
+        if (TaskType.EPIC.equals(task.getType())) return;
+        if (isUpdate) {
+            final Task taskFromTM = getById(task.getTaskID());
+            final LocalDateTime oldStartDate = taskFromTM.getStartTime();
+            if (oldStartDate.equals(task.getStartTime())) return;
+            schedule.freeTime(taskFromTM);
+        }
+        schedule.takeTimeForTask(task);
+        changePrioritizedList(task);
+    }
+
+    protected void subtaskToEpic(final SubTask task) throws TaskGetterException {
+        final Epic epic = (Epic) getEpic(task.getEpicID());
         epic.addSubtask(task);
-        updateEpicStatus(epic);
+        epic.refreshEpic();
     }
 
     /**
@@ -92,14 +126,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task clone(Task task) throws TaskGetterException, TaskAddException {
+    public Task clone(Task task) throws TaskException {
         Task newTask;
         if (task instanceof SubTask) {
             newTask = new SubTask(task.getName(), task.getDescription(), ((SubTask) task).getEpicID());
         } else if (task instanceof Epic) {
             newTask = new Epic(task.getName(), task.getDescription());
         } else {
-            newTask = new Task(task.getName(), task.getDescription());
+            newTask = new SimpleTask(task.getName(), task.getDescription());
         }
         add(newTask);
         if (task instanceof Epic) {
@@ -112,7 +146,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> getAllSubtaskByEpic(Epic epic) {
+    public List<Task> getAllSubtaskFromEpic(Epic epic) {
         List<Task> subTasks = epic.getSubTasks();
         subTasks.forEach(historyManager::add);
         return subTasks;
@@ -121,16 +155,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getAll() {
         List<Task> allTasks = new ArrayList<>();
-        if (tasksByType.get(TaskType.TASK) != null) {
-            allTasks.addAll(tasksByType.get(TaskType.TASK).values());
-        }
-        if (tasksByType.get(TaskType.EPIC) != null) {
-            for (Task epic : tasksByType.get(TaskType.EPIC).values()) {
-                allTasks.add(epic);
-                allTasks.addAll(((Epic) epic).getSubTasks());
-            }
-        }
+        allTasks.addAll(getOptionalList(TaskType.TASK).orElse(new ArrayList<>()));
+        allTasks.addAll(getOptionalList(TaskType.SUB_TASK).orElse(new ArrayList<>()));
+        allTasks.addAll(getOptionalList(TaskType.EPIC).orElse(new ArrayList<>()));
+
         return allTasks;
+    }
+
+    private Optional<Collection<Task>> getOptionalList(TaskType type) {
+        return Optional.of(Optional.ofNullable(tasksByType.get(type))
+                .orElse(new HashMap<>()).values());
     }
 
     @Override
@@ -146,6 +180,40 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getAllSubTasks() {
         return getAllByType(TaskType.SUB_TASK);
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks(TaskType type) {
+        List<Task> list = new ArrayList<>();
+        list.addAll(new ArrayList<>(prioritized));
+        list.addAll(getOptionalList(type).orElse(new ArrayList<>())
+                .stream()
+                .filter(this::filterStartTimeOff)
+                .collect(Collectors.toList()));
+
+        return list;
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        List<Task> list = new ArrayList<>();
+        list.addAll(prioritized.stream().collect(Collectors.toList()));
+        list.addAll(this.getAll().stream()
+                .filter(f -> filterStartTimeOff(f))
+                .collect(Collectors.toList())
+        );
+        return prioritized.stream().collect(Collectors.toList());
+    }
+
+    /**
+     * проверяем установлено ли значение в startTime
+     *
+     * @param task
+     * @return
+     */
+    private boolean filterStartTimeOff(Task task) {
+        return task.getStartTime()
+                .equals(LocalDateTime.of(2222, 1, 1, 0, 0));
     }
 
     @Override
@@ -176,32 +244,27 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected List<Task> getAllByType(TaskType taskType) {
-        if (tasksByType.get(taskType) == null ||
-                tasksByType.get(taskType).isEmpty()) return new ArrayList<>();
-        return new ArrayList<>(tasksByType.get(taskType).values());
-    }
-
-    @Override
-    public void updateTask(Task task) throws TaskGetterException {
-        if (task == null) return;
-        Map<String, Task> taskByType;
-        if (task instanceof SubTask) {
-            taskByType = tasksByType.get(TaskType.SUB_TASK);
-            Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
-            updateEpicStatus(epic);
-            epic.check();
-        } else if (task instanceof Epic) {
-            taskByType = tasksByType.get(TaskType.EPIC);
-            updateEpicStatus((Epic) task);
-        } else {
-            taskByType = tasksByType.get(TaskType.TASK);
-        }
-        taskByType.put(task.getTaskID(), task);
+        return new ArrayList<>(getOptionalList(taskType).orElse(new ArrayList<>()));
     }
 
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public void updateTask(Task task) throws TaskException {
+        if (task == null) return;
+
+        checkTimeInScheduler(task, true);
+
+        Map<String, Task> taskByType = tasksByType.get(task.getType());
+
+        if (task instanceof SubTask) {
+            Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
+            epic.refreshEpic();
+        }
+        taskByType.put(task.getTaskID(), task);
     }
 
     @Override
@@ -276,8 +339,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void remove(String taskID, TaskType taskType) throws TaskRemoveException, TaskGetterException {
-        Map<String, Task> tasks = tasksByType.get(taskType);
-        if (tasks == null || !tasks.containsKey(taskID))
+        Map<String, Task> tasks = Optional.ofNullable(tasksByType.get(taskType))
+                .orElseThrow(() -> new TaskRemoveException("%s c id=%s не найден\n", taskType.getValue(), taskID));
+        if (!tasks.containsKey(taskID))
             throw new TaskRemoveException("%s c id=%s не найден\n", taskType.getValue(), taskID);
 
         remove(taskID, taskType, tasks);
@@ -292,66 +356,36 @@ public class InMemoryTaskManager implements TaskManager {
             SubTask subTask = (SubTask) tasks.get(taskID);
             Epic epic = (Epic) getEpic(subTask.getEpicID());
             epic.getSubTasks().remove(subTask);
-            updateEpicStatus(epic);
+            epic.refreshEpic();
         }
-
+        if (filterStartTimeOff(getById(taskID)))
+            prioritized.remove(tasks.get(taskID));
+        schedule.freeTime(tasks.get(taskID));
         tasks.remove(taskID);
         historyManager.remove(taskID);
     }
 
     private void removeAllSubtasksForEpic(Epic epic) {
-        Map<String, Task> subtasks = tasksByType.get(TaskType.SUB_TASK);
+        epic.getSubTasks()
+                .forEach(t -> {
+                    historyManager.remove(t.getTaskID());
+                    getOptionalList(TaskType.SUB_TASK)
+                            .orElse(new ArrayList<>()).remove(t);
+                });
 
-        for (Task subTask : epic.getSubTasks()) {
-            historyManager.remove(subTask.getTaskID());
-            subtasks.remove(subTask.getTaskID());
-        }
         epic.getSubTasks().clear();
     }
 
-    /**
-     * Обновление статуса эпика
-     */
-    private void updateEpicStatus(Epic epic) {
-        ArrayList<Task> allSubTasks = new ArrayList<>(epic.getSubTasks());
-
-        if (allSubTasks.isEmpty()) {
-            epic.builder().status(TaskStatus.NEW);
-//            Helper.printMessage(Helper.EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE);
-            return;
-        }
-
-        boolean isDone = true;
-        boolean isNew = true;
-        for (Task subTask : allSubTasks) {
-            TaskStatus currentStatus = subTask.getStatus();
-
-            isDone &= (currentStatus == TaskStatus.DONE);
-            isNew &= (currentStatus == TaskStatus.NEW);
-            boolean isInProgress = (!isDone && !isNew) || (currentStatus == TaskStatus.IN_PROGRESS);
-
-            if (isInProgress) {
-                epic.builder().status(TaskStatus.IN_PROGRESS);
-                return;
-            }
-        }
-        if (isNew) {
-            epic.builder().status(TaskStatus.NEW);
-        } else if (isDone) {
-            epic.builder().status(TaskStatus.DONE);
-        } else {
-            epic.builder().status(TaskStatus.IN_PROGRESS);
-        }
-    }
-
     private Task getByIdAndType(String taskID, TaskType type) throws TaskGetterException {
-        Map<String, Task> tasks = tasksByType.get(type);
-        if (tasks != null && tasks.containsKey(taskID)) {
-            Task task = tasks.get(taskID);
-            historyManager.add(task);
-            return task;
-        }
-        if(tasks == null || tasks.isEmpty()) throw new TaskGetterException("%s - отсутствуют ",type.getValue());
-        throw new TaskGetterException("%s c id =%s не найдена ", type.getValue(), taskID);
+        final Optional<Task> t = Optional.ofNullable(tasksByType.get(type))
+                .orElseThrow(() -> new TaskGetterException("%s - отсутствуют ", type.getValue()))
+                .values()
+                .stream()
+                .filter(f -> f.getTaskID().equals(taskID))
+                .findFirst();
+
+        t.ifPresent(historyManager::add);
+
+        return t.orElseThrow(() -> new TaskGetterException("%s c id =%s не найдена ", type.getValue(), taskID));
     }
 }

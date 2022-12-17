@@ -1,6 +1,6 @@
 package ru.yandex.practicum.kanban.utils;
 
-import ru.yandex.practicum.kanban.test.TestCommand;
+import ru.yandex.practicum.kanban.tests.TestCommand;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,7 +32,8 @@ public class FileHelper {
     }
 
     public static void saveToFile(Path file, String data) throws IOException {
-        try (FileWriter fw = new FileWriter(file.toString())) {
+        FileWriter fw = new FileWriter(file.toString());
+        try (fw) {
             fw.write(data);
         }
     }

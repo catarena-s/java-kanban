@@ -2,50 +2,67 @@ package ru.yandex.practicum.kanban.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 
-public class Task implements Comparable<Task> {
+/**
+ * Сделала Task абстрактым, что бы у эпика закрыть возможность извне устанавливать статус , startTime и duration
+ */
+public abstract class Task implements Comparable<Task> {
+    protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-12s, %-15s, %-25s, %s, %s";
+    protected static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     protected String taskID = "";
     protected String name = "";
     protected String description = "";
     protected int duration = 0;
     protected LocalDateTime startTime;
-    protected boolean sortByPriority = false;
-    private TaskStatus taskStatus;
-    protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-8s, %-12s, %-15s, %-25s";//,%-5s,%tH
-
     public Task() {
+        initDates();
     }
-
-    public LocalDateTime getEndTime() {
-        return startTime.plus(duration, ChronoUnit.MINUTES);
-    }
-
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.taskStatus = TaskStatus.NEW;
+        initDates();
+    }
+    private void initDates() {
+        startTime = LocalDateTime.of(2222,1,1,0,0);//LocalDateTime.parse("01-01-2222 00:00", formatter);
+    }
+
+    private TaskStatus taskStatus = TaskStatus.NEW;
+
+    public LocalDateTime getEndTime() {
+        return startTime.plusMinutes(duration);
     }
 
     @Override
     public String toString() {
-        return "Task{ " +
-                "ID=" + taskID +
+        return "ID='" + taskID + '\'' +
+                ", status=" + taskStatus +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + taskStatus +
-                " }";
+                ", duration=" + duration +
+                ", startTime='" + startTime.format(formatter);
     }
 
     public String toCompactString() {
         String resFormat = DEFAULT_FORMAT_OUT_DATA;
 
-        return String.format(resFormat, taskID, TaskType.TASK, taskStatus, name, description, duration, startTime);
+        return String.format(resFormat, taskID, taskStatus, name, description, duration, startTimeToString());
     }
-    public String toActualStringFoTest() {
-        String resFormat = "%s, %s, %s, %s, %s";
 
-        return String.format(resFormat, taskID, TaskType.TASK, taskStatus, name, description, duration, startTime);
+    public void init(String id, String name, String description) {
+        builder().taskId(id)
+                .name(name)
+                .description(description);
+    }
+
+    public String toActualStringFoTest() {
+        String resFormat = "%s, %s, %s, %s, %s, %s";
+
+        return String.format(resFormat, taskID, taskStatus, name, description, duration, startTimeToString());//, getType()
+    }
+
+    protected String startTimeToString() {
+//        return startTime == null ? "" : startTime.format(formatter);
+        return startTime == null ? "01-01-2222 00:00" : startTime.format(formatter);
     }
 
     public int getDuration() {
@@ -64,20 +81,9 @@ public class Task implements Comparable<Task> {
         this.startTime = startTime;
     }
 
-    public boolean isSortByPriority() {
-        return sortByPriority;
-    }
-
-    protected void setSortByPriority(boolean sortByPriority) {
-        this.sortByPriority = sortByPriority;
-    }
-
     @Override
     public int compareTo(Task o) {
-        if (sortByPriority)
-            return startTime.compareTo(o.startTime);
-        else
-            return String.CASE_INSENSITIVE_ORDER.compare(taskID, o.getTaskID());
+        return String.CASE_INSENSITIVE_ORDER.compare(taskID, o.getTaskID());
     }
 
     public String getTaskID() {
@@ -112,33 +118,14 @@ public class Task implements Comparable<Task> {
         this.taskStatus = taskStatus;
     }
 
-    public TaskType getType() {
-        return TaskType.TASK;
-    }
+    abstract public TaskType getType();
 
     public Builder builder() {
         return new Builder(this);
     }
 
-    public void init(String... args) {
-        builder().taskId(args[0])
-                .name(args[1])
-                .description(args[2]);
-    }
-
-/*    public  class Builder extends Absatrct_Builder {
-
-        public Builder(Task task) {
-            super(task);
-        }
-        public Builder status(TaskStatus status) {
-            task.setStatus(status);
-            return this;
-        }
-    }*/
     public class Builder {
         protected Task task;
-        private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
 
         public Builder(Task task) {
             this.task = task;
@@ -159,31 +146,10 @@ public class Task implements Comparable<Task> {
             return this;
         }
 
-        public Builder status(TaskStatus status) {
-            task.setStatus(status);
-            return this;
-        }
-
-        public Builder duration(int duration) {
-            if (duration < 0) throw new IllegalArgumentException("Значение <duration> должно быть больше 0");
-            task.setDuration(duration);
-            return this;
-        }
-
-        public Builder startTime(String startTime) {
-            LocalDateTime time = LocalDateTime.parse(startTime, formatter);
-            task.setStartTime(time);
-            return this;
-        }
-
-        public Builder sortByPriority(boolean sortByPriority) {
-            task.setSortByPriority(sortByPriority);
-            return this;
-        }
-
         public Task build() {
             return task;
         }
+
 
     }
 

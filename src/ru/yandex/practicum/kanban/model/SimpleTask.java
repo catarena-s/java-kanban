@@ -2,7 +2,7 @@ package ru.yandex.practicum.kanban.model;
 
 import java.time.LocalDateTime;
 
-public class SimpleTask extends Task implements Updateable{
+public class SimpleTask extends Task implements Updatable {
     public SimpleTask() {
         super();
     }
@@ -18,12 +18,7 @@ public class SimpleTask extends Task implements Updateable{
 
     @Override
     public String toCompactString() {
-        return String.format("%s, %s", TaskType.TASK, super.toCompactString());
-    }
-
-    @Override
-    public String toCompactString2() {
-        return String.format("%s, %s", TaskType.TASK, super.toCompactString2());
+        return String.format("%-8s, %s", TaskType.TASK, super.toCompactString());
     }
 
     @Override
@@ -54,6 +49,7 @@ public class SimpleTask extends Task implements Updateable{
     public String toString() {
         return "Task{" + super.toString() + "}";
     }
+
     public class Builder extends Task.Builder {
         @Override
         public Builder name(String name) {
@@ -88,6 +84,7 @@ public class SimpleTask extends Task implements Updateable{
         }
 
         public Builder startTime(String startTime) {
+            if (startTime.isBlank()) return this;
             LocalDateTime time = LocalDateTime.parse(startTime, formatter);
             task.setStartTime(time);
             return this;

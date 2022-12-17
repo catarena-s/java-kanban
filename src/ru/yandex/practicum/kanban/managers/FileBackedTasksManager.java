@@ -1,20 +1,20 @@
 package ru.yandex.practicum.kanban.managers;
 
 import ru.yandex.practicum.kanban.exceptions.ManagerSaveException;
-import ru.yandex.practicum.kanban.exceptions.TaskAddException;
+import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
 import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.model.TaskType;
-import ru.yandex.practicum.kanban.test.TestCommand;
-import ru.yandex.practicum.kanban.test.TestManager;
-import ru.yandex.practicum.kanban.test.Tester;
+import ru.yandex.practicum.kanban.tests.TestCommand;
+import ru.yandex.practicum.kanban.tests.TestManager;
+import ru.yandex.practicum.kanban.tests.Tester;
 import ru.yandex.practicum.kanban.utils.Converter;
 import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
-import ru.yandex.practicum.kanban.utils.Printer;
+import ru.yandex.practicum.kanban.utils.TaskPrinter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,50 +25,50 @@ import java.util.List;
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private Path fileName;
 
-    private FileBackedTasksManager(HistoryManager historyManager) {
+    private FileBackedTasksManager(final HistoryManager historyManager) {
         super(historyManager);
     }
 
-    public static FileBackedTasksManager loadFromFile(Path file) {
-        FileBackedTasksManager manager = new FileBackedTasksManager(Managers.getDefaultHistory());
+    public static FileBackedTasksManager loadFromFile(final Path file) {
+        final FileBackedTasksManager manager = new FileBackedTasksManager(Managers.getDefaultHistory());
         manager.load(file);
         return manager;
     }
 
-    public static void main(String[] args) {
-
-        Path file = Paths.get(FileHelper.DATA_FILE_NAME);
-        FileBackedTasksManager f1 = FileBackedTasksManager.loadFromFile(file);
+    public static void main(final String[] args) {
+        final Path file = Paths.get(FileHelper.DATA_FILE_NAME);
+        final FileBackedTasksManager f1 = FileBackedTasksManager.loadFromFile(file);
         Helper.printMessage("Тестируем 1-й FileBackedTasksManager:");
-        Tester test = TestManager.get(f1);
+        final Tester test = TestManager.get(f1);
         if (test == null) return;
         test.runTest(TestCommand.MIX.getValue());
         Helper.printMessage("");
         Helper.printMessage("Печать содержимого менеджера 1 ");
-        Printer.printAllTaskManagerList(f1);
-        Printer.printHistory(f1);
+        TaskPrinter.printAllTaskManagerListLong(f1);
+        TaskPrinter.printHistory(f1);
 
         Helper.printSeparator();
         Helper.printMessage("Тестируем 2-й FileBackedTasksManager:");
         FileBackedTasksManager f2 = FileBackedTasksManager.loadFromFile(file);
         Helper.printMessage("Печать содержимого менеджера 2");
-        Printer.printAllTaskManagerList(f2);
-        Printer.printHistory(f2);/**/
+        TaskPrinter.printAllTaskManagerListLong(f2);
+        TaskPrinter.printHistory(f2);/**/
     }
 
     /**
      * загружаем данные из файла таск-менеджер
      */
-    private void load(Path file) {
+    private void load(final Path file) {
         try {
             fileName = file;
-            List<String> lines = FileHelper.readFromFile(file);
+            final List<String> lines = FileHelper.readFromFile(file);
 
             if (lines.isEmpty() || lines.size() <= 1) return;
-            String head = lines.get(0).trim().toLowerCase().replace(" ", "");
+            final String head = lines.get(0).trim().toLowerCase().replace(" ", "");
             if (!Helper.DATA_HEAD.equals(head)) return;
             int index = 1;
             if (lines.get(index).isBlank()) index++;
+
             while (index < lines.size() && !lines.get(index).isBlank()) {
                 loadData(lines.get(index++));
             }
@@ -79,6 +79,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Ошибка чтения из файл.");
         } catch (TaskGetterException e) {
             Helper.printMessage(e.getDetailMessage());
+        } catch (TaskException e) {
+            Helper.printMessage(e.getDetailMessage());
         }
     }
 
@@ -87,17 +89,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
      */
     private void save() {
         try {
-            String builder = new String("");
+            final StringBuilder builder = new StringBuilder();
             if (!tasksByType.isEmpty()) {
-                builder = Helper.DATA_HEAD + System.lineSeparator() +
-                        Converter.taskListToString(getAllByType(TaskType.TASK)) +
-                        Converter.taskListToString(getAllByType(TaskType.EPIC)) +
-                        Converter.taskListToString(getAllByType(TaskType.SUB_TASK)) +
-                        System.lineSeparator() +
-                        Converter.historyToString(historyManager);
+                builder.append(Helper.DATA_HEAD).append(System.lineSeparator())
+                        .append(Converter.taskListToString(getAllByType(TaskType.TASK)))
+                        .append(Converter.taskListToString(getAllByType(TaskType.EPIC)))
+                        .append(Converter.taskListToString(getAllByType(TaskType.SUB_TASK)))
+                        .append(System.lineSeparator())
+                        .append(Converter.historyToString(historyManager));
             }
-
-            FileHelper.saveToFile(fileName, builder);
+            FileHelper.saveToFile(fileName, builder.toString());
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка во время записи в файл.");
         }
@@ -106,9 +107,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     /**
      * Загружаем историю в HistotyManager
      */
-    private void loadHistory(List<String> lines, int index) throws TaskGetterException {
+    private void loadHistory(final List<String> lines, final int index) throws TaskGetterException {
         for (int i = index; i < lines.size(); i++) {
-            String line = lines.get(i);
+            final String line = lines.get(i);
             if (line.isBlank()) continue;
             initHistoryManager(line, historyManager);
         }
@@ -117,9 +118,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     /**
      * загружает задачу из  в таск-менеджер
      */
-    private void loadData(String line) throws TaskGetterException {
-        String[] data = line.split(",");
-        Task task = Converter.fromString(String.join(",", data));
+    private void loadData(final String line) throws TaskException {
+        final String[] data = line.split(",");
+        final Task task = Converter.fromString(String.join(",", data));
         addTaskToTaskManager(task);
         if (TaskType.SUB_TASK.equals(task.getType())) {
             subtaskToEpic((SubTask) task);
@@ -129,29 +130,36 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     /**
      * Инициализируем historyManager
      */
-    private void initHistoryManager(String line, HistoryManager historyManager) throws TaskGetterException {
-        List<String> listId = Converter.historyFromString(line);
+    private void initHistoryManager(final String line, final HistoryManager historyManager) throws TaskGetterException {
+        final List<String> listId = Converter.historyFromString(line);
         for (String id : listId) {
             historyManager.add(getById(id));
         }
     }
 
     @Override
-    public void add(Task task) throws TaskGetterException, TaskAddException {
+    public void add(Task task) throws TaskException {
         super.add(task);
         save();
     }
 
     @Override
-    public Task clone(Task task) throws TaskGetterException, TaskAddException {
+    public Task clone(Task task) throws TaskException {
         Task newTask = super.clone(task);
         save();
         return newTask;
     }
 
     @Override
-    public List<Task> getAllSubtaskByEpic(Epic epic) {
-        List<Task> list = super.getAllSubtaskByEpic(epic);
+    public List<Task> getPrioritizedTasks() {
+        List<Task> list = super.getPrioritizedTasks();
+        save();
+        return list;
+    }
+
+    @Override
+    public List<Task> getAllSubtaskFromEpic(Epic epic) {
+        List<Task> list = super.getAllSubtaskFromEpic(epic);
         save();
         return list;
     }
@@ -215,7 +223,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateTask(Task task) throws TaskGetterException {
+    public void updateTask(Task task) throws TaskException {
         super.updateTask(task);
         save();
     }

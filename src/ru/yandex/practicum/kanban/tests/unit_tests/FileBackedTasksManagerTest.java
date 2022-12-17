@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.tests;
+package ru.yandex.practicum.kanban.tests.unit_tests;
 
 import org.junit.jupiter.api.*;
 import ru.yandex.practicum.kanban.exceptions.TaskAddException;
@@ -7,28 +7,31 @@ import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.SimpleTask;
 import ru.yandex.practicum.kanban.model.Task;
-import ru.yandex.practicum.kanban.tests.utils.TestHelper;
+import ru.yandex.practicum.kanban.tests.TestHelper;
 import ru.yandex.practicum.kanban.utils.FileHelper;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.yandex.practicum.kanban.tests.utils.TestHelper.*;
+import static ru.yandex.practicum.kanban.tests.TestHelper.*;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     public static final String LIST_IS_EMPTY = "Список не пустой";
 
     @BeforeEach
-    void setUp(TestInfo info) throws TaskGetterException, IOException, TaskAddException {
+    void setUp(TestInfo info) throws Exception {
         if (info.getTags().contains("NotInit")) {
             return;
         } else if (info.getTags().contains("EmptyFile")) {
+            // загружаем пустой файл, если нужно протестироавть на пустом таск-менеджере
             init(2, getPathString(DATA_FILE_NAME_EMPTY));
         } else if (info.getTags().contains("InitData")) {
             init(2, getPathString(DATA_FILE_NAME_EMPTY));
-            TestHelper.initFromFile(taskManager, INIT_TEST_DATA);
+            // инициализация конкретными данными под цели тестирования
+            TestHelper.addDataFromFile(taskManager, INIT_TEST_DATA);
         } else
+            //таск-менеджер сохраненный ранее в файл
             init(2, FileHelper.DATA_FILE_NAME);
     }
 
@@ -74,7 +77,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
      */
     @Test
     @Tag(value = "NotInit")
-    void save() throws TaskGetterException, TaskAddException {
+    void save() throws Exception {
         FileBackedTasksManager fbTasksManager1 = FileBackedTasksManager
                 .loadFromFile(getPath(DATA_FILE_NAME_EMPTY));
         Task task = new SimpleTask();

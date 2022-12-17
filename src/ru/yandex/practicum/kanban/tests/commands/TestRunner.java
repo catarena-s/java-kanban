@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.tests.utils.commands;
+package ru.yandex.practicum.kanban.tests.commands;
 
 import ru.yandex.practicum.kanban.managers.TaskManager;
 

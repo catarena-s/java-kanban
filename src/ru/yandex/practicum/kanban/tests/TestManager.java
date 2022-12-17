@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.tests.utils;
+package ru.yandex.practicum.kanban.tests;
 
 import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.managers.InMemoryTaskManager;

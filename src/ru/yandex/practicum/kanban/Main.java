@@ -3,8 +3,8 @@ package ru.yandex.practicum.kanban;
 import ru.yandex.practicum.kanban.exceptions.ManagerSaveException;
 import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
-import ru.yandex.practicum.kanban.test.TestManager;
-import ru.yandex.practicum.kanban.test.Tester;
+import ru.yandex.practicum.kanban.tests.TestManager;
+import ru.yandex.practicum.kanban.tests.Tester;
 import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
@@ -23,7 +23,7 @@ public class Main {
             Helper.printMessage("Что тестируем?: ");
             answer = UserMenu.getUserAnswer(scanner);
             if (answer < 0 || answer > 2)
-                Helper.printMessage(Helper.getColoredString("Некорректная команда. ",Colors.CYAN));
+                Helper.printMessage(Helper.getColoredString("Некорректная команда.",Colors.CYAN.getBoldItalic()));
         } while (answer < 0 || answer > 2);
         if (answer == 0) return;
 
@@ -47,6 +47,7 @@ public class Main {
                 }
 
         } while (answer > 0);
+
 
     }
 

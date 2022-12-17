@@ -1,7 +1,7 @@
-package ru.yandex.practicum.kanban.tests.utils.commands;
+package ru.yandex.practicum.kanban.tests.commands;
 
 import ru.yandex.practicum.kanban.managers.TaskManager;
-import ru.yandex.practicum.kanban.tests.utils.TestCommand;
+import ru.yandex.practicum.kanban.tests.TestCommand;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 public class TestMixCommand extends AbstractTest {

@@ -1,15 +1,18 @@
-package ru.yandex.practicum.kanban.tests.utils;
+package ru.yandex.practicum.kanban.tests;
 
-import ru.yandex.practicum.kanban.exceptions.TaskAddException;
-import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
-import ru.yandex.practicum.kanban.tests.utils.commands.TestAddCommand;
+import ru.yandex.practicum.kanban.tests.commands.TestAddCommand;
 import ru.yandex.practicum.kanban.utils.FileHelper;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 public class TestHelper {
+    public static final String ERROR_MSG_TASK_NOT_FOUND = "Задача не найдена.";
+    public static final String ERROR_MSG_TASK_NOT_EQUALS = "Задачи не совпадают.";
+    public static final String ERROR_MASSAGES_NOT_EQUALS = "Сообщения об ошибке не совпадают";
+    public static final String INFO_FORMATTER = "Info: %s";
+    public static final String AFTER_TEST_MSG = "After test:";
+    public static final String BEFORE_TEST_MSG = "Before test:";
     private static final String PATH_TEST_FILES = "src/ru/yandex/practicum/kanban/tests/test_data/";
     public static final String DATA_FILE_NAME = "manager_data.csv";
     public static final String DATA_FILE_NAME_EMPTY = "manager_data_empty.csv";
@@ -32,7 +35,14 @@ public class TestHelper {
         return PATH_TEST_FILES + fileName;
     }
 
+    /**
+     * Получаем из файла с тестовыми данными expectation, если они там есть
+     *
+     * @param line
+     * @return
+     */
     public static String getExpectation(String line) {
+        if (!line.contains("[")) return "";
         String[] records = line.split("\\[");
         for (String record : records) {
             if (!record.contains("expectation")) continue;
@@ -42,12 +52,23 @@ public class TestHelper {
         return "";
     }
 
+    /**
+     * получаем тип команды(add,update,remove)
+     * @param line
+     * @return
+     */
     public static String getCommand(String line) {
         String[] records = line.split(",");
         return records[0].trim();
     }
 
-    public static void initFromFile(FileBackedTasksManager taskManager, String pathString) throws IOException, TaskGetterException, TaskAddException {
+    /**
+     * Дабавление данных из тестового файла
+     * @param taskManager
+     * @param pathString
+     * @throws Exception
+     */
+    public static void addDataFromFile(FileBackedTasksManager taskManager, String pathString) throws Exception {
         String[] testLines = FileHelper.readFromFileToArray(getPath(pathString));
         for (int i = 0; i < testLines.length; i++) {
             String line = testLines[i];

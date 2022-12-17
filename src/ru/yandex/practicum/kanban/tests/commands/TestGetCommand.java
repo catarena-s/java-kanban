@@ -1,10 +1,10 @@
-package ru.yandex.practicum.kanban.tests.utils.commands;
+package ru.yandex.practicum.kanban.tests.commands;
 
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.Task;
-import ru.yandex.practicum.kanban.tests.utils.TestCommand;
+import ru.yandex.practicum.kanban.tests.TestCommand;
 import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.TaskPrinter;
 

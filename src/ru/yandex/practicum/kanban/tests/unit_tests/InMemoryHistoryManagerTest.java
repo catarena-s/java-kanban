@@ -1,17 +1,13 @@
-package ru.yandex.practicum.kanban.tests;
+package ru.yandex.practicum.kanban.tests.unit_tests;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import ru.yandex.practicum.kanban.managers.HistoryManager;
 import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.SimpleTask;
 import ru.yandex.practicum.kanban.model.Task;
 
-import javax.annotation.processing.Generated;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

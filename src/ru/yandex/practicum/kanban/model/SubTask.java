@@ -1,13 +1,13 @@
 package ru.yandex.practicum.kanban.model;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
-public class SubTask extends Task {
+public class SubTask extends Task implements Updatable {
     private String epicID;
 
     public SubTask() {
         super();
-        this.epicID = "0";
+        this.epicID = "";
     }
 
     public SubTask(String name, String description, String epicID) {
@@ -18,11 +18,6 @@ public class SubTask extends Task {
     @Override
     public TaskType getType() {
         return TaskType.SUB_TASK;
-    }
-    @Override
-    public void init(String... args) {
-        super.init(args);
-        builder().epic(args[3]);
     }
 
     public String getEpicID() {
@@ -35,13 +30,10 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{ " +
-                "ID=" + getTaskID() +
-                ", epicID=" + epicID +
-                ", name='" + getName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", status=" + getStatus() +
-                " }";
+        return "SubTask{" +
+                "epicID='" + epicID + '\'' +
+                super.toString() +
+                '}';
     }
 
     @Override
@@ -51,14 +43,27 @@ public class SubTask extends Task {
 
     @Override
     public String toCompactString() {
-        String resFormat = DEFAULT_FORMAT_OUT_DATA + ",%6s";
-
-        return String.format(resFormat, taskID, TaskType.SUB_TASK, getStatus(), name, description, epicID);
+        return String.format("%s, %s, %s", TaskType.SUB_TASK, super.toCompactString(), epicID);
     }
+
     @Override
     public String toActualStringFoTest() {
-        String resFormat = "%s, %s, %s, %s, %s, %s";
-        return String.format(resFormat, taskID, TaskType.SUB_TASK, getStatus(), name, description, epicID);
+        return String.format("%s, %s, %s", TaskType.SUB_TASK, super.toActualStringFoTest(), epicID);
+    }
+
+    @Override
+    public void updateStatus(TaskStatus status) {
+        builder().status(status);
+    }
+
+    @Override
+    public void updateStartTime(String startTime) {
+        builder().startTime(startTime);
+    }
+
+    @Override
+    public void updateDuration(int duration) {
+        builder().duration(duration);
     }
 
     public class Builder extends Task.Builder {
@@ -70,8 +75,44 @@ public class SubTask extends Task {
         public Task build() {
             return super.build();
         }
+        @Override
+        public Builder name(String name) {
+            super.name(name);
+            return this;
+        }
+
+        @Override
+        public Builder taskId(String id) {
+            super.taskId(id);
+            return this;
+        }
+
+        @Override
+        public Builder description(String description) {
+            super.description(description);
+            return this;
+        }
+
         public Builder epic(String epicID) {
             ((SubTask) task).setEpicID(epicID);
+            return this;
+        }
+
+        public Builder status(TaskStatus status) {
+            task.setStatus(status);
+            return this;
+        }
+
+        public Builder startTime(String startTime) {
+            if (startTime.isBlank()) return this;
+            LocalDateTime time = LocalDateTime.parse(startTime, formatter);
+            task.setStartTime(time);
+            return this;
+        }
+
+        public Builder duration(int duration) {
+            if (duration < 0) throw new IllegalArgumentException("Значение <duration> должно быть больше 0");
+            task.setDuration(duration);
             return this;
         }
     }

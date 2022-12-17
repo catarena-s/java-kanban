@@ -1,9 +1,6 @@
 package ru.yandex.practicum.kanban.exceptions;
 
-import ru.yandex.practicum.kanban.utils.Colors;
-import ru.yandex.practicum.kanban.utils.Helper;
-
-public abstract class TaskException extends Exception {
+public class TaskException extends Exception {
     protected final String message;
 
     public TaskException(String message, Object... args) {
@@ -12,8 +9,6 @@ public abstract class TaskException extends Exception {
     }
 
     public String getDetailMessage() {
-//        String format = Helper.getColoredString(">> Ошибка: %s",Helper.getItalic(Colors.RED));
-        String format = "Ошибка: %s";
-        return String.format(format, message);
+        return String.format("Ошибка: %s", message);
     }
 }

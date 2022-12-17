@@ -1,12 +1,16 @@
-package ru.yandex.practicum.kanban.managers;
+package ru.yandex.practicum.kanban.tests.unit_tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import ru.yandex.practicum.kanban.exceptions.TaskAddException;
+import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
+import ru.yandex.practicum.kanban.managers.Managers;
+import ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil;
+import ru.yandex.practicum.kanban.managers.schadule.ScheduleValidator;
+import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.tests.TestHelper;
 import ru.yandex.practicum.kanban.tests.commands.TestAddCommand;
@@ -19,37 +23,37 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.yandex.practicum.kanban.tests.TestHelper.TEST_ADD_TO_MANAGER_Swap_Test;
 
-class ScheduleValidatorTest<T extends TaskManager> {
-    T taskManager;
-    ScheduleValidator validator = new ScheduleValidator();
+class ScheduleValidatorTest {
+    private TaskManager taskManager;
+    private ScheduleValidator validator = new ScheduleValidator();
 
     @BeforeEach
-    void setUp(TestInfo info) throws IOException, TaskGetterException, TaskAddException {
-        Managers managers = new Managers(1);
-        taskManager = (T) managers.getDefault();
+    void setUp(TestInfo info) throws Exception {
+        final Managers managers = new Managers(1);
+        taskManager = managers.getDefault();
 
         if (info.getTags().contains("InitData")) {
-            List<String> testLines = FileHelper.readFromFile(TestHelper.getPath(TestHelper.TEST_ADD_TO_MANAGER_Swap_Test));
+            final List<String> testLines = FileHelper.readFromFile(TestHelper.getPath(TestHelper.TEST_ADD_TO_MANAGER_Swap_Test));
             for (String line : testLines) {
                 if (line.isBlank()) continue;
-                String testLine = (line.contains("[")) ? line.substring(0, line.indexOf("[")) : line;
+                final String testLine = (line.contains("[")) ? line.substring(0, line.indexOf("[")) : line;
                 TestAddCommand.executeString(testLine, taskManager);
             }
         }
     }
 
     @Test
-    void takeTimeForTask() throws IOException, TaskGetterException, TaskAddException {
-        String[] testLines = FileHelper.readFromFileToArray(TestHelper.getPath(TEST_ADD_TO_MANAGER_Swap_Test));
+    void takeTimeForTask() throws IOException, TaskException {
+        final String[] testLines = FileHelper.readFromFileToArray(TestHelper.getPath(TEST_ADD_TO_MANAGER_Swap_Test));
         for (int i = 0; i < testLines.length; i++) {
-            String line = testLines[i];
+            final String line = testLines[i];
             if (!line.isBlank()) {
-                String expected = TestHelper.getExpectation(line).trim();
+                final String expected = TestHelper.getExpectation(line).trim();
                 if (line.isBlank()) return;
-                String testLine = line.substring(0, line.indexOf("["));
+                final String testLine = line.substring(0, line.indexOf("["));
 
-                Task task = TestAddCommand.parseLine(testLine, taskManager);
-                boolean isTakeTime = validator.takeTimeForTask(task);
+                final Task task = TestAddCommand.parseLine(testLine, taskManager);
+                final boolean isTakeTime = validator.takeTimeForTask(task);
 
 //                assertTrue(isTakeTime);
 //                assertNotNull(task, "ERROR_MSG_TASK_NOT_FOUND");
@@ -60,9 +64,7 @@ class ScheduleValidatorTest<T extends TaskManager> {
 //                assertEquals(before + i + 1, tasks.size(), "Неверное количество задач.");
             }
         }
-        for (ScheduleValidator.DayOfWeek dayOfWeek : validator.getBusyTime()) {
-            ScheduleValidator.print(dayOfWeek, false);
-        }
+        validator.getBusyDays().forEach(ScheduleUtil::print);
 //        validator.getBesyTime().stream().forEach(f -> ScheduleValidator.print(f, false));
 
 //        TaskPrinter.printAllTaskManagerList(taskManager);
@@ -73,8 +75,8 @@ class ScheduleValidatorTest<T extends TaskManager> {
     @Tag(value = "InitData")
     void freeTime() throws TaskGetterException, TaskRemoveException {
 
-        Task task = taskManager.getTask("0001");
-        int countBeforeRemove = taskManager.getAllTasks().size();
+        final Task task = taskManager.getTask("0001");
+        final int countBeforeRemove = taskManager.getAllTasks().size();
 //        Helper.printSeparator();
         Helper.printMessage("Удаляем задачу :%s", task.toActualStringFoTest());
         taskManager.removeTask(task.getTaskID());

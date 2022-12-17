@@ -1,15 +1,16 @@
 package ru.yandex.practicum.kanban.exceptions;
 
-import ru.yandex.practicum.kanban.utils.Colors;
-import ru.yandex.practicum.kanban.utils.Helper;
+import java.util.function.Supplier;
 
-public class TaskGetterException extends TaskException {
+public class TaskGetterException extends TaskException{
     public TaskGetterException(String message, Object... args) {
-        super(message,args);
+        super(message, args);
     }
 
     @Override
-    public String getDetailMessage(){
+    public String getDetailMessage() {
         return String.format("Ошибка получения: %s", message);
     }
+
+
 }

@@ -1,6 +1,6 @@
-package ru.yandex.practicum.kanban.tests.utils;
+package ru.yandex.practicum.kanban.tests;
 
-import ru.yandex.practicum.kanban.tests.utils.commands.*;
+import ru.yandex.practicum.kanban.tests.commands.*;
 import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.Helper;
 
