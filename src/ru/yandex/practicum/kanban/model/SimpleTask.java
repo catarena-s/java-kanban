@@ -1,5 +1,7 @@
 package ru.yandex.practicum.kanban.model;
 
+import ru.yandex.practicum.kanban.utils.Helper;
+
 import java.time.LocalDateTime;
 
 public class SimpleTask extends Task implements Updatable {
@@ -85,7 +87,7 @@ public class SimpleTask extends Task implements Updatable {
 
         public Builder startTime(String startTime) {
             if (startTime.isBlank()) return this;
-            LocalDateTime time = LocalDateTime.parse(startTime, formatter);
+            LocalDateTime time = LocalDateTime.parse(startTime, Helper.formatter);
             task.setStartTime(time);
             return this;
         }

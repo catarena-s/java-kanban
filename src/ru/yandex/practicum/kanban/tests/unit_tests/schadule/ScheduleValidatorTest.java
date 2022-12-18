@@ -25,9 +25,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.yandex.practicum.kanban.utils.Helper.formatter;
 
 class ScheduleValidatorTest implements TestLogger {
-    ScheduleValidator validator = new ScheduleValidator();
+    final ScheduleValidator validator = new ScheduleValidator();
     private TaskManager taskManager;
 
     @BeforeEach
@@ -81,25 +82,11 @@ class ScheduleValidatorTest implements TestLogger {
             "0002, 15-01-2024 14:22, 200, Ошибка: Планировать можно только на год вперед.",
             "0003, 12-12-2022 10:12, 110, Ошибка: Время в расписании занято.",})
     void takeTimeForTaskWithOverlappingTime(String taskId, String newStartTime, int duration, String expectationId) throws TaskGetterException {
-//        String exceptionNoFreeTime = "Ошибка: Недостаточно свободного временив в расписании.";
-//        String exceptionAllowedPlanningForTheYear = "Ошибка: Планировать можно только на год вперед.";
-//        String exceptionTimeIsBusy = "Ошибка: Время в расписании занято.";
-        // тест 1 -----------------------------------------------------------------------------------
-      /*  SimpleTask task = (SimpleTask) taskManager.getTask("0001");
-        task.builder().startTime("12-12-2022 09:10").duration(150);
-        assertException(0, task);*/
         SimpleTask task = (SimpleTask) taskManager.getTask(taskId);
         task.builder().startTime(newStartTime).duration(duration);
         assertException(expectationId, task);
-//        //тест 2 -----------------------------------------------------------------------------------
-//        SimpleTask task2 = (SimpleTask) taskManager.getTask("0002");
-//        task2.builder().startTime("15-01-2024 14:22").duration(150);
-//        assertException(1, task2);
-//        //тест 3 -----------------------------------------------------------------------------------
-//        SimpleTask task3 = (SimpleTask) taskManager.getTask("0003");
-//        task3.builder().startTime("12-12-2022 10:12").duration(150);
-//        assertException(2, task3);
     }
+
     @DisplayName("Освобождаем время: ")
     @ParameterizedTest(name = "Задача id={0}: свободные слоты до={1} свободные слоты после={2}")
     @Tag(value = "InitData")
@@ -118,7 +105,7 @@ class ScheduleValidatorTest implements TestLogger {
 
         assertEquals(freeTimeBefore, day.getCountFreeTimeSlotsInDay());
         Helper.printMessage("Освобождаем время задачи id=%s startTime='%s' duration=%d",
-                task.getTaskID(), task.getStartTime().format(TestHelper.formatter), task.getDuration());
+                task.getTaskID(), task.getStartTime().format(formatter), task.getDuration());
         validator.freeTime(task);
 
         ScheduleUtil.printDay(validator, task, false);
@@ -128,16 +115,9 @@ class ScheduleValidatorTest implements TestLogger {
     }
 
     private void assertException(String indexExpection, Task task) {
-//        String exceptionNoFreeTime = "Ошибка: Недостаточно свободного временив в расписании.";
-//        String exceptionAllowedPlanningForTheYear = "Ошибка: Планировать можно только на год вперед.";
-//        String exceptionTimeIsBusy = "Ошибка: Время в расписании занято.";
-/*        String[] exception = {"Ошибка: Недостаточно свободного временив в расписании.",
-                "Ошибка: Планировать можно только на год вперед.",
-                "Ошибка: Время в расписании занято."
-        };*/
-        TaskException ex = Assertions.assertThrows(TaskException.class, () -> {
-            validator.takeTimeForTask(task);
-        });
+        TaskException ex = Assertions.assertThrows(
+                TaskException.class,
+                () -> validator.takeTimeForTask(task));
         assertEquals(indexExpection, ex.getDetailMessage().trim());
     }
 

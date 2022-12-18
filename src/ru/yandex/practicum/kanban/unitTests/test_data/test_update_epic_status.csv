@@ -1,8 +1,0 @@
-0004
-update,Sub_TASK,id=0005     ,name=0005         ,description = new Description 0005 ,status=IN_PROGRESS [expectation-> 0004, EPIC, IN_PROGRESS, Эпик 1, Описание эпика 1
-update,Sub_TASK,id=0007     ,status=DONE                                                               [expectation-> 0004, EPIC, IN_PROGRESS, Эпик 1, Описание эпика 1
-update,Sub_TASK,id=0006     ,name=0006         ,description = new Description 0006 ,status=DONE        [expectation-> 0004, EPIC, IN_PROGRESS, Эпик 1, Описание эпика 1
-REMOVE,Sub_TASK,0005                                                                                   [expectation-> 0004, EPIC, DONE, Эпик 1, Описание эпика 1
-add   ,Sub_TASK,epicId= 0004,name=Task MIX 4   ,description =Task MIX Description 4                    [expectation-> 0004, EPIC, IN_PROGRESS, Эпик 1, Описание эпика 1
-REMOVE,Sub_TASK,0006                                                                                   [expectation-> 0004, EPIC, IN_PROGRESS, Эпик 1, Описание эпика 1
-REMOVE,Sub_TASK,0007                                                                                   [expectation-> 0004, EPIC, NEW, Эпик 1, Описание эпика 1

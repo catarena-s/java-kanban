@@ -81,8 +81,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             Helper.printMessage("Ошибка загрузки данных: файл '" + file.toAbsolutePath() + "' не найден.");
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения из файл.");
-        } catch (TaskGetterException e) {
-            Helper.printMessage(e.getDetailMessage());
         } catch (TaskException e) {
             Helper.printMessage(e.getDetailMessage());
         }

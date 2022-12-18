@@ -39,9 +39,9 @@ class SimpleTaskTest extends TaskTest<SimpleTask> {
             "'','' , Task description",
             "0002,'' ,'' "})
     @DisplayName("Инициализация")
-    void testInit(String id, String name, String description) {
+    void init(String id, String name, String description) {
 
-        super.testInit(id, name, description);
+        super.init(id, name, description);
     }
 
     @Test

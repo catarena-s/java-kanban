@@ -1,12 +1,17 @@
 package ru.yandex.practicum.kanban.utils;
 
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Helper {
     public static final String WRONG_RECORD = "Некорректная тестовая строка: '%s'";
     public static final String TEST_LINE_MESSAGE = "Test: [ %s ]";
     public static final String MSG_TASK_WITH_ID_NOT_EXIST = "Задачи с ID = %s  не существует";
     public static final String EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE = "!!! У эпика нет подзадач. Смена статуса запрещена.";
     public static final String DATA_HEAD = "type,id,status,name,description,epic,duration,start_data";
+    public static final LocalDateTime MAX_DATE = LocalDateTime.of(2222, 1, 1, 0, 0);
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final String MSG_SEPARATOR = "---------------------------------------------------------------------------";
     private static final String MSG_DOTS_SEPARATOR = "...........................................................................";
 
@@ -32,6 +37,9 @@ public class Helper {
         System.out.printf(messageTemplate+"\n", args);
     }
 
+    public static void print(String messageTemplate, Object... args) {
+        System.out.printf(messageTemplate, args);
+    }
     public static void printMessage(Colors color, String messageTemplate, Object... args) {
         String format = getColoredString(messageTemplate, color);
         printMessage(format, args);

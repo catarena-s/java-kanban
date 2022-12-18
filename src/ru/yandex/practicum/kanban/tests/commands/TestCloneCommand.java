@@ -40,21 +40,10 @@ public class TestCloneCommand extends AbstractTest {
         } catch (TaskGetterException | TaskAddException e) {
             Helper.printMessage(Colors.RED, e.getDetailMessage());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Helper.printMessage(Colors.RED, e.getMessage());
         }
     }
-/*    public static Task executeString(String line, TaskManager taskManager){
-        String[] records = line.split(",");
-        if (records.length < 3) return null;
-        TaskType type = TaskType.valueOf(records[1].trim().toUpperCase());
-        for (int i = 2; i < records.length; i++) {
-            Task task = getTask(records[i], type);
-            if (task != null) {
-                task = taskManager.clone(task);
-                Helper.printMessage("Cloned %s", task);
-            }
-        }
-    }*/
+
     private Task getTask(String id, TaskType type) throws TaskGetterException {
         switch (type) {
             case TASK: {

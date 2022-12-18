@@ -41,8 +41,8 @@ class SubTaskTest extends TaskTest<SubTask> {
             "'','' , Subtask description",
             "0002,'' ,'' "})
     @DisplayName("Инициализация")
-    void testInit(String id, String name, String description) {
-        super.testInit(id, name, description);
+    void init(String id, String name, String description) {
+        super.init(id, name, description);
     }
 
     @Test

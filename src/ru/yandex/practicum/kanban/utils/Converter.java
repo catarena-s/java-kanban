@@ -49,6 +49,7 @@ public class Converter {
 
     /**
      * создаем задачу
+     *
      * @param newData - данные полученные из строкик
      * @return задача
      * @throws TaskException
@@ -72,6 +73,7 @@ public class Converter {
         });
         return task.orElseThrow(() -> new TaskException("Ошибка создания задачи из строки"));
     }
+
     private static Record parseString(final String value) {
         final Record newData = new Record();
         final String[] data = value.split(",");
@@ -100,21 +102,5 @@ public class Converter {
         public String status = "";
         public String duration = "0";
         public String startTime = "01-01-2222 00:00";
-        private static Record parseString(final String value) {
-            final Record newData = new Record();
-            final String[] data = value.split(",");
-
-            newData.id = data[1].trim();
-            newData.type = TaskType.valueOf(data[0].trim().toUpperCase());
-            newData.status = data[2].trim().toUpperCase();
-            newData.name = data[3].trim();
-            newData.description = data[4].trim();
-            newData.duration = data[5].trim();
-            newData.startTime = data[6].trim();
-            newData.epicID = (data.length == 8) ? data[7].trim() : "";
-
-            return newData;
-        }
-
     }
 }
