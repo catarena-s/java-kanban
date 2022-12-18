@@ -12,7 +12,7 @@ import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.TaskPrinter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.yandex.practicum.kanban.tests.TestHelper.formatter;
+import static ru.yandex.practicum.kanban.utils.Helper.formatter;
 
 class EpicTest extends TaskTest<Epic> {
 
@@ -42,15 +42,8 @@ class EpicTest extends TaskTest<Epic> {
             "'','' , Epicdescription",
             "0002,'' ,'' "})
     @DisplayName("Инициализация")
-    void testInit(String id, String name, String description) {
-//        task.init(id,name,description);
-//        assertEquals("0001",task.getTaskID());
-//        assertEquals("Epic name",task.getName());
-//        assertEquals("desription",task.getDescription());
-//        assertEquals("01-01-2222 00:00",task.getStartTime().format(formatter));
-//        assertEquals(TaskStatus.NEW,task.getStatus());
-//        assertEquals(0,task.getDuration());
-        super.testInit(id, name, description);
+    void init(String id, String name, String description) {
+        super.init(id, name, description);
     }
 
 

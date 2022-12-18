@@ -1,13 +1,15 @@
 package ru.yandex.practicum.kanban.model;
 
+import ru.yandex.practicum.kanban.utils.Helper;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Epic extends Task {
+
     private final List<Task> subTasks;
     private LocalDateTime endTime;
 
@@ -27,43 +29,22 @@ public class Epic extends Task {
     }
 
     private void setDuration() {
-//        int durationSubtasks = 0;
-//        for (Task subTask : subTasks) {
-//            durationSubtasks += subTask.duration;
-//        }
-        int durationSubtasks = subTasks.stream()
+        this.duration = subTasks.stream()
                 .mapToInt(m -> m.duration)
                 .reduce(0, (v, task) -> v += task);
 
-        this.duration = durationSubtasks;
     }
 
     private void setStartTime() {
         if (!subTasks.isEmpty()) {
-            Optional<List<Task>> subTasksWithStartTime = Optional.ofNullable(subTasks.stream()
-                    .filter(f -> f.getStartTime() != LocalDateTime.of(2222, 1, 1, 0, 0))
-                    .collect(Collectors.toList()));
-            subTasksWithStartTime.ifPresent(tasks -> {
-                        startTime = tasks.stream()
-                                .sorted(Comparator.comparing(Task::getStartTime))
-                                .findFirst().get().getStartTime();
-                        endTime = tasks.stream()
-                                .sorted(Comparator.comparing(Task::getStartTime).reversed())
-                                .findFirst().get().getEndTime();
-                    }
-            );
-//            startTime = subTasks.stream()
-//                    .sorted(Comparator.comparing(Task::getStartTime))
-//                    .findFirst()
-//                    .orElseThrow().getStartTime();
-//
-//            SubTask subTask = (SubTask) subTasks.stream()
-//                    .sorted(Comparator.comparing(Task::getStartTime).reversed())
-//
-//                    .findFirst().orElseThrow();
-//            endTime = subTask.getStartTime().plusMinutes(subTask.getDuration());
+            startTime = subTasks.stream()
+                    .min(Comparator.comparing(Task::getStartTime))
+                    .map(Task::getStartTime).get();
+            endTime = subTasks.stream()
+                    .max(Comparator.comparing(Task::getStartTime))
+                    .map(Task::getEndTime).get();
         } else {
-            startTime = LocalDateTime.of(2222, 1, 1, 0, 0);
+            startTime = Helper.MAX_DATE;
             endTime = null;
         }
     }
@@ -91,13 +72,6 @@ public class Epic extends Task {
     @Override
     public String toString() {
         List<String> listSubTaskId = subTasks.stream().map(s -> s.taskID).collect(Collectors.toList());
-//        return "Epic{ " +
-//                "ID=" + getTaskID() +
-//                ", name='" + getName() + '\'' +
-//                ", description='" + getDescription() + '\'' +
-//                ", status=" + getStatus() +
-//                ", subTasks=[" + String.join(", ", listSubTaskId) +
-//                "] }";
         return "Epic{" +
                 super.toString() +
                 ", endTime=" + (endTime == null ? "'-', " : endTime) +

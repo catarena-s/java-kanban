@@ -27,11 +27,11 @@ class InMemoryHistoryManagerTest implements TestLogger{
         historyManager = Managers.getDefaultHistory();
 
         if(info.getTags().contains("InitData")){
-            Task task = new SimpleTask("Task 1", "Description 1");
+            Task task = new SimpleTask("Task 1", "Task Description 1");
             taskManager.add(task);
-            task = new SimpleTask("Task 2", "Description 1");
+            task = new SimpleTask("Task 2", "Task Description 2");
             taskManager.add(task);
-            task = new SimpleTask("Task 3", "Description 1");
+            task = new SimpleTask("Task 3", "Task Description 3");
 
             taskManager.add(task);
             Epic epic = new Epic("Epic 1", "Description epic 1");

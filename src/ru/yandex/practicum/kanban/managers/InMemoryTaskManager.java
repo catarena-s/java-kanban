@@ -93,9 +93,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void changePrioritizedList(final Task task) {
         if (task instanceof Epic) return;
-        if (filterStartTimeOff(task) && prioritized.contains(task)) prioritized.remove(task);
-        if(!filterStartTimeOff(task)&& !prioritized.contains(task))
-        prioritized.add(task);
+        if (filterStartTimeOff(task)) prioritized.remove(task);
+        if (!filterStartTimeOff(task)) prioritized.add(task);
     }
 
     private void checkTimeInScheduler(final Task task, final boolean isUpdate) throws TaskException {
@@ -181,22 +180,10 @@ public class InMemoryTaskManager implements TaskManager {
         return getAllByType(TaskType.SUB_TASK);
     }
 
-    @Deprecated
-    public List<Task> getPrioritizedTasks(TaskType type) {
-        List<Task> list = new ArrayList<>();
-        list.addAll(new ArrayList<>(prioritized));
-        list.addAll(getOptionalList(type).orElse(new ArrayList<>())
-                .stream()
-                .filter(this::filterStartTimeOff)
-                .collect(Collectors.toList()));
-
-        return list;
-    }
-
     @Override
     public List<Task> getPrioritizedTasks() {
         List<Task> list = new ArrayList<>();
-        list.addAll(prioritized.stream().collect(Collectors.toList()));
+        list.addAll(new ArrayList<>(prioritized));
         list.addAll(this.getAll().stream()
                 .filter(f -> filterStartTimeOff(f) && !TaskType.EPIC.equals(f.getType()))
                 .collect(Collectors.toList())
@@ -207,9 +194,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     /**
      * проверяем установлено ли значение в startTime
-     *
-     * @param task
-     * @return
      */
     private boolean filterStartTimeOff(Task task) {
         return task.getStartTime()
@@ -358,8 +342,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.getSubTasks().remove(subTask);
             epic.refreshEpic();
         }
-        if (filterStartTimeOff(getById(taskID)))
-            prioritized.remove(tasks.get(taskID));
+        prioritized.remove(tasks.get(taskID));
         schedule.freeTime(tasks.get(taskID));
         tasks.remove(taskID);
         historyManager.remove(taskID);
@@ -369,6 +352,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.getSubTasks()
                 .forEach(t -> {
                     historyManager.remove(t.getTaskID());
+                    prioritized.remove(t);
                     getOptionalList(TaskType.SUB_TASK)
                             .orElse(new ArrayList<>()).remove(t);
                 });

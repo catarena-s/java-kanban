@@ -1,6 +1,5 @@
 package ru.yandex.practicum.kanban.tests.unit_tests;
 
-import jdk.jfr.Description;
 import org.junit.jupiter.api.*;
 import ru.yandex.practicum.kanban.exceptions.TaskAddException;
 import ru.yandex.practicum.kanban.exceptions.TaskException;
@@ -10,6 +9,7 @@ import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.Task;
+import ru.yandex.practicum.kanban.model.TaskStatus;
 import ru.yandex.practicum.kanban.tests.TestHelper;
 import ru.yandex.practicum.kanban.tests.commands.TestAddCommand;
 import ru.yandex.practicum.kanban.tests.commands.TestRemoveCommand;
@@ -20,31 +20,26 @@ import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.TaskPrinter;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static ru.yandex.practicum.kanban.tests.TestHelper.*;
+import static ru.yandex.practicum.kanban.utils.Helper.formatter;
 
 abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
 
     protected T taskManager;
 
     protected void init(int config, String... args) {
-        Managers managers = new Managers(config, args);
+        final Managers managers = new Managers(config, args);
         taskManager = (T) managers.getDefault();
     }
-//    @BeforeEach
-//    void beforeEachTest(TestInfo testInfo) {
-//        Helper.printMessage(String.format("Info : [%s]",
-//                testInfo.getDisplayName()));
-//    }
+
     @Test
     @Tag("EmptyFile")
     @DisplayName("Добавление задач, эпиков и подзадач с корректными данными")
     void testAddTaskClearDataToEmptyTM() throws TaskException, IOException {
-//        Helper.printMessage("-----------Test: testAddTask ----------------------------------");
         final List<String> testLines = FileHelper.readFromFile(TestHelper.getPath(TestHelper.INIT_TEST_DATA));
         final int before = taskManager.getAll().size();
         int index = 1;
@@ -64,25 +59,20 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Tag(value = "InitData")
     @DisplayName("Добавление подзадач с ошибочными тестовыми данными:\n" +
             "1- добавление дубликата.\n" +
-            "2- добавление подзадачи без неправильным id эпика.\n" +
+            "2- добавление подзадачи c неправильным id эпика.\n" +
             "3- добавление подзадачи без указания эпика.\n" +
             "4- добавление подзадачи в пустой таск-менеджер.\n")
-    void addSubTaskWrongData() throws Exception {
-//        Helper.printMessage("-----------Test: addSubTaskWrongData ----------------------------------");
+    void addSubTaskWrongData() throws IOException {
         Helper.printSeparator();
         final String[] testLines = FileHelper.readFromFileToArray(TestHelper.getPath(TEST_ADD_TO_MANAGER_WRONG_DATA));
-        //тест - Добавление дубликата ---
-        //      Helper.printMessage("Добавление дубликата.");
+        //--- добавление дубликата
         testTestAddCommand(testLines[0], TaskAddException.class);
-        //для следующего теста нужно добавть хотябы один эпик
-//        TestAddCommand.executeString(testLines[3], taskManager);
-//        Helper.printMessage("Добавление подзадачи без неправильным id эпика:");
+        //--- добавление подзадачи c неправильным id эпика
         testTestAddCommand(testLines[4], TaskGetterException.class);
         taskManager.clear();
-//        Helper.printMessage("Добавление подзадачи без указания эпика:");
+        //--- добавление подзадачи без указания эпика
         testTestAddCommand(testLines[1], TaskAddException.class);
-        //----------------------------
-//        Helper.printMessage("Добавление подзадачи, когда не создано ни одного эпика:");
+        //---- добавление подзадачи в пустой таск-менеджер
         testTestAddCommand(testLines[2], TaskGetterException.class);
         Helper.printDotsSeparator();
     }
@@ -90,8 +80,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Test
     @Tag(value = "InitData")
     @DisplayName("Получение всех подзадач по эпику")
-    void getAllSubtaskByEpic(TestInfo info) throws TaskGetterException {
-//        Helper.printMessage("-----------Test: getAllSubtaskByEpic ----------------------------------");
+    void getAllSubtaskByEpic() throws TaskGetterException {
         final Epic epic = (Epic) taskManager.getEpic("0004");
         final List<Task> subTasks = taskManager.getAllSubtaskFromEpic(epic);
         assertEquals(subTasks.size(), epic.getSubTasks().size());
@@ -105,24 +94,22 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Test
     @Tag(value = "EmptyFile")
     @DisplayName("Получение всех подзадач по эпику в пустом таск-менеджере")
-    void getTaskFromEmptyManager(TestInfo info) {
-//        Helper.printMessage("-----------Test: getTaskFromEmptyManager ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
-        final TaskException ex = Assertions.assertThrows(TaskGetterException.class,
+    void getTaskFromEmptyManager() {
+        final TaskException ex = Assertions.assertThrows(
+                TaskGetterException.class,
                 () -> taskManager.getEpic("0004"));
-        assertEquals("Ошибка получения: 'Эпик' - отсутствуют", ex.getDetailMessage().trim(), "Эпик не должен быть получен");
+        assertEquals("Ошибка получения: 'Эпик' - отсутствуют",
+                ex.getDetailMessage().trim(), "Эпик не должен быть получен");
     }
 
     @Test
     @Tag(value = "InitData")
     @DisplayName("Получить все задачи, не пустой менеджер.")
-    void getAll(TestInfo info) {
-//        Helper.printMessage("-----------Test: getAll ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
-        List<Task> all = taskManager.getAll();
-        List<Task> subTasks = taskManager.getAllSubTasks();
-        List<Task> epics = taskManager.getAllEpics();
-        List<Task> tasks = taskManager.getAllTasks();
+    void getAll() {
+        final List<Task> all = taskManager.getAll();
+        final List<Task> subTasks = taskManager.getAllSubTasks();
+        final List<Task> epics = taskManager.getAllEpics();
+        final List<Task> tasks = taskManager.getAllTasks();
 
         assertEquals(4, tasks.size(), "Ошибка получения задач");
         assertEquals(4, epics.size(), "Ошибка получения эпиков");
@@ -135,14 +122,10 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Tag(value = "EmptyFile")
     @DisplayName("Получить все задачи из пустого менеджера.")
     void getAllFromEmptyManager() {
-//        testReporter.publishEntry("a status message");
-//
-//        Helper.printMessage("-----------Test: getAllFromEmptyManager ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
-        List<Task> all = taskManager.getAll();
-        List<Task> subTasks = taskManager.getAllSubTasks();
-        List<Task> epics = taskManager.getAllEpics();
-        List<Task> tasks = taskManager.getAllTasks();
+        final List<Task> all = taskManager.getAll();
+        final List<Task> subTasks = taskManager.getAllSubTasks();
+        final List<Task> epics = taskManager.getAllEpics();
+        final List<Task> tasks = taskManager.getAllTasks();
 
         assertEquals(0, tasks.size() + epics.size() + subTasks.size(), "Ошибка получения задач");
         assertEquals(0, all.size(), "Ошибка получения всех задач");
@@ -152,9 +135,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Tag(value = "InitData")
     @DisplayName("Обновление задач\n")
     void updateTasks() throws IOException, TaskGetterException {
-//        Helper.printMessage("-----------Test: updateTasks ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
-        String[] testLines = FileHelper.readFromFileToArray(TestHelper.getPath(DATA_UPDATE_FILE));
+        final String[] testLines = FileHelper.readFromFileToArray(TestHelper.getPath(DATA_UPDATE_FILE));
         int indexTest = 1;
         for (String line : testLines) {
             Helper.printMessage(Colors.UNDERLNE, "Test #%d: %s", indexTest++, line);
@@ -171,13 +152,14 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @DisplayName("Обновление статусов эпика:\n" +
             "- при удалении и добавлении подзадач;\n" +
             "- при изменении статуса подзадачи.")
-    void updateEpicData() throws Exception {
-//        Helper.printMessage("-----------Test: updateEpicStatus ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
+    void updateEpicData() throws TaskException, IOException {
         final String[] testLines = FileHelper.readFromFileToArray(TestHelper.getPath(DATA_UPDATE_EPIC_STATUS));
         final String epicId = testLines[0].trim();
         final Epic epic = (Epic) taskManager.getEpic(epicId);
         Helper.printMessage("Before tests: %n%s", epic.toCompactString());
+
+        assertEquals(TaskStatus.NEW, epic.getStatus());
+
         TaskPrinter.printSortedTasks(epic.getSubTasks());
         for (int i = 1; i < testLines.length; i++) {
             final String line = testLines[i];
@@ -215,16 +197,16 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Tag(value = "InitData")
     @DisplayName("Удаление задачи.")
     void removeTask() throws TaskGetterException, TaskRemoveException {
-//        Helper.printMessage("-----------Test: removeTask ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
-        Task task = taskManager.getTask("0001");
-        int countBeforeRemove = taskManager.getAllTasks().size();
+        final Task task = taskManager.getTask("0001");
+        final int countBeforeRemove = taskManager.getAllTasks().size();
         taskManager.removeTask(task.getTaskID());
-        int countAfter = taskManager.getAllTasks().size();
+        final int countAfter = taskManager.getAllTasks().size();
         assertEquals(countBeforeRemove - 1, countAfter, "");
 
         //Попытка удаление задачи с некорректным id
-        TaskException ex = Assertions.assertThrows(TaskRemoveException.class, () -> taskManager.removeTask("004"));
+        final TaskException ex = Assertions.assertThrows(
+                TaskRemoveException.class,
+                () -> taskManager.removeTask("004"));
         assertEquals("Ошибка удаления: 'Задача' c id=004 не найден", ex.getDetailMessage().trim(), "Задача не должна быть удалена");
     }
 
@@ -232,16 +214,14 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Tag(value = "InitData")
     @DisplayName("Удаление эпикаю")
     void removeEpic() throws TaskGetterException, TaskRemoveException {
-//        Helper.printMessage("-----------Test: removeEpic ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
-        printTaskManager(BEFORE_TEST_MSG,taskManager);
-        Epic task = (Epic) taskManager.getEpic("0004");
+        printTaskManager(BEFORE_TEST_MSG, taskManager);
+        final Epic task = (Epic) taskManager.getEpic("0004");
 
-        int countBefore = taskManager.getAll().size();
+        final int countBefore = taskManager.getAll().size();
         taskManager.removeEpic(task.getTaskID());
-        int countAfter = taskManager.getAll().size();
+        final int countAfter = taskManager.getAll().size();
 
-        printTaskManager(AFTER_TEST_MSG,taskManager);
+        printTaskManager(AFTER_TEST_MSG, taskManager);
 
         assertEquals(countBefore - 4, countAfter, "");
         Helper.printDotsSeparator();
@@ -251,9 +231,6 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @Tag(value = "InitData")
     @DisplayName("Удаление подзадач: проверяем обновление данных у эпика(status, startTime, endTime, duration)")
     void removeSubtask() throws TaskGetterException, TaskRemoveException, IOException {
-//        Helper.printMessage("-----------Test: removeSubtask ----------------------------------");
-//        Helper.printMessage(INFO_FORMATTER, info.getDisplayName());
-
         final String[] testLines = FileHelper.readFromFileToArray(TestHelper.getPath(TEST_REMOVE_SUBTASKS));
         final String epicId = testLines[0].trim();
         final Epic epic = (Epic) taskManager.getEpic(epicId);
@@ -277,14 +254,13 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     @DisplayName("Получить преоритизированный список " +
             "- список упорядочен по возрастанию startTime.\n" +
             "- в конце списка задачи у которых не установлен startTime")
-    void getPrioritizedTasks() throws Exception {
+    void getPrioritizedTasks() throws TaskException, IOException {
         TestHelper.addDataFromFile(taskManager, TEST_ADD_TO_MANAGER);
-        List<Task> expectationList = List.of(
-                taskManager.getById("0001"),
-                taskManager.getById("0005"),
+        taskManager.removeTask("0001");
+        taskManager.removeEpic("0004");
+
+        final List<Task> expectationList = List.of(
                 taskManager.getById("0010"),
-                taskManager.getById("0007"),
-                taskManager.getById("0006"),
                 taskManager.getById("0012"),
                 taskManager.getById("0011"),
                 taskManager.getById("0003"),
@@ -296,7 +272,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
                 taskManager.getById("0019"),
                 taskManager.getById("0020")
         );
-        List<Task> list = taskManager.getPrioritizedTasks();
+        final List<Task> list = taskManager.getPrioritizedTasks();
         TaskPrinter.printList(list);
         assertEquals(expectationList, list);
         Helper.printDotsSeparator();

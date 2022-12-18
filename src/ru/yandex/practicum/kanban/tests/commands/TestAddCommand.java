@@ -36,7 +36,7 @@ public class TestAddCommand extends AbstractTest {
         } catch (TaskGetterException | TaskAddException e) {
             Helper.printMessage(Colors.RED, e.getDetailMessage());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Helper.printMessage(Colors.RED, e.getMessage());
         }
     }
 
@@ -49,8 +49,7 @@ public class TestAddCommand extends AbstractTest {
 
     public static Task parseLine(String line, TaskManager taskManager) throws TaskException {
         Converter.Record newData = initTask(line, taskManager);
-        Task newTask = Converter.createNewTask(newData);
-        return newTask;
+        return Converter.createNewTask(newData);
     }
 
     private static String getLastEpic(TaskManager taskManager) {

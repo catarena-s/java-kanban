@@ -7,7 +7,6 @@ import ru.yandex.practicum.kanban.tests.TestCommand;
 import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.Helper;
 
-//import static ru.yandex.practicum.kanban.utils.Helper.formatter;
 
 public class TestUpdateCommand extends AbstractTest {
     public TestUpdateCommand() {
@@ -66,7 +65,7 @@ public class TestUpdateCommand extends AbstractTest {
         } catch (TaskGetterException e) {
             Helper.printMessage(Colors.RED, e.getDetailMessage());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Helper.printMessage(Colors.RED, e.getMessage());
         }
     }
 
@@ -77,20 +76,22 @@ public class TestUpdateCommand extends AbstractTest {
                 break;
             case "status":
                 TaskStatus newStatus = TaskStatus.valueOf(data[1].toUpperCase().trim());
-                if (task instanceof SimpleTask) ((SimpleTask) task).builder().status(newStatus);
-                if (task instanceof SubTask) ((SubTask) task).builder().status(newStatus);
+                if(task instanceof Updatable){
+                    ((Updatable)task).updateStatus(newStatus);
+                }
                 break;
             case "description":
                 task.builder().description(data[1].trim());
                 break;
             case "duration":
-                if (task instanceof SimpleTask) ((SimpleTask)task).builder().duration(Integer.parseInt(data[1].trim().isBlank() ? "0" : data[1].trim()));
-                if (task instanceof SubTask) ((SubTask) task).builder().duration(Integer.parseInt(data[1].trim().isBlank() ? "0" : data[1].trim()));
+                if(task instanceof Updatable){
+                    ((Updatable)task).updateDuration(Integer.parseInt(data[1].trim().isBlank() ? "0" : data[1].trim()));
+                }
                 break;
             case "start_data":
-                if (task instanceof SimpleTask) ((SimpleTask) task).builder().startTime(data[1].trim());
-                if (task instanceof SubTask) ((SubTask) task).builder().startTime(data[1].trim());
-                task.builder().description(data[1].trim());
+                if(task instanceof Updatable){
+                    ((Updatable)task).updateStartTime(data[1].trim());
+                }
                 break;
             default:
                 break;

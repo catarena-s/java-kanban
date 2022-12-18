@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil.ONE_SLOT_TIME_IN_SCHEDULER;
 
@@ -19,7 +18,7 @@ public class Day extends TreeMap<LocalTime, Boolean> {
 
     public boolean isEnoughTime(final LocalTime time, final int count) {
         final LocalTime beginTime = containsKey(time) ? time : getTimeNearestSlot(time);
-        final LocalTime endTime = beginTime.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * count);
+        final LocalTime endTime = beginTime.plusMinutes((long) ONE_SLOT_TIME_IN_SCHEDULER * count);
         return subMap(beginTime, endTime).entrySet().stream().
                 allMatch(f -> Boolean.FALSE.equals(f.getValue()));
     }
@@ -42,16 +41,16 @@ public class Day extends TreeMap<LocalTime, Boolean> {
     }
 
     private void mark(final int count, final LocalTime timeBegin, final boolean isMark) {
-        final LocalTime endTime = timeBegin.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * count);
+        final LocalTime endTime = timeBegin.plusMinutes((long) ONE_SLOT_TIME_IN_SCHEDULER * count);
         Optional.of(subMap(timeBegin, endTime))
-                .orElse(init(count, timeBegin, isMark)).values()
-                .stream().map(f -> f = isMark);
-
+                .orElse(init(count, timeBegin, isMark))
+                .values().stream()
+                .map(f -> f = isMark);
     }
 
     private TreeMap<LocalTime, Boolean> init(int count, LocalTime timeBegin, boolean isMark) {
         for (int i = 0; i < count; i++) {
-            final LocalTime time = timeBegin.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * i);
+            final LocalTime time = timeBegin.plusMinutes((long) ONE_SLOT_TIME_IN_SCHEDULER * i);
             put(time, isMark);
         }
         return this;
@@ -62,11 +61,11 @@ public class Day extends TreeMap<LocalTime, Boolean> {
     }
 
     public int getCountFreeTimeSlotsInDay() {
-        return values().stream().filter(f->f==false).collect(Collectors.toList()).size();
+        return (int) values().stream().filter(f -> !f).count();
     }
 
     public int getCountBusyTimeSlotsInDay() {
-        return  values().stream().filter(f->f==true).collect(Collectors.toList()).size();
+        return (int) values().stream().filter(f -> f).count();
     }
 
 }

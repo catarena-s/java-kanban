@@ -16,6 +16,9 @@ public class ScheduleUtil {
     public static final int ONE_SLOT_TIME_IN_SCHEDULER = 15;
     public static final boolean PRINT_REPORT = false;
 
+    private ScheduleUtil() {
+    }
+
     public static void print(final Day day, boolean isPrintAll) {
         Helper.printMessage("Day: %s", day.getDate().format(DateTimeFormatter.ISO_DATE));
         getEntryStream(day, isPrintAll)
@@ -35,8 +38,8 @@ public class ScheduleUtil {
                     countPrint.getAndIncrement();
                     final String timeSlot = f.getKey() + " - " + f.getValue();
                     if (Boolean.TRUE.equals(f.getValue()))
-                        System.out.print("\033[1;36m" + timeSlot + "\033[0m" + "\t");
-                    else System.out.print(timeSlot + "\t");
+                        Helper.print("\033[1;36m" + timeSlot + "\033[0m" + "\t");
+                    else Helper.print(timeSlot + "\t");
                     if (countPrint.get() % 4 == 0 || countPrint.get() == size) Helper.printEmptySting();
                 });
 

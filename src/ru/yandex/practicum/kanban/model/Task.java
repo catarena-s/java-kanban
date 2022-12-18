@@ -1,29 +1,29 @@
 package ru.yandex.practicum.kanban.model;
 
+import ru.yandex.practicum.kanban.utils.Helper;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Сделала Task абстрактым, что бы у эпика закрыть возможность извне устанавливать статус , startTime и duration
  */
 public abstract class Task implements Comparable<Task> {
     protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-12s, %-15s, %-25s, %s, %s";
-    protected static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     protected String taskID = "";
     protected String name = "";
     protected String description = "";
     protected int duration = 0;
     protected LocalDateTime startTime;
-    public Task() {
+    protected Task() {
         initDates();
     }
-    public Task(String name, String description) {
+    protected Task(String name, String description) {
         this.name = name;
         this.description = description;
         initDates();
     }
     private void initDates() {
-        startTime = LocalDateTime.of(2222,1,1,0,0);//LocalDateTime.parse("01-01-2222 00:00", formatter);
+        startTime = Helper.MAX_DATE;
     }
 
     private TaskStatus taskStatus = TaskStatus.NEW;
@@ -39,7 +39,7 @@ public abstract class Task implements Comparable<Task> {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", duration=" + duration +
-                ", startTime='" + startTime.format(formatter);
+                ", startTime='" + startTime.format(Helper.formatter);
     }
 
     public String toCompactString() {
@@ -57,11 +57,12 @@ public abstract class Task implements Comparable<Task> {
     public String toActualStringFoTest() {
         String resFormat = "%s, %s, %s, %s, %s, %s ,%s";
 
-        return String.format(resFormat, taskID, taskStatus, name, description, duration, timeToString(startTime), timeToString(getEndTime()));//, getType()
+        return String.format(resFormat, taskID, taskStatus, name, description, duration,
+                timeToString(startTime), timeToString(getEndTime()));
     }
 
     protected String timeToString(LocalDateTime dateTime) {
-        return dateTime == null ? "01-01-2222 00:00" : startTime.format(formatter);
+        return dateTime == null ? "01-01-2222 00:00" : startTime.format(Helper.formatter);
     }
 
     public int getDuration() {
@@ -117,13 +118,13 @@ public abstract class Task implements Comparable<Task> {
         this.taskStatus = taskStatus;
     }
 
-    abstract public TaskType getType();
+    public abstract TaskType getType();
 
     public Builder builder() {
         return new Builder(this);
     }
 
-    public class Builder {
+    public static class Builder {
         protected Task task;
 
         public Builder(Task task) {
