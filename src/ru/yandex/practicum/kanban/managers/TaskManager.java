@@ -51,5 +51,4 @@ public interface TaskManager extends Manager {
     void updateTask(Task task) throws TaskException;
 
     List<Task> getHistory();
-    public List<Task> getPrioritizedTasks(TaskType type);
 }

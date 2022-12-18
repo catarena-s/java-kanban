@@ -53,7 +53,6 @@ public class TaskPrinter {
     }
     public static void printSortedTasks(List<Task> allTasks) {
         allTasks.stream().sorted().forEach(t -> Helper.printMessage(t.toCompactString()));
-        Helper.printEmptySting();
     }
     public static void printList(List<Task> allTasks) {
         allTasks.stream().forEach(t -> Helper.printMessage(t.toCompactString()));

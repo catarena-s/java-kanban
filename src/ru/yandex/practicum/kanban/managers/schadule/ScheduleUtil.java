@@ -1,5 +1,6 @@
 package ru.yandex.practicum.kanban.managers.schadule;
 
+import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.time.LocalTime;
@@ -14,54 +15,20 @@ import java.util.stream.Stream;
 public class ScheduleUtil {
     public static final int ONE_SLOT_TIME_IN_SCHEDULER = 15;
     public static final boolean PRINT_REPORT = false;
-    public static final boolean IS_PRINT_ALL = false;
 
-    public static void print(final Day day) {
+    public static void print(final Day day, boolean isPrintAll) {
         Helper.printMessage("Day: %s", day.getDate().format(DateTimeFormatter.ISO_DATE));
-        getEntryStream(day).ifPresent(getStreamConsumer());
-//            for (int i = 0; i < 24; i++) {
-//                for (int j = 0; j < 4; j++) {
-//                    final LocalTime time = timeBegin.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * j + 60 * i);
-//                    final String currentTime = time.format(TIME_FORMATTER);
-//                    if (day.get(time)) {
-//                        System.out.print("\033[1;36m" + currentTime + " - " + true + "\033[0m" + "\t");
-//                        if (i==3 && !isPrintAll) Helper.printEmptySting();
-//                    }
-//                }
-//            }
-//        } else {
-//            getEntryStream(day,f -> Boolean.TRUE.equals(f.getValue()))
-//                    .ifPresent(getStreamConsumer(countPrint, IS_PRINT_ALL ));
-//        }
-//        if (!day.isEmpty()) {
-//            for (int i = 0; i < 24; i++) {
-//                for (int j = 0; j < 4; j++) {
-//                    final LocalTime time = timeBegin.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * j + 60 * i);
-//                    final String currentTime = time.format(TIME_FORMATTER);
-//                    if (day.get(time)) {
-//                        countPrint++;
-//                        System.out.print("\033[1;36m" + currentTime + " - " + true + "\033[0m" + "\t");
-//                        if (countPrint % 4 == 0 && !isPrintAll) Helper.printEmptySting();
-//                    } else {
-//                        if (isPrintAll) {
-//                            countPrint++;
-//                            System.out.print(currentTime + " - " + false + "\t");
-//                        }
-//                    }
-//                }
-//                if (isPrintAll) Helper.printEmptySting();
-//            }
-//        }
-        Helper.printEmptySting();
+        getEntryStream(day, isPrintAll)
+                .ifPresent(getStreamConsumer(isPrintAll ? day.size() : day.getCountBusyTimeSlotsInDay()));
     }
 
-    private static Optional<Stream<Map.Entry<LocalTime, Boolean>>> getEntryStream(final Day day) {
-        return IS_PRINT_ALL ? Optional.ofNullable(day.entrySet().stream())
-                : Optional.of(day.entrySet().stream()
+    private static Optional<Stream<Map.Entry<LocalTime, Boolean>>> getEntryStream(final Day day, boolean isPrintAll) {
+        return isPrintAll ? Optional.ofNullable(day.entrySet().stream())
+                            : Optional.of(day.entrySet().stream()
                 .filter(f -> Boolean.TRUE.equals(f.getValue())));
     }
 
-    private static Consumer<Stream<Map.Entry<LocalTime, Boolean>>> getStreamConsumer() {
+    private static Consumer<Stream<Map.Entry<LocalTime, Boolean>>> getStreamConsumer(int size) {
         final AtomicInteger countPrint = new AtomicInteger();
         return t -> t.collect(Collectors.toList())
                 .forEach(f -> {
@@ -70,8 +37,13 @@ public class ScheduleUtil {
                     if (Boolean.TRUE.equals(f.getValue()))
                         System.out.print("\033[1;36m" + timeSlot + "\033[0m" + "\t");
                     else System.out.print(timeSlot + "\t");
-                    if (countPrint.get() % 4 == 0) Helper.printEmptySting();
+                    if (countPrint.get() % 4 == 0 || countPrint.get() == size) Helper.printEmptySting();
                 });
+
+
     }
 
+    public static void printDay(ScheduleValidator validator, Task task, boolean isPrintAll) {
+        validator.printDay(task, isPrintAll);
+    }
 }

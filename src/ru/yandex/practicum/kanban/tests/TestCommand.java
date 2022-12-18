@@ -1,6 +1,7 @@
 package ru.yandex.practicum.kanban.tests;
 
 import ru.yandex.practicum.kanban.tests.commands.*;
+import ru.yandex.practicum.kanban.tests.commands.Tester;
 import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.Helper;
 
@@ -14,10 +15,10 @@ public enum TestCommand {
     GET(new TestGetCommand(), 5);
 
 
-    private final TestRunner test;
+    private final Tester test;
     private final int value;
 
-    TestCommand(TestRunner test, int value) {
+    TestCommand(Tester test, int value) {
         this.test = test;
         this.value = value;
     }
@@ -46,7 +47,7 @@ public enum TestCommand {
         return this.value;
     }
 
-    public TestRunner getTest() {
+    public Tester getTest() {
         return test;
     }
 }

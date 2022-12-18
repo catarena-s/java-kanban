@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class AbstractTest implements TestRunner {
+public abstract class AbstractTest implements Tester {
     protected TaskManager taskManager;
     protected boolean isPrintHistory = false;
 

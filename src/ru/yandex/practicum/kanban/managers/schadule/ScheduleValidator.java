@@ -10,6 +10,8 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.yandex.practicum.kanban.managers.schadule.Day.COUNT_SLOTS;
+
 public class ScheduleValidator {
     private final Map<LocalDate, Day> schedule;
     private final Set<LocalDate> usedDays = new HashSet<>();
@@ -20,28 +22,28 @@ public class ScheduleValidator {
     public boolean takeTimeForTask(Task task) throws TaskException {
         final LocalDateTime dateTime = task.getStartTime();
         final LocalDate date = dateTime.toLocalDate();
-
+        final LocalDate currentDate= LocalDate.now();
         if (date.isEqual(LocalDate.of(2222, 1, 1))) return false;
-        if (date.isAfter(date.plusYears(1))) throw new TaskException("Планировать можно только на год вперед.");
+        if (date.isAfter(currentDate.plusYears(1))) throw new TaskException("Планировать можно только на год вперед.");
         final Day day = schedule.getOrDefault(date, new Day(date));
 
         LocalTime beginTime = dateTime.toLocalTime();
         if (!day.containsKey(beginTime)) beginTime = day.getTimeNearestSlot(beginTime);
 
         if (Boolean.TRUE.equals(day.get(beginTime)))
-            return false;
-//            throw new TaskException("Время в расписании занято.");
+            throw new TaskException("Время в расписании занято.");
 
         final int count = getCount(task, beginTime);
 
         if (day.isEnoughTime(beginTime, count)) {
             day.takeTimeSlots(beginTime, count);
             usedDays.add(date);
-        } else return false;//throw new TaskException("Недостаточно свободного временив в расписании.");
+        } else
+            throw new TaskException("Недостаточно свободного временив в расписании.");
         schedule.put(date, day);
 
         if (ScheduleUtil.PRINT_REPORT) {
-            ScheduleUtil.print(day);
+            ScheduleUtil.print(day,false);
             Helper.printSeparator();
         }
         return true;
@@ -51,18 +53,18 @@ public class ScheduleValidator {
     public void freeTime(final Task task) {
         final LocalDateTime dateTime = task.getStartTime();
         final LocalDate date = dateTime.toLocalDate();
-        final Optional<Day> dayOfWeek = Optional.ofNullable(schedule.get(date));
+        final Optional<Day> day = Optional.ofNullable(schedule.get(date));
 
-        if (!dayOfWeek.isPresent()) return;
+        if (!day.isPresent()) return;
 
         LocalTime beginTime = dateTime.toLocalTime();
-        if (!dayOfWeek.get().containsKey(beginTime)) beginTime = dayOfWeek.get().getTimeNearestSlot(beginTime);
+        if (!day.get().containsKey(beginTime)) beginTime = day.get().getTimeNearestSlot(beginTime);
         final int count = getCount(task, beginTime);
 
-        dayOfWeek.get().freeTimeSlots(beginTime, count);
-        schedule.put(date, dayOfWeek.get());
-        if (dayOfWeek.get().isAllTimeSlotsFree()) usedDays.remove(dayOfWeek);
-        if (ScheduleUtil.PRINT_REPORT) ScheduleUtil.print(dayOfWeek.get());
+        day.get().freeTimeSlots(beginTime, count);
+        schedule.put(date, day.get());
+        if (day.get().getCountFreeTimeSlotsInDay()==COUNT_SLOTS) usedDays.remove(day);
+        if (ScheduleUtil.PRINT_REPORT) ScheduleUtil.print(day.get(),false);
     }
 
     private int getCount(Task task, LocalTime beginTime) {
@@ -80,4 +82,10 @@ public class ScheduleValidator {
                 .collect(Collectors.toList());
     }
 
+    public void printDay(Task task,boolean isPrintAll) {
+        final LocalDateTime dateTime = task.getStartTime();
+        final LocalDate date = dateTime.toLocalDate();
+        final Day day = schedule.getOrDefault(date, new Day(date));
+        ScheduleUtil.print(day,isPrintAll);
+    }
 }

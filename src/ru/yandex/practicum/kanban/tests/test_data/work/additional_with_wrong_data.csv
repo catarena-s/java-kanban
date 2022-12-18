@@ -1,3 +1,4 @@
+add , Task, id=0001, Dublikat Task,[expectation-> Ошибка добавления: 'Задача' с id=0001 уже существует.
 add , SUB_TASK , name=Подзадача 1-1 , description=Описание подзадачи 1-1 [expectation-> Ошибка добавления: Нельзя добавить subtask - не указан id эпика.
 add , SUB_TASK , name=Подзадача 1-2 , description=Описание подзадачи 1-2, epicId = 0005[expectation-> Ошибка получения: 'Эпик' - отсутствуют
 add , epic     , name=Эпик 1        , description=Описание эпика 1,

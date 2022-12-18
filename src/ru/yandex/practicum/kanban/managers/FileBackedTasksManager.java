@@ -35,6 +35,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return manager;
     }
 
+    public Path getFileName() {
+        return fileName;
+    }
+
     public static void main(final String[] args) {
         final Path file = Paths.get(FileHelper.DATA_FILE_NAME);
         final FileBackedTasksManager f1 = FileBackedTasksManager.loadFromFile(file);

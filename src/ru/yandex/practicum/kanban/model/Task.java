@@ -45,7 +45,7 @@ public abstract class Task implements Comparable<Task> {
     public String toCompactString() {
         String resFormat = DEFAULT_FORMAT_OUT_DATA;
 
-        return String.format(resFormat, taskID, taskStatus, name, description, duration, startTimeToString());
+        return String.format(resFormat, taskID, taskStatus, name, description, duration, timeToString(startTime));
     }
 
     public void init(String id, String name, String description) {
@@ -55,14 +55,13 @@ public abstract class Task implements Comparable<Task> {
     }
 
     public String toActualStringFoTest() {
-        String resFormat = "%s, %s, %s, %s, %s, %s";
+        String resFormat = "%s, %s, %s, %s, %s, %s ,%s";
 
-        return String.format(resFormat, taskID, taskStatus, name, description, duration, startTimeToString());//, getType()
+        return String.format(resFormat, taskID, taskStatus, name, description, duration, timeToString(startTime), timeToString(getEndTime()));//, getType()
     }
 
-    protected String startTimeToString() {
-//        return startTime == null ? "" : startTime.format(formatter);
-        return startTime == null ? "01-01-2222 00:00" : startTime.format(formatter);
+    protected String timeToString(LocalDateTime dateTime) {
+        return dateTime == null ? "01-01-2222 00:00" : startTime.format(formatter);
     }
 
     public int getDuration() {

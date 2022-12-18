@@ -88,15 +88,14 @@ public class InMemoryTaskManager implements TaskManager {
         tasksByType.put(taskType, tasks);
         allId.add(task.getTaskID());
 
-        if (filterStartTimeOff(task)) return;
-
         changePrioritizedList(task);
     }
 
     private void changePrioritizedList(final Task task) {
+        if (task instanceof Epic) return;
         if (filterStartTimeOff(task) && prioritized.contains(task)) prioritized.remove(task);
-        else
-            prioritized.add(task);
+        if(!filterStartTimeOff(task)&& !prioritized.contains(task))
+        prioritized.add(task);
     }
 
     private void checkTimeInScheduler(final Task task, final boolean isUpdate) throws TaskException {
@@ -182,7 +181,7 @@ public class InMemoryTaskManager implements TaskManager {
         return getAllByType(TaskType.SUB_TASK);
     }
 
-    @Override
+    @Deprecated
     public List<Task> getPrioritizedTasks(TaskType type) {
         List<Task> list = new ArrayList<>();
         list.addAll(new ArrayList<>(prioritized));
@@ -199,10 +198,11 @@ public class InMemoryTaskManager implements TaskManager {
         List<Task> list = new ArrayList<>();
         list.addAll(prioritized.stream().collect(Collectors.toList()));
         list.addAll(this.getAll().stream()
-                .filter(f -> filterStartTimeOff(f))
+                .filter(f -> filterStartTimeOff(f) && !TaskType.EPIC.equals(f.getType()))
                 .collect(Collectors.toList())
+                .stream().sorted().collect(Collectors.toList())
         );
-        return prioritized.stream().collect(Collectors.toList());
+        return list;
     }
 
     /**

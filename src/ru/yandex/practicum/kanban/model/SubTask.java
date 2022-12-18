@@ -111,7 +111,7 @@ public class SubTask extends Task implements Updatable {
         }
 
         public Builder duration(int duration) {
-            if (duration < 0) throw new IllegalArgumentException("Значение <duration> должно быть больше 0");
+            if (duration < 0) throw new IllegalArgumentException("Значение <duration> должно быть больше положительным");
             task.setDuration(duration);
             return this;
         }

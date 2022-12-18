@@ -4,21 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil.ONE_SLOT_TIME_IN_SCHEDULER;
 
 public class Day extends TreeMap<LocalTime, Boolean> {
-    private static final int COUNT_SLOTS = 24 * 60 / ONE_SLOT_TIME_IN_SCHEDULER;//96
+    public static final int COUNT_SLOTS = 24 * 60 / ONE_SLOT_TIME_IN_SCHEDULER;//96
     private final LocalDate date;
-    private int countFreeSlots = COUNT_SLOTS;
 
     public Day(final LocalDate day) {
         this.date = day;
         mark(COUNT_SLOTS, LocalTime.of(0, 0), false);
-    }
-
-    public boolean isAllTimeSlotsFree() {
-        return countFreeSlots == COUNT_SLOTS;
     }
 
     public boolean isEnoughTime(final LocalTime time, final int count) {
@@ -26,29 +22,17 @@ public class Day extends TreeMap<LocalTime, Boolean> {
         final LocalTime endTime = beginTime.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * count);
         return subMap(beginTime, endTime).entrySet().stream().
                 allMatch(f -> Boolean.FALSE.equals(f.getValue()));
-//        for (int i = 1; i < count; i++) {
-//            LocalTime nextTime = beginTime.plusMinutes(ScheduleUtil.ONE_SLOT_SCHEDULER * i);
-//
-//            if (get(nextTime)) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
 
-    public void takeTimeSlots(final LocalTime timeBegin, final int count) {
+    public void takeTimeSlots(final LocalTime time, final int count) {
+        final LocalTime timeBegin = containsKey(time) ? time : getTimeNearestSlot(time);
         mark(count, timeBegin, true);
     }
 
-    public void freeTimeSlots(final LocalTime timeBegin, final int count) {
+    public void freeTimeSlots(final LocalTime time, final int count) {
+        final LocalTime timeBegin = containsKey(time) ? time : getTimeNearestSlot(time);
         mark(count, timeBegin, false);
     }
-
-//    public boolean checkNearestTimeSlot(LocalTime time) {
-//        if (containsKey(time)) return get(time);
-//        LocalTime timeSlot = getTimeNearestSlot(time);
-//        return get(timeSlot);
-//    }
 
     public LocalTime getTimeNearestSlot(LocalTime time) {
         final int hour = time.getHour();
@@ -60,16 +44,15 @@ public class Day extends TreeMap<LocalTime, Boolean> {
     private void mark(final int count, final LocalTime timeBegin, final boolean isMark) {
         final LocalTime endTime = timeBegin.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * count);
         Optional.of(subMap(timeBegin, endTime))
-                .orElse(init(count,timeBegin,isMark)).values()
+                .orElse(init(count, timeBegin, isMark)).values()
                 .stream().map(f -> f = isMark);
-        countFreeSlots += (isMark ? -1 : 1) * count;
+
     }
 
     private TreeMap<LocalTime, Boolean> init(int count, LocalTime timeBegin, boolean isMark) {
         for (int i = 0; i < count; i++) {
             final LocalTime time = timeBegin.plusMinutes(ONE_SLOT_TIME_IN_SCHEDULER * i);
             put(time, isMark);
-            countFreeSlots = 0;
         }
         return this;
     }
@@ -79,11 +62,11 @@ public class Day extends TreeMap<LocalTime, Boolean> {
     }
 
     public int getCountFreeTimeSlotsInDay() {
-        return countFreeSlots;
+        return values().stream().filter(f->f==false).collect(Collectors.toList()).size();
     }
 
     public int getCountBusyTimeSlotsInDay() {
-        return COUNT_SLOTS - countFreeSlots;
+        return  values().stream().filter(f->f==true).collect(Collectors.toList()).size();
     }
 
 }

@@ -8,12 +8,16 @@ public class Helper {
     public static final String EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE = "!!! У эпика нет подзадач. Смена статуса запрещена.";
     public static final String DATA_HEAD = "type,id,status,name,description,epic,duration,start_data";
     private static final String MSG_SEPARATOR = "---------------------------------------------------------------------------";
+    private static final String MSG_DOTS_SEPARATOR = "...........................................................................";
 
     private Helper() {
     }
 
     public static void printSeparator() {
         printMessage(MSG_SEPARATOR);
+    }
+    public static void printDotsSeparator() {
+        printMessage(MSG_DOTS_SEPARATOR);
     }
 
     public static void printSeparator(String color) {

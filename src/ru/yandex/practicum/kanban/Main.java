@@ -23,11 +23,11 @@ public class Main {
             Helper.printMessage("Что тестируем?: ");
             answer = UserMenu.getUserAnswer(scanner);
             if (answer < 0 || answer > 2)
-                Helper.printMessage(Helper.getColoredString("Некорректная команда.",Colors.CYAN.getBoldItalic()));
+                Helper.printMessage(Colors.CYAN_BOLD_ITALIC,"Некорректная команда.");
         } while (answer < 0 || answer > 2);
         if (answer == 0) return;
 
-        Managers managers = new Managers(answer, FileHelper.DATA_FILE_NAME);
+        Managers managers = new Managers(answer);
         TaskManager taskManager = managers.getDefault();
         Tester test = TestManager.get(taskManager);
 

@@ -1,5 +1,7 @@
 package ru.yandex.practicum.kanban.managers;
 
+import ru.yandex.practicum.kanban.utils.FileHelper;
+
 import java.nio.file.Path;
 
 public class Managers {
@@ -12,7 +14,7 @@ public class Managers {
                 taskManager = new InMemoryTaskManager(historyManager);
                 break;
             case 2:
-                taskManager = FileBackedTasksManager.loadFromFile(Path.of(args[0]));
+                taskManager = FileBackedTasksManager.loadFromFile(Path.of(args.length == 0 ? FileHelper.DATA_FILE_NAME : args[0]));
                 break;
             default:
                 taskManager = null;

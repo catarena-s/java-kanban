@@ -1,7 +1,0 @@
-type,id,status,name,description,epic,duration,start_data
-EPIC    , 0004, NEW         , Epic MIX 3     , Epic MIX Description 3
-EPIC    , 0007, NEW         , EPIC MIX 3     , Epic MIX Description 3
-SUB_TASK, 0005, NEW         , SUB_TASK MIX 4 , SUB_TASK MIX Description 4,  0004
-SUB_TASK, 0008, NEW         , SUB_TASK MIX 4 , SUB_TASK MIX Description 4,  0004
-
-0004

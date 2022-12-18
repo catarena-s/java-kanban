@@ -1,3 +1,0 @@
-type,id,status,name,description,epic,duration,start_data
-TASK    , 0007, NEW         , Task MIX 3     , Epic MIX Description 3
-EPIC    , 0004, NEW         , Epic MIX 3     , Epic MIX Description 3

@@ -48,7 +48,6 @@ public class TestAddCommand extends AbstractTest {
     }
 
     public static Task parseLine(String line, TaskManager taskManager) throws TaskException {
-        String[] records = line.split(",");
         Converter.Record newData = initTask(line, taskManager);
         Task newTask = Converter.createNewTask(newData);
         return newTask;
