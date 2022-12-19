@@ -6,7 +6,6 @@ import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.tests.TestManager;
 import ru.yandex.practicum.kanban.tests.Tester;
 import ru.yandex.practicum.kanban.utils.Colors;
-import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.UserMenu;
 
@@ -23,7 +22,7 @@ public class Main {
             Helper.printMessage("Что тестируем?: ");
             answer = UserMenu.getUserAnswer(scanner);
             if (answer < 0 || answer > 2)
-                Helper.printMessage(Colors.CYAN_BOLD_ITALIC,"Некорректная команда.");
+                Helper.printMessage(Colors.CYAN_BOLD_ITALIC, "Некорректная команда.");
         } while (answer < 0 || answer > 2);
         if (answer == 0) return;
 
@@ -32,7 +31,7 @@ public class Main {
         Tester test = TestManager.get(taskManager);
 
         if (test == null) {
-            Helper.printMessage(Colors.CYAN,"Ошибка получения TestManager.");
+            Helper.printMessage(Colors.CYAN, "Ошибка получения TestManager.");
             return;
         }
 

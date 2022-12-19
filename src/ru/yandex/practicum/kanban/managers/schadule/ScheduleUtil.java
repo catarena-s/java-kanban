@@ -19,15 +19,15 @@ public class ScheduleUtil {
     private ScheduleUtil() {
     }
 
-    public static void print(final Day day, boolean isPrintAll) {
-        Helper.printMessage("Day: %s", day.getDate().format(DateTimeFormatter.ISO_DATE));
-        getEntryStream(day, isPrintAll)
-                .ifPresent(getStreamConsumer(isPrintAll ? day.size() : day.getCountBusyTimeSlotsInDay()));
+    public static void print(final DaySlots daySlots, boolean isPrintAll) {
+        Helper.printMessage("Day: %s", daySlots.getDate().format(DateTimeFormatter.ISO_DATE));
+        getEntryStream(daySlots, isPrintAll)
+                .ifPresent(getStreamConsumer(isPrintAll ? daySlots.size() : daySlots.getCountBusyTimeSlotsInDay()));
     }
 
-    private static Optional<Stream<Map.Entry<LocalTime, Boolean>>> getEntryStream(final Day day, boolean isPrintAll) {
-        return isPrintAll ? Optional.ofNullable(day.entrySet().stream())
-                            : Optional.of(day.entrySet().stream()
+    private static Optional<Stream<Map.Entry<LocalTime, Boolean>>> getEntryStream(final DaySlots daySlots, boolean isPrintAll) {
+        return isPrintAll ? Optional.ofNullable(daySlots.entrySet().stream())
+                            : Optional.of(daySlots.entrySet().stream()
                 .filter(f -> Boolean.TRUE.equals(f.getValue())));
     }
 

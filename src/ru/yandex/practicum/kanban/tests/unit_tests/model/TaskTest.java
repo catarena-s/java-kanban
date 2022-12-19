@@ -8,6 +8,7 @@ import ru.yandex.practicum.kanban.tests.unit_tests.TestLogger;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.yandex.practicum.kanban.utils.Helper.MAX_DATE;
 import static ru.yandex.practicum.kanban.utils.Helper.formatter;
 
 class TaskTest<T extends Task> implements TestLogger {
@@ -23,7 +24,7 @@ class TaskTest<T extends Task> implements TestLogger {
         assertEquals(id, task.getTaskID());
         assertEquals(name, task.getName());
         assertEquals(description, task.getDescription());
-        assertEquals("01-01-2222 00:00", task.getStartTime().format(formatter));
+        assertEquals(MAX_DATE.format(formatter), task.getStartTime().format(formatter),"Даты не сходятся");
         assertEquals(TaskStatus.NEW, task.getStatus());
         assertEquals(0, task.getDuration());
     }

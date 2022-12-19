@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.yandex.practicum.kanban.utils.Helper.MAX_DATE;
+
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<TaskType, Map<String, Task>> tasksByType;
     protected final TreeSet<Task> prioritized;
@@ -113,7 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected void subtaskToEpic(final SubTask task) throws TaskGetterException {
         final Epic epic = (Epic) getEpic(task.getEpicID());
         epic.addSubtask(task);
-        epic.refreshEpic();
+        refreshEpic(epic);
     }
 
     /**
@@ -184,6 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getPrioritizedTasks() {
         List<Task> list = new ArrayList<>();
         list.addAll(new ArrayList<>(prioritized));
+        //
         list.addAll(this.getAll().stream()
                 .filter(f -> filterStartTimeOff(f) && !TaskType.EPIC.equals(f.getType()))
                 .collect(Collectors.toList())
@@ -246,7 +249,13 @@ public class InMemoryTaskManager implements TaskManager {
 
         if (task instanceof SubTask) {
             Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
-            epic.refreshEpic();
+            refreshEpic(epic);
+        }
+        if (task instanceof Epic) {
+            Epic oldEpic = (Epic) getEpic(task.getTaskID());
+            task.setStatus(oldEpic.getStatus());
+            task.setDuration(oldEpic.getDuration());
+            task.setStartTime(oldEpic.getStartTime());
         }
         taskByType.put(task.getTaskID(), task);
     }
@@ -296,6 +305,7 @@ public class InMemoryTaskManager implements TaskManager {
             for (Task subTask : subTasks.values()) {
                 Epic epic = (Epic) getEpic(((SubTask) subTask).getEpicID());
                 epic.getSubTasks().remove(subTask);
+                refreshEpic(epic);
                 historyManager.remove(subTask.getTaskID());
             }
         }
@@ -340,7 +350,7 @@ public class InMemoryTaskManager implements TaskManager {
             SubTask subTask = (SubTask) tasks.get(taskID);
             Epic epic = (Epic) getEpic(subTask.getEpicID());
             epic.getSubTasks().remove(subTask);
-            epic.refreshEpic();
+            refreshEpic(epic);
         }
         prioritized.remove(tasks.get(taskID));
         schedule.freeTime(tasks.get(taskID));
@@ -371,5 +381,59 @@ public class InMemoryTaskManager implements TaskManager {
         t.ifPresent(historyManager::add);
 
         return t.orElseThrow(() -> new TaskGetterException("%s c id =%s не найдена ", type.getValue(), taskID));
+    }
+
+    private void refreshEpic(Epic epic) {
+        updateEpicStatus(epic);
+        setDuration(epic);
+        setTime(epic);
+    }
+
+    private void setDuration(Epic epic) {
+        List<Task> subTasks = epic.getSubTasks();
+        epic.setDuration(subTasks.stream()
+                .mapToInt(m -> m.getDuration())
+                .reduce(0, (v, task) -> v += task));
+
+    }
+
+    private void setTime(Epic epic) {
+        List<Task> subTasks = epic.getSubTasks();
+        epic.setStartTime(subTasks.stream()
+                .map(Task::getStartTime)
+                .min(LocalDateTime::compareTo).orElse(MAX_DATE));
+        epic.setEndTime(subTasks.stream()
+                .map(Task::getEndTime)
+                .max(LocalDateTime::compareTo).orElse(null));
+    }
+
+    private void updateEpicStatus(Epic epic) {
+        List<Task> subTasks = epic.getSubTasks();
+        if (subTasks.isEmpty()) {
+            epic.setStatus(TaskStatus.NEW);
+            return;
+        }
+
+        boolean isDone = true;
+        boolean isNew = true;
+        for (Task subTask : subTasks) {
+            TaskStatus currentStatus = subTask.getStatus();
+
+            isDone &= (currentStatus == TaskStatus.DONE);
+            isNew &= (currentStatus == TaskStatus.NEW);
+            boolean isInProgress = (!isDone && !isNew) || (currentStatus == TaskStatus.IN_PROGRESS);
+
+            if (isInProgress) {
+                epic.setStatus(TaskStatus.IN_PROGRESS);
+                return;
+            }
+        }
+        if (isNew) {
+            epic.setStatus(TaskStatus.NEW);
+        } else if (isDone) {
+            epic.setStatus(TaskStatus.DONE);
+        } else {
+            epic.setStatus(TaskStatus.IN_PROGRESS);
+        }
     }
 }

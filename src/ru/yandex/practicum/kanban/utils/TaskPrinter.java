@@ -52,10 +52,10 @@ public class TaskPrinter {
         }
     }
     public static void printSortedTasks(List<Task> allTasks) {
-        allTasks.stream().sorted().forEach(t -> Helper.printMessage(t.toCompactString()));
+        allTasks.stream().sorted().forEach(t -> Helper.printMessage(t.toActualStringFoTest()));
     }
     public static void printList(List<Task> allTasks) {
-        allTasks.forEach(t -> Helper.printMessage(t.toCompactString()));
+        allTasks.forEach(t -> Helper.printMessage(t.toActualStringFoTest()));
         Helper.printEmptySting();
     }
     public static void printSortedTasksLong(List<Task> allTasks) {

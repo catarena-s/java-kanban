@@ -14,6 +14,9 @@ public abstract class Task implements Comparable<Task> {
     protected String description = "";
     protected int duration = 0;
     protected LocalDateTime startTime;
+
+    private TaskStatus taskStatus = TaskStatus.NEW;
+
     protected Task() {
         initDates();
     }
@@ -25,8 +28,6 @@ public abstract class Task implements Comparable<Task> {
     private void initDates() {
         startTime = Helper.MAX_DATE;
     }
-
-    private TaskStatus taskStatus = TaskStatus.NEW;
 
     public LocalDateTime getEndTime() {
         return startTime.plusMinutes(duration);
@@ -69,7 +70,7 @@ public abstract class Task implements Comparable<Task> {
         return duration;
     }
 
-    protected void setDuration(int duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
@@ -77,7 +78,7 @@ public abstract class Task implements Comparable<Task> {
         return startTime;
     }
 
-    protected void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -114,7 +115,7 @@ public abstract class Task implements Comparable<Task> {
         return taskStatus;
     }
 
-    protected void setStatus(TaskStatus taskStatus) {
+    public void setStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 

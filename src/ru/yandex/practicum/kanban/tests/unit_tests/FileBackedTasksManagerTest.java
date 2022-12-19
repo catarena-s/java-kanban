@@ -16,7 +16,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     public static final String LIST_IS_EMPTY = "Список не пустой";
 
-
     @BeforeEach
     void setUp(TestInfo info) throws TaskException, IOException {
         if (!info.getTags().contains("NotInit")) {

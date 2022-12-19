@@ -1,6 +1,9 @@
 package ru.yandex.practicum.kanban.tests.unit_tests;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.kanban.exceptions.TaskAddException;
 import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
@@ -34,6 +37,16 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     protected void init(int config, String... args) {
         final Managers managers = new Managers(config, args);
         taskManager = (T) managers.getDefault();
+    }
+    @Test
+    @Tag(value = "EmptyFile")
+    @DisplayName("Получение всех подзадач по эпику в пустом таск-менеджере")
+    void getTaskFromEmptyManager() {
+        final TaskException ex = Assertions.assertThrows(
+                TaskGetterException.class,
+                () -> taskManager.getEpic("0004"));
+        assertEquals("Ошибка получения: 'Эпик' - отсутствуют",
+                ex.getDetailMessage().trim(), "Эпик не должен быть получен");
     }
 
     @Test
@@ -91,16 +104,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
         assertEquals(0, subTasksFoEpic.size());
     }
 
-    @Test
-    @Tag(value = "EmptyFile")
-    @DisplayName("Получение всех подзадач по эпику в пустом таск-менеджере")
-    void getTaskFromEmptyManager() {
-        final TaskException ex = Assertions.assertThrows(
-                TaskGetterException.class,
-                () -> taskManager.getEpic("0004"));
-        assertEquals("Ошибка получения: 'Эпик' - отсутствуют",
-                ex.getDetailMessage().trim(), "Эпик не должен быть получен");
-    }
+
 
     @Test
     @Tag(value = "InitData")
@@ -164,7 +168,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
         for (int i = 1; i < testLines.length; i++) {
             final String line = testLines[i];
 
-            final TestHelper.Expectations expectations = TestHelper.parse(TestHelper.getExpectation(line).trim());
+            final Expectations expectations = TestHelper.parse(TestHelper.getExpectation(line).trim());
             final String testLine = line.substring(0, line.indexOf("["));
 
             Helper.printMessage(Colors.UNDERLNE, "%nTest #%d: %s", i, testLine);
@@ -237,7 +241,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
 
         for (int i = 1; i < testLines.length; i++) {
             final String line = testLines[i];
-            TestHelper.Expectations expectations = TestHelper.parse(TestHelper.getExpectation(line).trim());
+            Expectations expectations = TestHelper.parse(TestHelper.getExpectation(line).trim());
             final String testLine = line.substring(0, line.indexOf("["));
 
             TestRemoveCommand.executeString(testLine, taskManager);

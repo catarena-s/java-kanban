@@ -1,4 +1,4 @@
 0009
-REMOVE,Sub_TASK,0010 [ expectation-> status =IN_PROGRESS ; duration =110 ; start_time = 01-12-2022 19:12 ; END_time = 03-12-2022 17:00
-REMOVE,Sub_TASK,0011 [ expectation-> status =DONE ; duration =60 ; start_time = 01-12-2022 19:12 ; END_time = 01-12-2022 20:12
-REMOVE,Sub_TASK,0012 [ expectation-> status =NEW ; duration =0 ; start_time = 01-01-2222 00:00 ; END_time = NULL
+REMOVE,Sub_TASK,0010 [ expectation-> status =IN_PROGRESS ; duration =110 ; start_time = 01-12-2022 19:12:05 ; END_time = 03-12-2022 17:00:05
+REMOVE,Sub_TASK,0011 [ expectation-> status =DONE ; duration =60 ; start_time = 01-12-2022 19:12:05 ; END_time = 01-12-2022 20:12:05
+REMOVE,Sub_TASK,0012 [ expectation-> status =NEW ; duration =0 ; start_time = 01-01-2222 00:00:00 ; END_time = NULL

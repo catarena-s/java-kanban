@@ -7,7 +7,7 @@ import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
-import ru.yandex.practicum.kanban.managers.schadule.Day;
+import ru.yandex.practicum.kanban.managers.schadule.DaySlots;
 import ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil;
 import ru.yandex.practicum.kanban.managers.schadule.ScheduleValidator;
 import ru.yandex.practicum.kanban.model.SimpleTask;
@@ -78,9 +78,9 @@ class ScheduleValidatorTest implements TestLogger {
     @DisplayName("Проверяем добавление задач с пересекающимся временем или некорректной датой")
     @ParameterizedTest(name = "Задача id={0}: startTime={1} duration={2} -> {3}")
     @CsvSource(value = {
-            "0001, 12-12-2022 09:10, 150, Ошибка: Недостаточно свободного временив в расписании.",
-            "0002, 15-01-2024 14:22, 200, Ошибка: Планировать можно только на год вперед.",
-            "0003, 12-12-2022 10:12, 110, Ошибка: Время в расписании занято.",})
+            "0001, 12-12-2022 09:10:05, 150, Ошибка: Недостаточно свободного временив в расписании.",
+            "0002, 15-01-2024 14:22:50, 200, Ошибка: Планировать можно только на год вперед.",
+            "0003, 12-12-2022 10:12:10, 110, Ошибка: Время в расписании занято.",})
     void takeTimeForTaskWithOverlappingTime(String taskId, String newStartTime, int duration, String expectationId) throws TaskGetterException {
         SimpleTask task = (SimpleTask) taskManager.getTask(taskId);
         task.builder().startTime(newStartTime).duration(duration);
@@ -97,20 +97,20 @@ class ScheduleValidatorTest implements TestLogger {
         Helper.printMessage("Before:");
         ScheduleUtil.printDay(validator, task, false);//если передать true - напечатается всё время,false - только занятое
         LocalDate taskDate = task.getStartTime().toLocalDate();
-        Optional<List<Day>> days = Optional.ofNullable(validator.getBusyDays());
-        Day day = days.orElse(new ArrayList<>()).stream()
+        Optional<List<DaySlots>> days = Optional.ofNullable(validator.getBusyDays());
+        DaySlots daySlots = days.orElse(new ArrayList<>()).stream()
                 .filter(f -> f.getDate().equals(taskDate))
                 .findFirst()
-                .orElse(new Day(taskDate));
+                .orElse(new DaySlots(taskDate));
 
-        assertEquals(freeTimeBefore, day.getCountFreeTimeSlotsInDay());
+        assertEquals(freeTimeBefore, daySlots.getCountFreeTimeSlotsInDay());
         Helper.printMessage("Освобождаем время задачи id=%s startTime='%s' duration=%d",
                 task.getTaskID(), task.getStartTime().format(formatter), task.getDuration());
         validator.freeTime(task);
 
         ScheduleUtil.printDay(validator, task, false);
 
-        assertEquals(freeTimeAfter, day.getCountFreeTimeSlotsInDay());
+        assertEquals(freeTimeAfter, daySlots.getCountFreeTimeSlotsInDay());
         Helper.printDotsSeparator();
     }
 
@@ -125,7 +125,7 @@ class ScheduleValidatorTest implements TestLogger {
     @Tag(value = "InitData")
     @DisplayName("Получаем дни на которые распределялись задачи.")
     void getBusyDays() {
-        Optional<List<Day>> days = Optional.ofNullable(validator.getBusyDays());
+        Optional<List<DaySlots>> days = Optional.ofNullable(validator.getBusyDays());
         days.ifPresent(days1 -> days1.forEach(d -> ScheduleUtil.print(d, false)));
         int size = days.orElse(new ArrayList<>()).size();
         assertEquals(4, size);

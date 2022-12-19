@@ -10,8 +10,18 @@ public class Helper {
     public static final String MSG_TASK_WITH_ID_NOT_EXIST = "Задачи с ID = %s  не существует";
     public static final String EPIC_HAS_NO_SUBTASKS_DISABLED_STATUS_CHANGE = "!!! У эпика нет подзадач. Смена статуса запрещена.";
     public static final String DATA_HEAD = "type,id,status,name,description,epic,duration,start_data";
-    public static final LocalDateTime MAX_DATE = LocalDateTime.of(2222, 1, 1, 0, 0);
-    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    /**
+    2222 - очень удалённый год и вообще цифра красивая(2022 легко трансформировался 2222).
+    01-01-2222 -использую как дату по умолчанию вместо null - видимо была какая-то идея, сейчас уже не помню.
+     Когда поняла, что можно и с null работать, уже много где её задействовала.
+    По-этому переделывать не стала.
+     */
+    public static final LocalDateTime MAX_DATE = LocalDateTime.of(2222, 1, 1, 0, 0,0);
+    /**
+    Насчет форматера согласна, секунд не хватает, увлеклась тем, что в проверке расписания на минуты смотрю,
+    и забыла, что у времени ещё и секунды есть
+     */
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     private static final String MSG_SEPARATOR = "---------------------------------------------------------------------------";
     private static final String MSG_DOTS_SEPARATOR = "...........................................................................";
 

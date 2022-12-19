@@ -1,10 +1,7 @@
 package ru.yandex.practicum.kanban.model;
 
-import ru.yandex.practicum.kanban.utils.Helper;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,27 +25,6 @@ public class Epic extends Task {
         return endTime;
     }
 
-    private void setDuration() {
-        this.duration = subTasks.stream()
-                .mapToInt(m -> m.duration)
-                .reduce(0, (v, task) -> v += task);
-
-    }
-
-    private void setStartTime() {
-        if (!subTasks.isEmpty()) {
-            startTime = subTasks.stream()
-                    .min(Comparator.comparing(Task::getStartTime))
-                    .map(Task::getStartTime).get();
-            endTime = subTasks.stream()
-                    .max(Comparator.comparing(Task::getStartTime))
-                    .map(Task::getEndTime).get();
-        } else {
-            startTime = Helper.MAX_DATE;
-            endTime = null;
-        }
-    }
-
     @Override
     public TaskType getType() {
         return TaskType.EPIC;
@@ -56,17 +32,28 @@ public class Epic extends Task {
 
     public void addSubtask(SubTask subtask) {
         subTasks.add(subtask);
-        refreshEpic();
     }
 
-    public void refreshEpic() {
-        updateEpicStatus();
-        setDuration();
-        setStartTime();
+    //    public void removeSubtask(SubTask subtask) {
+//        subTasks.remove(subtask);
+////        refreshEpic();
+//    }
+    @Override
+    public String toCompactString() {
+        return String.format("%-8s, %s", TaskType.EPIC, super.toCompactString());
+    }
+
+    @Override
+    public String toActualStringFoTest() {
+        return String.format("%s, %s", TaskType.EPIC, super.toActualStringFoTest());
     }
 
     public List<Task> getSubTasks() {
         return subTasks;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     @Override
@@ -79,8 +66,25 @@ public class Epic extends Task {
                 "]" +
                 '}';
     }
+//    private void setDuration() {
+//        this.duration = subTasks.stream()
+//                .mapToInt(m -> m.duration)
+//                .reduce(0, (v, task) -> v += task);
+//
+//    }
 
-    private void updateEpicStatus() {
+/*
+    private void setTime() {
+        startTime = subTasks.stream()
+                .map(Task::getStartTime)
+                .min(LocalDateTime::compareTo).orElse(MAX_DATE);
+        endTime = subTasks.stream()
+                .map(Task::getEndTime)
+                .max(LocalDateTime::compareTo).orElse(null);
+    }
+*/
+
+  /*  private void updateEpicStatus() {
         if (subTasks.isEmpty()) {
             setStatus(TaskStatus.NEW);
             return;
@@ -107,16 +111,6 @@ public class Epic extends Task {
         } else {
             setStatus(TaskStatus.IN_PROGRESS);
         }
-    }
-
-    @Override
-    public String toCompactString() {
-        return String.format("%-8s, %s", TaskType.EPIC, super.toCompactString());
-    }
-
-    @Override
-    public String toActualStringFoTest() {
-        return String.format("%s, %s", TaskType.EPIC, super.toActualStringFoTest());
-    }
+    }*/
 
 }

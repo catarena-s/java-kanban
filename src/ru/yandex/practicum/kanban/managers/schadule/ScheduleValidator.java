@@ -11,10 +11,10 @@ import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.yandex.practicum.kanban.managers.schadule.Day.COUNT_SLOTS;
+import static ru.yandex.practicum.kanban.managers.schadule.DaySlots.COUNT_SLOTS;
 
 public class ScheduleValidator {
-    private final Map<LocalDate, Day> schedule;
+    private final Map<LocalDate, DaySlots> schedule;
     private final Set<LocalDate> usedDays = new HashSet<>();
 
     public ScheduleValidator() {
@@ -29,25 +29,25 @@ public class ScheduleValidator {
             return false;
         }
         if (date.isAfter(currentDate.plusYears(1))) throw new TaskException("Планировать можно только на год вперед.");
-        final Day day = schedule.getOrDefault(date, new Day(date));
+        final DaySlots daySlots = schedule.getOrDefault(date, new DaySlots(date));
 
         LocalTime beginTime = dateTime.toLocalTime();
-        if (!day.containsKey(beginTime)) beginTime = day.getTimeNearestSlot(beginTime);
+        if (!daySlots.containsKey(beginTime)) beginTime = daySlots.getTimeNearestSlot(beginTime);
 
-        if (Boolean.TRUE.equals(day.get(beginTime)))
+        if (Boolean.TRUE.equals(daySlots.get(beginTime)))
             throw new TaskException("Время в расписании занято.");
 
         final int count = getCount(task, beginTime);
 
-        if (day.isEnoughTime(beginTime, count)) {
-            day.takeTimeSlots(beginTime, count);
+        if (daySlots.isEnoughTime(beginTime, count)) {
+            daySlots.takeTimeSlots(beginTime, count);
             usedDays.add(date);
         } else
             throw new TaskException("Недостаточно свободного временив в расписании.");
-        schedule.put(date, day);
+        schedule.put(date, daySlots);
 
         if (ScheduleUtil.PRINT_REPORT) {
-            ScheduleUtil.print(day, false);
+            ScheduleUtil.print(daySlots, false);
             Helper.printSeparator();
         }
         return true;
@@ -57,7 +57,7 @@ public class ScheduleValidator {
     public void freeTime(final Task task) {
         final LocalDateTime dateTime = task.getStartTime();
         final LocalDate date = dateTime.toLocalDate();
-        final Optional<Day> day = Optional.ofNullable(schedule.get(date));
+        final Optional<DaySlots> day = Optional.ofNullable(schedule.get(date));
 
         if (day.isEmpty()) return;
 
@@ -79,7 +79,7 @@ public class ScheduleValidator {
                 .isAfter(endTime) ? count : count + 1;
     }
 
-    public List<Day> getBusyDays() {
+    public List<DaySlots> getBusyDays() {
         return schedule.entrySet().stream()
                 .filter(f -> usedDays.contains(f.getKey()))
                 .map(Map.Entry::getValue)
@@ -89,7 +89,7 @@ public class ScheduleValidator {
     public void printDay(Task task, boolean isPrintAll) {
         final LocalDateTime dateTime = task.getStartTime();
         final LocalDate date = dateTime.toLocalDate();
-        final Day day = schedule.getOrDefault(date, new Day(date));
-        ScheduleUtil.print(day, isPrintAll);
+        final DaySlots daySlots = schedule.getOrDefault(date, new DaySlots(date));
+        ScheduleUtil.print(daySlots, isPrintAll);
     }
 }

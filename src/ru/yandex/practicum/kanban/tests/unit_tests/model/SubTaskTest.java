@@ -28,7 +28,7 @@ class SubTaskTest extends TaskTest<SubTask> {
                     .epic(epic.getTaskID())
                     .description("Description")
                     .status(TaskStatus.IN_PROGRESS)
-                    .startTime("01-01-2015 15:00")
+                    .startTime("01-01-2015 15:00:02")
                     .duration(15);
             epic.addSubtask(task);
         }
@@ -49,7 +49,7 @@ class SubTaskTest extends TaskTest<SubTask> {
     @Tag(value = "Init")
     @DisplayName("Получить время окончания")
     void testGetEndTime() {
-        super.getEndTime("01-01-2015 15:15");
+        super.getEndTime("01-01-2015 15:15:02");
     }
 
     @Test
@@ -63,7 +63,7 @@ class SubTaskTest extends TaskTest<SubTask> {
     @Tag(value = "Init")
     @DisplayName("Получить время начала")
     void testGetStartTime() {
-        super.getStartTime("01-01-2015 15:00");
+        super.getStartTime("01-01-2015 15:00:02");
     }
 
 

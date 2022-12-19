@@ -2,7 +2,7 @@ add , TASK     , name=Задача 16      , description=Описание зад
 add , TASK     , name=Задача 21      , description=Описание задачи 21
 add , TASK     , name=Задача 31      , description=Описание задачи 36
 add , epic     , name=Эпик 11       , description=Описание эпика 16
-add , SUB_TASK , name=Подзадача 11-2 , description=Описание подзадачи 11-2
-add , SUB_TASK , name=Подзадача 11-3 , description=Описание подзадачи 11-3
+add , SUB_TASK , name=Подзадача 11-2 , description=Описание подзадачи 11-2, epicId= 0014
+add , SUB_TASK , name=Подзадача 11-3 , description=Описание подзадачи 11-3, epicId= 0014
 add , epic     , name=Эпик 21       , description=Описание эпика 21
 

@@ -7,11 +7,11 @@ import java.util.TreeMap;
 
 import static ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil.ONE_SLOT_TIME_IN_SCHEDULER;
 
-public class Day extends TreeMap<LocalTime, Boolean> {
+public class DaySlots extends TreeMap<LocalTime, Boolean> {
     public static final int COUNT_SLOTS = 24 * 60 / ONE_SLOT_TIME_IN_SCHEDULER;//96
     private final LocalDate date;
 
-    public Day(final LocalDate day) {
+    public DaySlots(final LocalDate day) {
         this.date = day;
         mark(COUNT_SLOTS, LocalTime.of(0, 0), false);
     }

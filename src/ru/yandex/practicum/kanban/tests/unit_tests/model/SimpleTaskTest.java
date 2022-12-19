@@ -20,7 +20,7 @@ class SimpleTaskTest extends TaskTest<SimpleTask> {
                     .name("Task1")
                     .description("Description")
                     .status(TaskStatus.IN_PROGRESS)
-                    .startTime("01-01-2015 15:00")
+                    .startTime("01-01-2015 15:00:03")
                     .duration(15);
         }
     }
@@ -29,7 +29,7 @@ class SimpleTaskTest extends TaskTest<SimpleTask> {
     @Tag(value = "Init")
     @DisplayName("Получить время окончания")
     void testGetEndTime() {
-        super.getEndTime("01-01-2015 15:15");
+        super.getEndTime("01-01-2015 15:15:03");
     }
 
     @ParameterizedTest(name = "Инициализация задачи id=''{0}'' name=''{1}'' description=''{2}''")
@@ -69,7 +69,7 @@ class SimpleTaskTest extends TaskTest<SimpleTask> {
     @Tag(value = "Init")
     @DisplayName("Получить время начала")
     void getStartTime() {
-        super.getStartTime("01-01-2015 15:00");
+        super.getStartTime("01-01-2015 15:00:03");
     }
 
     @Test
