@@ -4,11 +4,8 @@ import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.time.LocalDateTime;
 
-/**
- * Сделала Task абстрактым, что бы у эпика закрыть возможность извне устанавливать статус , startTime и duration
- */
 public abstract class Task implements Comparable<Task> {
-    protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-12s, %-15s, %-25s, %s, %s";
+    protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-12s, %-15s, %-25s, %2s, %s";
     protected String taskID = "";
     protected String name = "";
     protected String description = "";
@@ -56,7 +53,7 @@ public abstract class Task implements Comparable<Task> {
     }
 
     public String toActualStringFoTest() {
-        String resFormat = "%s, %s, %s, %s, %s, %s ,%s";
+        String resFormat = "%s, %s, %s, %s, %02d, %s ,%s";
 
         return String.format(resFormat, taskID, taskStatus, name, description, duration,
                 timeToString(startTime), timeToString(getEndTime()));

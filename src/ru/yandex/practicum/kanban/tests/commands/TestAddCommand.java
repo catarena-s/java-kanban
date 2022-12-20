@@ -66,9 +66,6 @@ public class TestAddCommand extends AbstractTest {
         Converter.Record newData = new Converter.Record();
         String[] records = line.split(",");
         newData.type = TaskType.valueOf(records[1].toUpperCase().trim());
-//        if (TaskType.SUB_TASK.equals(newData.type)) {
-//            newData.epicID = getLastEpic(taskManager);
-//        }
         for (int i = 2; i < records.length; i++) {
             String[] data = records[i].split("=");
             switch (data[0].trim()) {

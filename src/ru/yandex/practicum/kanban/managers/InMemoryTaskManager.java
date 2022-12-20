@@ -25,7 +25,8 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = historyManager;
 
         tasksByType = new EnumMap<>(TaskType.class);
-        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime)
+                .thenComparing(Task::getTaskID));
 
         schedule = new ScheduleValidator();
     }
@@ -95,8 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void changePrioritizedList(final Task task) {
         if (task instanceof Epic) return;
-        if (filterStartTimeOff(task)) prioritized.remove(task);
-        if (!filterStartTimeOff(task)) prioritized.add(task);
+        prioritized.add(task);
     }
 
     private void checkTimeInScheduler(final Task task, final boolean isUpdate) throws TaskException {
@@ -109,7 +109,6 @@ public class InMemoryTaskManager implements TaskManager {
             schedule.freeTime(taskFromTM);
         }
         schedule.takeTimeForTask(task);
-        changePrioritizedList(task);
     }
 
     protected void subtaskToEpic(final SubTask task) throws TaskGetterException {
@@ -184,15 +183,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getPrioritizedTasks() {
-        List<Task> list = new ArrayList<>();
-        list.addAll(new ArrayList<>(prioritized));
-        //
-        list.addAll(this.getAll().stream()
+        // Вот здесь я не до-конца поняла, возможно так и нужно, но TreSet сортирует только при добавлении,
+        // а если задача добавлена и у нее поменялась дата, то позиция в списке у неё остается прежней.
+        // По-этому приходится сортировать перед возращением списка.
+        return prioritized.stream().sorted()
+                .collect(Collectors.toList());
+/*
+    Почему-то в прошлой реализации не получалось сделать TreSet с корректной сортировкой по 2-м полям
+    (видимо что-то ни так делала) - сейчас получилось.
+    Где-то на этапе разбирательств с TreSet и появилась дата по умолчанию 01-01-2222.
+    С сортировкой только по startTime, при добавлении задач без startTime - добавлялась только одна,
+    остальные отсекались как дубли.
+    Код ниже нужен был как раз для корректного добавление задач и под-задач в коней списка prioritized
+
+    list.addAll(this.getAll().stream()
                 .filter(f -> filterStartTimeOff(f) && !TaskType.EPIC.equals(f.getType()))
                 .collect(Collectors.toList())
                 .stream().sorted().collect(Collectors.toList())
         );
-        return list;
+ */
     }
 
     /**
@@ -264,6 +273,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void clear() {
         tasksByType.clear();
         historyManager.clear();
+        prioritized.clear();
+        allId.clear();
         lastID = 0;
     }
 
@@ -389,10 +400,16 @@ public class InMemoryTaskManager implements TaskManager {
         setTime(epic);
     }
 
+    /**
+     * Перенесла методы расчета duration, startTime и endTime в менеджер.
+     * В Epice оставила сетеры и герреты.
+     * Просто мне казалось, что раз устанавливать эти значения у эпика нельзя, то логично их рассчитывать внутри Эпика,
+     * Сеттеры убрать, оставить только геттеры.
+     */
     private void setDuration(Epic epic) {
         List<Task> subTasks = epic.getSubTasks();
         epic.setDuration(subTasks.stream()
-                .mapToInt(m -> m.getDuration())
+                .mapToInt(Task::getDuration)
                 .reduce(0, (v, task) -> v += task));
 
     }
