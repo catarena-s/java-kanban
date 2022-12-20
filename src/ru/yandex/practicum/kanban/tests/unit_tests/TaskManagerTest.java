@@ -23,6 +23,8 @@ import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.TaskPrinter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -262,13 +264,17 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
         TestHelper.addDataFromFile(taskManager, TEST_ADD_TO_MANAGER);
         taskManager.removeTask("0001");
         taskManager.removeEpic("0004");
+        Task task = taskManager.getTask("0002");
+        task.setStartTime(LocalDateTime.parse("13-01-2021 12:10:00", formatter));
 
+        Helper.printMessage(LocalDateTime.MIN.format(formatter));
+        Helper.printMessage(LocalDateTime.MAX.format(formatter));
         final List<Task> expectationList = List.of(
-                taskManager.getById("0010"),
-                taskManager.getById("0012"),
-                taskManager.getById("0011"),
-                taskManager.getById("0003"),
                 taskManager.getById("0002"),
+                taskManager.getById("0003"),
+                taskManager.getById("0010"),
+                taskManager.getById("0011"),
+                taskManager.getById("0012"),
                 taskManager.getById("0013"),
                 taskManager.getById("0015"),
                 taskManager.getById("0016"),

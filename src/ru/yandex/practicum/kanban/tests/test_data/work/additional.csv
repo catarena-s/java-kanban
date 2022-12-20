@@ -1,8 +1,8 @@
-add , TASK     , name=Задача 16      , description=Описание задачи 16
-add , TASK     , name=Задача 21      , description=Описание задачи 21
-add , TASK     , name=Задача 31      , description=Описание задачи 36
+add , TASK     , name=Задача 16      , description=Описание задачи 16 , start_time =12-11-2022 11:12:00
+add , TASK     , name=Задача 21      , description=Описание задачи 21 , status = DONE
+add , TASK     , name=Задача 31      , description=Описание задачи 36  , start_time =10-11-2022 13:22:00 ,status=IN_PROGRESS
 add , epic     , name=Эпик 11       , description=Описание эпика 16
-add , SUB_TASK , name=Подзадача 11-2 , description=Описание подзадачи 11-2, epicId= 0014
+add , SUB_TASK , name=Подзадача 11-2 , description=Описание подзадачи 11-2, epicId= 0014 , start_time =10-11-2022 15:12:00
 add , SUB_TASK , name=Подзадача 11-3 , description=Описание подзадачи 11-3, epicId= 0014
 add , epic     , name=Эпик 21       , description=Описание эпика 21
 

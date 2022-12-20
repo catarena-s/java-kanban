@@ -7,6 +7,10 @@ import java.util.TreeMap;
 
 import static ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil.ONE_SLOT_TIME_IN_SCHEDULER;
 
+/**
+ * Переименовала... Действительно было непонятно о чем класс.
+ * Когда обзывала класс, название казалось логичным.
+ */
 public class DaySlots extends TreeMap<LocalTime, Boolean> {
     public static final int COUNT_SLOTS = 24 * 60 / ONE_SLOT_TIME_IN_SCHEDULER;//96
     private final LocalDate date;

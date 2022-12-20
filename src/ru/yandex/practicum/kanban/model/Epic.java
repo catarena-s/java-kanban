@@ -34,10 +34,6 @@ public class Epic extends Task {
         subTasks.add(subtask);
     }
 
-    //    public void removeSubtask(SubTask subtask) {
-//        subTasks.remove(subtask);
-////        refreshEpic();
-//    }
     @Override
     public String toCompactString() {
         return String.format("%-8s, %s", TaskType.EPIC, super.toCompactString());
@@ -66,51 +62,4 @@ public class Epic extends Task {
                 "]" +
                 '}';
     }
-//    private void setDuration() {
-//        this.duration = subTasks.stream()
-//                .mapToInt(m -> m.duration)
-//                .reduce(0, (v, task) -> v += task);
-//
-//    }
-
-/*
-    private void setTime() {
-        startTime = subTasks.stream()
-                .map(Task::getStartTime)
-                .min(LocalDateTime::compareTo).orElse(MAX_DATE);
-        endTime = subTasks.stream()
-                .map(Task::getEndTime)
-                .max(LocalDateTime::compareTo).orElse(null);
-    }
-*/
-
-  /*  private void updateEpicStatus() {
-        if (subTasks.isEmpty()) {
-            setStatus(TaskStatus.NEW);
-            return;
-        }
-
-        boolean isDone = true;
-        boolean isNew = true;
-        for (Task subTask : subTasks) {
-            TaskStatus currentStatus = subTask.getStatus();
-
-            isDone &= (currentStatus == TaskStatus.DONE);
-            isNew &= (currentStatus == TaskStatus.NEW);
-            boolean isInProgress = (!isDone && !isNew) || (currentStatus == TaskStatus.IN_PROGRESS);
-
-            if (isInProgress) {
-                setStatus(TaskStatus.IN_PROGRESS);
-                return;
-            }
-        }
-        if (isNew) {
-            setStatus(TaskStatus.NEW);
-        } else if (isDone) {
-            setStatus(TaskStatus.DONE);
-        } else {
-            setStatus(TaskStatus.IN_PROGRESS);
-        }
-    }*/
-
 }
