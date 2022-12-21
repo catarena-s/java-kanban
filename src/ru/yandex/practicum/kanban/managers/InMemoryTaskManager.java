@@ -9,13 +9,12 @@ import ru.yandex.practicum.kanban.model.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.kanban.utils.Helper.MAX_DATE;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<TaskType, Map<String, Task>> tasksByType;
-    protected final TreeSet<Task> prioritized;
+    protected final Set<Task> prioritized ;
     protected final HistoryManager historyManager;
     private final ScheduleValidator schedule;
     private int lastID = 0;
@@ -183,25 +182,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getPrioritizedTasks() {
-        // Вот здесь я не до-конца поняла, возможно так и нужно, но TreSet сортирует только при добавлении,
-        // а если задача добавлена и у нее поменялась дата, то позиция в списке у неё остается прежней.
-        // По-этому приходится сортировать перед возращением списка.
-        return prioritized.stream().sorted()
-                .collect(Collectors.toList());
-/*
-    Почему-то в прошлой реализации не получалось сделать TreSet с корректной сортировкой по 2-м полям
-    (видимо что-то ни так делала) - сейчас получилось.
-    Где-то на этапе разбирательств с TreSet и появилась дата по умолчанию 01-01-2222.
-    С сортировкой только по startTime, при добавлении задач без startTime - добавлялась только одна,
-    остальные отсекались как дубли.
-    Код ниже нужен был как раз для корректного добавление задач и под-задач в коней списка prioritized
-
-    list.addAll(this.getAll().stream()
-                .filter(f -> filterStartTimeOff(f) && !TaskType.EPIC.equals(f.getType()))
-                .collect(Collectors.toList())
-                .stream().sorted().collect(Collectors.toList())
-        );
- */
+        return new ArrayList<>(prioritized);
     }
 
     /**
@@ -209,7 +190,7 @@ public class InMemoryTaskManager implements TaskManager {
      */
     private boolean filterStartTimeOff(Task task) {
         return task.getStartTime()
-                .equals(LocalDateTime.of(2222, 1, 1, 0, 0));
+                .equals(MAX_DATE);
     }
 
     @Override
@@ -255,18 +236,24 @@ public class InMemoryTaskManager implements TaskManager {
         checkTimeInScheduler(task, true);
 
         Map<String, Task> taskByType = tasksByType.get(task.getType());
+        Task currentTask = taskByType.get(task.getTaskID());
+        prioritized.remove(currentTask);
 
         if (task instanceof SubTask) {
             Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
+            epic.getSubTasks().remove(currentTask);
+            epic.addSubtask((SubTask) task);
             refreshEpic(epic);
         }
         if (task instanceof Epic) {
-            Epic oldEpic = (Epic) getEpic(task.getTaskID());
-            task.setStatus(oldEpic.getStatus());
-            task.setDuration(oldEpic.getDuration());
-            task.setStartTime(oldEpic.getStartTime());
+            task.setStatus(currentTask.getStatus());
+            task.setDuration(currentTask.getDuration());
+            task.setStartTime(currentTask.getStartTime());
         }
-        taskByType.put(task.getTaskID(), task);
+
+        currentTask = task;
+        taskByType.put(task.getTaskID(), currentTask);
+        prioritized.add(currentTask);
     }
 
     @Override

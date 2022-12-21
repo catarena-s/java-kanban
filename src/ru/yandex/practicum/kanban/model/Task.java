@@ -5,7 +5,7 @@ import ru.yandex.practicum.kanban.utils.Helper;
 import java.time.LocalDateTime;
 
 public abstract class Task implements Comparable<Task> {
-    protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-12s, %-15s, %-25s, %2s, %s";
+    protected static final String DEFAULT_FORMAT_OUT_DATA = "%s, %-12s, %-15s, %-25s, %3s, %19s";
     protected String taskID = "";
     protected String name = "";
     protected String description = "";
@@ -22,6 +22,14 @@ public abstract class Task implements Comparable<Task> {
         this.description = description;
         initDates();
     }
+
+    protected Task(String name, String description, int duration, String startTime) {
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.startTime = LocalDateTime.parse(startTime, Helper.formatter);
+    }
+
     private void initDates() {
         startTime = Helper.MAX_DATE;
     }
@@ -41,9 +49,7 @@ public abstract class Task implements Comparable<Task> {
     }
 
     public String toCompactString() {
-        String resFormat = DEFAULT_FORMAT_OUT_DATA;
-
-        return String.format(resFormat, taskID, taskStatus, name, description, duration, timeToString(startTime));
+        return String.format(DEFAULT_FORMAT_OUT_DATA, taskID, taskStatus, name, description, duration, timeToString(startTime));
     }
 
     public void init(String id, String name, String description) {
@@ -53,14 +59,14 @@ public abstract class Task implements Comparable<Task> {
     }
 
     public String toActualStringFoTest() {
-        String resFormat = "%s, %s, %s, %s, %02d, %s ,%s";
+        String resFormat = "%s, %s, %s, %s, %3s, %s ,%s";
 
         return String.format(resFormat, taskID, taskStatus, name, description, duration,
                 timeToString(startTime), timeToString(getEndTime()));
     }
 
     protected String timeToString(LocalDateTime dateTime) {
-        return dateTime == null ? "01-01-2222 00:00" : startTime.format(Helper.formatter);
+        return (dateTime == null)||(dateTime.equals(Helper.MAX_DATE)) ? "" : startTime.format(Helper.formatter);
     }
 
     public int getDuration() {

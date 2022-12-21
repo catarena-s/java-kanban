@@ -22,12 +22,16 @@ public class ScheduleUtil {
     public static void print(final DaySlots daySlots, boolean isPrintAll) {
         Helper.printMessage("Day: %s", daySlots.getDate().format(DateTimeFormatter.ISO_DATE));
         getEntryStream(daySlots, isPrintAll)
-                .ifPresent(getStreamConsumer(isPrintAll ? daySlots.size() : daySlots.getCountBusyTimeSlotsInDay()));
+                .ifPresent(getStreamConsumer(isPrintAll ? daySlots.getSlots().size() : daySlots.getCountBusyTimeSlotsInDay()));
+    }
+
+    public static void printDay(ScheduleValidator validator, Task task, boolean isPrintAll) {
+        validator.printDay(task, isPrintAll);
     }
 
     private static Optional<Stream<Map.Entry<LocalTime, Boolean>>> getEntryStream(final DaySlots daySlots, boolean isPrintAll) {
-        return isPrintAll ? Optional.ofNullable(daySlots.entrySet().stream())
-                            : Optional.of(daySlots.entrySet().stream()
+        return isPrintAll ? Optional.ofNullable(daySlots.getSlots().entrySet().stream())
+                            : Optional.of(daySlots.getSlots().entrySet().stream()
                 .filter(f -> Boolean.TRUE.equals(f.getValue())));
     }
 
@@ -44,9 +48,5 @@ public class ScheduleUtil {
                 });
 
 
-    }
-
-    public static void printDay(ScheduleValidator validator, Task task, boolean isPrintAll) {
-        validator.printDay(task, isPrintAll);
     }
 }
