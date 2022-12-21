@@ -33,6 +33,7 @@ public class TestUpdateCommand extends AbstractTest {
     public static Task executeString(String line, TaskManager taskManager, boolean isPrint) throws TaskGetterException {
         String[] records = line.split(",");
         TaskType type = TaskType.valueOf(records[1].toUpperCase().trim());
+//        Task task = type.create();
         String[] dataId = records[2].split("=");
         String id = dataId[1].trim();
         Task task = getTask(type, id, taskManager);
@@ -44,15 +45,29 @@ public class TestUpdateCommand extends AbstractTest {
     }
 
     private static Task getTask(TaskType type, String id, TaskManager taskManager) throws TaskGetterException {
+        Task task = type.create();
+        Task current;
         switch (type) {
             case TASK:
-                return taskManager.getTask(id);
+                current= taskManager.getTask(id); break;
             case SUB_TASK:
-                return taskManager.getSubtask(id);
+                current= taskManager.getSubtask(id); break;
             case EPIC:
-                return taskManager.getEpic(id);
+                current= taskManager.getEpic(id);break;
+            default:return null;
         }
-        return null;
+        task.builder().taskId(current.getTaskID())
+                .name(current.getName())
+                .description(current.getDescription());
+        if(current instanceof Updatable){
+            ((Updatable)task).updateStartTime(current.getStartTime().format(Helper.formatter))                    ;
+            ((Updatable)task).updateDuration(current.getDuration());
+            ((Updatable)task).updateStatus(current.getStatus());
+        }
+        if(current instanceof SubTask){
+            ((SubTask)task).builder().epic(((SubTask) current).getEpicID());
+        }
+        return task;
     }
 
     private static void updateData(String[] records, Task task, TaskManager taskManager) {

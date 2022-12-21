@@ -12,6 +12,11 @@ public class SubTask extends Task implements Updatable {
         this.epicID = "";
     }
 
+    public SubTask(String name, String description, int duration, String startTime, String epicID) {
+        super(name, description, duration, startTime);
+        this.epicID = epicID;
+    }
+
     public SubTask(String name, String description, String epicID) {
         super(name, description);
         this.epicID = epicID;

@@ -13,14 +13,26 @@ import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.kanban.managers.schadule.DaySlots.COUNT_SLOTS;
 
+/**
+ * Валидатор расписания.
+ */
 public class ScheduleValidator {
+    /** расписание */
     private final Map<LocalDate, DaySlots> schedule;
+    /** список дней в которые есть занятое время */
     private final Set<LocalDate> usedDays = new HashSet<>();
 
     public ScheduleValidator() {
         schedule = new HashMap<>();
     }
 
+    /**
+     * Пробуем занять время под задачу
+     *
+     * @param task - задача
+     * @return - true - если удалось выделить время
+     * @throws TaskException - оштбка если есть пересечение по времени
+     */
     public boolean takeTimeForTask(Task task) throws TaskException {
         final LocalDateTime dateTime = task.getStartTime();
         final LocalDate date = dateTime.toLocalDate();
@@ -28,13 +40,17 @@ public class ScheduleValidator {
         if (date.isEqual(ChronoLocalDate.from(Helper.MAX_DATE))) {
             return false;
         }
-        if (date.isAfter(currentDate.plusYears(1))) throw new TaskException("Планировать можно только на год вперед.");
+
+        if (date.isAfter(currentDate.plusYears(1)))
+            throw new TaskException("Планировать можно только на год вперед.");
+
         final DaySlots daySlots = schedule.getOrDefault(date, new DaySlots(date));
 
         LocalTime beginTime = dateTime.toLocalTime();
-        if (!daySlots.containsKey(beginTime)) beginTime = daySlots.getTimeNearestSlot(beginTime);
+        if (!daySlots.getSlots().containsKey(beginTime))
+            beginTime = daySlots.getTimeNearestSlot(beginTime);
 
-        if (Boolean.TRUE.equals(daySlots.get(beginTime)))
+        if (Boolean.TRUE.equals(daySlots.getSlots().get(beginTime)))
             throw new TaskException("Время в расписании занято.");
 
         final int count = getCount(task, beginTime);
@@ -53,7 +69,9 @@ public class ScheduleValidator {
         return true;
     }
 
-
+    /**
+     * Освобождаем время из под задачи
+     */
     public void freeTime(final Task task) {
         final LocalDateTime dateTime = task.getStartTime();
         final LocalDate date = dateTime.toLocalDate();
@@ -62,15 +80,18 @@ public class ScheduleValidator {
         if (day.isEmpty()) return;
 
         LocalTime beginTime = dateTime.toLocalTime();
-        if (!day.get().containsKey(beginTime)) beginTime = day.get().getTimeNearestSlot(beginTime);
+        if (!day.get().getSlots().containsKey(beginTime)) beginTime = day.get().getTimeNearestSlot(beginTime);
         final int count = getCount(task, beginTime);
 
         day.get().freeTimeSlots(beginTime, count);
         schedule.put(date, day.get());
-        if (day.get().getCountFreeTimeSlotsInDay() == COUNT_SLOTS && !usedDays.isEmpty()) usedDays.remove(day);
+        if (day.get().getCountFreeTimeSlotsInDay() == COUNT_SLOTS && !usedDays.isEmpty()) usedDays.remove(day.get().getDate());
         if (ScheduleUtil.PRINT_REPORT) ScheduleUtil.print(day.get(), false);
     }
 
+    /**
+     * Считаем сколько слотов необходимо выделить на задачу
+     */
     private int getCount(Task task, LocalTime beginTime) {
         final LocalTime endTime = task.getEndTime().toLocalTime();
         int duration = task.getDuration();
@@ -79,6 +100,9 @@ public class ScheduleValidator {
                 .isAfter(endTime) ? count : count + 1;
     }
 
+    /**
+     * получаем список дней занятых под задачи
+     */
     public List<DaySlots> getBusyDays() {
         return schedule.entrySet().stream()
                 .filter(f -> usedDays.contains(f.getKey()))
