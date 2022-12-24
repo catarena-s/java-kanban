@@ -1,0 +1,84 @@
+@startuml
+'https://plantuml.com/class-diagram
+class Task
+class DaySlots {
+- LocalDate date
+- SortedMap<LocalTime, Boolean> slots
+-init()
++ getSlots(): SortedMap<LocalTime, Boolean>
++ getDate() : LocalDate
++ getCountFreeTimeSlotsInDay() : int
++ getCountBusyTimeSlotsInDay() : int
+}
+class Schedule {
+- Map<LocalDate, DaySlots> days
++ getUsedDays() : Set<LocalDate>
++ getDays() : Map<LocalDate, DaySlots>
++ put(LocalDate date, DaySlots daySlots)
++ get(LocalDate date) : DaySlots
++ addUsedDays(LocalDate day)
+}
+class ScheduleValidator{
+- Schedule schedule
++ getSchedule() : Schedule
++ takeTimeForTask(Task task) : boolean
++ checkTimeForTask(Task task) : boolean
++ freeTimeForTask(Task task) : boolean
+'+ getBusyDays() List<DaySlots>
+- getCount(Task task, LocalTime beginTime) : int
+- getTimeNearestSlot(LocalTime time) : LocalTime
+}
+'class ScheduleUtil {
+'{static} boolean PRINT_REPORT = false
+'+ print(DaySlots daySlots, boolean isPrintAll)
+''+ printDay(ScheduleService validator, Task task, boolean isPrintAll)
+'- getEntryStream(final DaySlots daySlots, boolean isPrintAll) Optional<Stream<Map.Entry<LocalTime, Boolean>>>
+'- getStreamConsumer(int size) : Consumer<Stream<Map.Entry<LocalTime, Boolean>>>
+'}
+class BookingService{
+- Schedule schedule
++ bookTimeSlots(LocalDateTime datetime, int count)
++ freeTimeSlots(LocalDateTime datetime, int count)
+- mark(int count, LocalTime timeBegin, boolean isMark, DaySlots daySlots)
+}
+class CheckService{
+- Schedule schedule
++ isEmptyDate(LocalDate date)
++ isTimeBeginFree(LocalDate date,LocalTime time)
++ isEnoughTime(LocalDate date,LocalTime time, int count): boolean
+}
+
+'ScheduleUtil -up-> ScheduleService
+'ScheduleUtil -up-> DaySlots
+'BookingService .left.> DaySlots
+'CheckService .right.> DaySlots
+Schedule *--> DaySlots
+ScheduleValidator *--> Schedule
+ScheduleValidator *--> BookingService
+ScheduleValidator *--> CheckService
+Schedule <-right-o CheckService
+Schedule <-left-o BookingService
+
+ScheduleValidator -up-> Task
+ScheduleValidator <-up-* TaskManager
+
+
+/'List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+Object[] elementData
+size()
+}
+
+enum TimeUnit {
+DAYS
+HOURS
+MINUTES
+}'/
+
+@enduml

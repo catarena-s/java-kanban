@@ -3,6 +3,8 @@ package ru.yandex.practicum.kanban.managers.schadule;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.utils.Helper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -13,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ScheduleUtil {
-    public static final int ONE_SLOT_TIME_IN_SCHEDULER = 15;
     public static final boolean PRINT_REPORT = false;
 
     private ScheduleUtil() {
@@ -47,6 +48,10 @@ public class ScheduleUtil {
     }
 
     public static void printDay(ScheduleValidator validator, Task task, boolean isPrintAll) {
-        validator.printDay(task, isPrintAll);
+//        validator.printDay(task, isPrintAll);
+        final LocalDateTime dateTime = task.getStartTime();
+        final LocalDate date = dateTime.toLocalDate();
+        final DaySlots daySlots = validator.getSchedule().get(date);
+        ScheduleUtil.print(daySlots, isPrintAll);
     }
 }

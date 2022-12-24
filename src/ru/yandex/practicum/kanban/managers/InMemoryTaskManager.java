@@ -108,7 +108,8 @@ public class InMemoryTaskManager implements TaskManager {
             if (oldStartDate.equals(task.getStartTime())) return;
             schedule.freeTime(taskFromTM);
         }
-        schedule.takeTimeForTask(task);
+        if(schedule.checkDay(task))
+            schedule.takeTimeForTask(task);
     }
 
     protected void subtaskToEpic(final SubTask task) throws TaskGetterException {

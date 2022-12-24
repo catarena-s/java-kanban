@@ -20,7 +20,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     void setUp(TestInfo info) throws TaskException, IOException {
         if (!info.getTags().contains("NotInit")) {
             if (info.getTags().contains("EmptyFile")) {
-                // загружаем пустой файл, если нужно протестироавть на пустом таск-менеджере
+                // загружаем пустой файл, если нужно протестировать на пустом таск-менеджере
                 init(2, getPathString(DATA_FILE_NAME_EMPTY));
             } else if (info.getTags().contains("InitData")) {
                 init(2, getPathString(DATA_FILE_NAME_EMPTY));
