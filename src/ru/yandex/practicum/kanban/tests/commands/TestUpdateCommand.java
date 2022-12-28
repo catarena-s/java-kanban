@@ -33,7 +33,6 @@ public class TestUpdateCommand extends AbstractTest {
     public static Task executeString(String line, TaskManager taskManager, boolean isPrint) throws TaskGetterException {
         String[] records = line.split(",");
         TaskType type = TaskType.valueOf(records[1].toUpperCase().trim());
-//        Task task = type.create();
         String[] dataId = records[2].split("=");
         String id = dataId[1].trim();
         Task task = getTask(type, id, taskManager);
@@ -45,27 +44,28 @@ public class TestUpdateCommand extends AbstractTest {
     }
 
     private static Task getTask(TaskType type, String id, TaskManager taskManager) throws TaskGetterException {
-//        Task task = type.create();
         Task current;
         switch (type) {
             case TASK:
-                current= taskManager.getTask(id); break;
+                current = taskManager.getTask(id);
+                break;
             case SUB_TASK:
-                current= taskManager.getSubtask(id); break;
+                current = taskManager.getSubtask(id);
+                break;
             case EPIC:
-                current= taskManager.getEpic(id);break;
-            default:return null;
+                current = taskManager.getEpic(id);
+                break;
+            default:
+                return null;
         }
-//        task.builder().taskId(current.getTaskID())
-//                .name(current.getName())
-//                .description(current.getDescription());
-        if(current instanceof Updatable){
-            ((Updatable)current).updateStartTime(current.getStartTime().format(Helper.formatter))                    ;
-            ((Updatable)current).updateDuration(current.getDuration());
-            ((Updatable)current).updateStatus(current.getStatus());
+        if (current instanceof Updatable) {
+            if (current.getStartTime() != null)
+                ((Updatable) current).updateStartTime(current.getStartTime().format(Helper.formatter));
+            ((Updatable) current).updateDuration(current.getDuration());
+            ((Updatable) current).updateStatus(current.getStatus());
         }
-        if(current instanceof SubTask){
-            ((SubTask)current).builder().epic(((SubTask) current).getEpicID());
+        if (current instanceof SubTask) {
+            ((SubTask) current).builder().epic(((SubTask) current).getEpicID());
         }
         return current;
     }
@@ -91,21 +91,21 @@ public class TestUpdateCommand extends AbstractTest {
                 break;
             case "status":
                 TaskStatus newStatus = TaskStatus.valueOf(data[1].toUpperCase().trim());
-                if(task instanceof Updatable){
-                    ((Updatable)task).updateStatus(newStatus);
+                if (task instanceof Updatable) {
+                    ((Updatable) task).updateStatus(newStatus);
                 }
                 break;
             case "description":
                 task.builder().description(data[1].trim());
                 break;
             case "duration":
-                if(task instanceof Updatable){
-                    ((Updatable)task).updateDuration(Integer.parseInt(data[1].trim().isBlank() ? "0" : data[1].trim()));
+                if (task instanceof Updatable) {
+                    ((Updatable) task).updateDuration(Integer.parseInt(data[1].trim().isBlank() ? "0" : data[1].trim()));
                 }
                 break;
             case "start_data":
-                if(task instanceof Updatable){
-                    ((Updatable)task).updateStartTime(data[1].trim());
+                if (task instanceof Updatable) {
+                    ((Updatable) task).updateStartTime(data[1].trim());
                 }
                 break;
             default:

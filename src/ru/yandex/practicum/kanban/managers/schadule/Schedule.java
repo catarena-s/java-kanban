@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/** расписание по дням **/
 public class Schedule {
     /** расписание */
     private final Map<LocalDate, DaySlots> days;
@@ -37,7 +38,13 @@ public class Schedule {
     public void addToUsedDays(final LocalDate day) {
         usedDays.add(day);
     }
-    public void removeFromUsedDays(final LocalDate date){
+
+    public void removeFromUsedDays(final LocalDate date) {
         usedDays.remove(date);
+    }
+
+    public void clear() {
+        days.clear();
+        usedDays.clear();
     }
 }

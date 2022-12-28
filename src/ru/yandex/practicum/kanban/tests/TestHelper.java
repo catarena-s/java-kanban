@@ -18,7 +18,7 @@ public class TestHelper {
     public static final String INFO_FORMATTER = "Info: %s";
     public static final String AFTER_TEST_MSG = "After test:";
     public static final String BEFORE_TEST_MSG = "Before test:";
-    private static final String PATH_TEST_FILES = "src/ru/yandex/practicum/kanban/tests/test_data/work/";
+    public static final String PATH_TEST_FILES = "src/ru/yandex/practicum/kanban/tests/test_data/work/";
     public static final String DATA_FILE_NAME = "manager_data.csv";
     public static final String DATA_FILE_NAME_EMPTY = "fileManager/manager_data_empty.csv";
     public static final String DATA_UPDATE_FILE = "update.csv";
@@ -45,7 +45,7 @@ public class TestHelper {
     }
 
     /**
-     * Получаем из файла с тестовыми данными expectation, если они там есть
+     * Получаем из файла с тестовыми данными expected, если они там есть
      *
      * @param line
      * @return

@@ -1,5 +1,7 @@
 package ru.yandex.practicum.kanban.model;
 
+import ru.yandex.practicum.kanban.utils.Helper;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,16 +9,44 @@ import java.util.stream.Collectors;
 
 public class Epic extends Task {
 
-    private final List<Task> subTasks;
     private LocalDateTime endTime;
+//    private TaskType taskType = TaskType.EPIC;
+    private final List<Task> subTasks;
 
     public Epic() {
         super();
+        subTasks = new ArrayList<>();
+        setTaskType(TaskType.EPIC);
+    }
+
+    public Epic(String name, String description, int duration, String startTime, LocalDateTime endTime, List<Task> subTasks) {
+        super(name, description, duration, startTime);
+        this.endTime = endTime;
+        this.subTasks = subTasks;
+        setTaskType(TaskType.EPIC);
+    }
+
+    public Epic(String name, String description, int duration, String startTime, String endTime) {
+        super(name, description, duration, startTime);
+        setTaskType(TaskType.EPIC);
+        if (!endTime.isBlank())
+            this.endTime = LocalDateTime.parse(endTime, Helper.formatter);
+        else
+            this.endTime = null;
         subTasks = new ArrayList<>();
     }
 
     public Epic(String name, String description) {
         super(name, description);
+        subTasks = new ArrayList<>();
+    }
+
+    public Epic(String name, String description, String endTime) {
+        super(name, description);
+        if (!endTime.isBlank())
+            this.endTime = LocalDateTime.parse(endTime, Helper.formatter);
+        else
+            this.endTime = null;
         subTasks = new ArrayList<>();
     }
 
@@ -34,10 +64,10 @@ public class Epic extends Task {
         subTasks.add(subtask);
     }
 
-    @Override
-    public String toCompactString() {
-        return String.format("%-8s, %s", TaskType.EPIC, super.toCompactString());
-    }
+//    @Override
+//    public String toCompactString() {
+////        return String.format("%-8s, %s", TaskType.EPIC, super.toCompactString());
+//    }
 
     @Override
     public String toActualStringFoTest() {
@@ -57,9 +87,21 @@ public class Epic extends Task {
         List<String> listSubTaskId = subTasks.stream().map(s -> s.taskID).collect(Collectors.toList());
         return "Epic{" +
                 super.toString() +
-                ", endTime=" + (endTime == null ? "'-', " : endTime) +
-                "subTasks=[" + String.join(", ", listSubTaskId) +
-                "]" +
-                '}';
+                ", endTime='" + (endTime == null ? "" : endTime.format(Helper.formatter)) +"',"+
+                "subTasks=[" + String.join(", ", listSubTaskId)+ "]" +
+                '}';//String.join(", ", listSubTaskId)
     }
+
+//    @Override
+//    public String toString() {
+//        return "Epic{" +
+//                "endTime=" + endTime +
+//                ", subTasks=" + subTasks +
+//                ", taskID='" + taskID + '\'' +
+//                ", name='" + name + '\'' +
+//                ", description='" + description + '\'' +
+//                ", duration=" + duration +
+//                ", startTime=" + startTime +
+//                '}';
+//    }
 }

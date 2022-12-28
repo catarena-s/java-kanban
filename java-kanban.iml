@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="junit.jupiter" level="application" />
+    <orderEntry type="library" exported="" name="google.code.gson" level="application" />
   </component>
 </module>

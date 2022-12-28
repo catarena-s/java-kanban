@@ -4,31 +4,31 @@ import ru.yandex.practicum.kanban.exceptions.TaskAddException;
 import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
-import ru.yandex.practicum.kanban.managers.schadule.ScheduleValidator;
+import ru.yandex.practicum.kanban.managers.schadule.ScheduleService;
 import ru.yandex.practicum.kanban.model.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static ru.yandex.practicum.kanban.utils.Helper.MAX_DATE;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected final Map<TaskType, Map<String, Task>> tasksByType;
+    protected Map<TaskType, Map<String, Task>> tasksByType;
     protected final TreeSet<Task> prioritized;
     protected final HistoryManager historyManager;
-    private final ScheduleValidator schedule;
+    private final ScheduleService schedule;
     private int lastID = 0;
     private final List<String> allId = new ArrayList<>();
 
-    public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
+    public InMemoryTaskManager() {
+        this.historyManager = Managers.getDefaultHistory();
 
         tasksByType = new EnumMap<>(TaskType.class);
-        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime)
+//        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime)
+//                .thenComparing(Task::getTaskID));
+        prioritized = new TreeSet<>(Comparator
+                .comparing((Task task) -> Optional.ofNullable(task.getStartTime()).orElse(LocalDateTime.MAX))
                 .thenComparing(Task::getTaskID));
-
-        schedule = new ScheduleValidator();
+        schedule = new ScheduleService();
     }
 
     @Override
@@ -105,10 +105,12 @@ public class InMemoryTaskManager implements TaskManager {
         if (isUpdate) {
             final Task taskFromTM = getById(task.getTaskID());
             final LocalDateTime oldStartDate = taskFromTM.getStartTime();
-            if (oldStartDate.equals(task.getStartTime())) return;
-            schedule.freeTime(taskFromTM);
+            if (oldStartDate!=null) {
+                if (oldStartDate.equals(task.getStartTime())) return;
+                schedule.freeTime(taskFromTM);
+            }
         }
-        if(schedule.checkDay(task))
+        if (schedule.checkTime(task))
             schedule.takeTimeForTask(task);
     }
 
@@ -133,7 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (task instanceof Epic) {
             newTask = new Epic(task.getName(), task.getDescription());
         } else {
-            newTask = new SimpleTask(task.getName(), task.getDescription());
+            newTask = new Task(task.getName(), task.getDescription());
         }
         add(newTask);
         if (task instanceof Epic) {
@@ -169,7 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getAllTasks() {
-        return getAllByType(TaskType.TASK);
+        return (List<Task>) getAllByType(TaskType.TASK);
     }
 
     @Override
@@ -184,33 +186,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getPrioritizedTasks() {
-        // Вот здесь я не до-конца поняла, возможно так и нужно, но TreSet сортирует только при добавлении,
-        // а если задача добавлена и у нее поменялась дата, то позиция в списке у неё остается прежней.
-        // По-этому приходится сортировать перед возращением списка.
-        return prioritized.stream().sorted()
-                .collect(Collectors.toList());
-/*
-    Почему-то в прошлой реализации не получалось сделать TreSet с корректной сортировкой по 2-м полям
-    (видимо что-то ни так делала) - сейчас получилось.
-    Где-то на этапе разбирательств с TreSet и появилась дата по умолчанию 01-01-2222.
-    С сортировкой только по startTime, при добавлении задач без startTime - добавлялась только одна,
-    остальные отсекались как дубли.
-    Код ниже нужен был как раз для корректного добавление задач и под-задач в коней списка prioritized
-
-    list.addAll(this.getAll().stream()
-                .filter(f -> filterStartTimeOff(f) && !TaskType.EPIC.equals(f.getType()))
-                .collect(Collectors.toList())
-                .stream().sorted().collect(Collectors.toList())
-        );
- */
+        return new ArrayList<>(prioritized);
     }
 
     /**
      * проверяем установлено ли значение в startTime
      */
     private boolean filterStartTimeOff(Task task) {
-        return task.getStartTime()
-                .equals(LocalDateTime.of(2222, 1, 1, 0, 0));
+        return task.getStartTime() == null;
+//                .equals(MAX_DATE);
     }
 
     @Override
@@ -256,18 +240,24 @@ public class InMemoryTaskManager implements TaskManager {
         checkTimeInScheduler(task, true);
 
         Map<String, Task> taskByType = tasksByType.get(task.getType());
+        Task currentTask = taskByType.get(task.getTaskID());
+        prioritized.remove(currentTask);
 
         if (task instanceof SubTask) {
             Epic epic = (Epic) getEpic(((SubTask) task).getEpicID());
+            epic.getSubTasks().remove(currentTask);
+            epic.addSubtask((SubTask) task);
             refreshEpic(epic);
         }
         if (task instanceof Epic) {
-            Epic oldEpic = (Epic) getEpic(task.getTaskID());
-            task.setStatus(oldEpic.getStatus());
-            task.setDuration(oldEpic.getDuration());
-            task.setStartTime(oldEpic.getStartTime());
+            task.setStatus(currentTask.getStatus());
+            task.setDuration(currentTask.getDuration());
+            task.setStartTime(currentTask.getStartTime());
         }
-        taskByType.put(task.getTaskID(), task);
+
+        currentTask = task;
+        taskByType.put(task.getTaskID(), currentTask);
+        prioritized.add(currentTask);
     }
 
     @Override
@@ -275,6 +265,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasksByType.clear();
         historyManager.clear();
         prioritized.clear();
+        schedule.freeAllTime();
         allId.clear();
         lastID = 0;
     }
@@ -401,12 +392,6 @@ public class InMemoryTaskManager implements TaskManager {
         setTime(epic);
     }
 
-    /**
-     * Перенесла методы расчета duration, startTime и endTime в менеджер.
-     * В Epice оставила сетеры и герреты.
-     * Просто мне казалось, что раз устанавливать эти значения у эпика нельзя, то логично их рассчитывать внутри Эпика,
-     * Сеттеры убрать, оставить только геттеры.
-     */
     private void setDuration(Epic epic) {
         List<Task> subTasks = epic.getSubTasks();
         epic.setDuration(subTasks.stream()
@@ -417,12 +402,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void setTime(Epic epic) {
         List<Task> subTasks = epic.getSubTasks();
-        epic.setStartTime(subTasks.stream()
-                .map(Task::getStartTime)
-                .min(LocalDateTime::compareTo).orElse(MAX_DATE));
-        epic.setEndTime(subTasks.stream()
-                .map(Task::getEndTime)
-                .max(LocalDateTime::compareTo).orElse(null));
+        if (subTasks.stream().anyMatch(task -> task.getStartTime() != null)) {
+            epic.setStartTime(subTasks.stream()
+                            .filter(f->f.getStartTime()!=null)
+                    .map(Task::getStartTime)
+                    .min(LocalDateTime::compareTo).get());//MAX_DATE
+            epic.setEndTime(subTasks.stream()
+                    .filter(f->f.getEndTime()!=null)
+                    .map(Task::getEndTime)
+                    .max(LocalDateTime::compareTo).get());
+        } else {
+            epic.setStartTime(null);
+            epic.setEndTime(null);
+        }
     }
 
     private void updateEpicStatus(Epic epic) {

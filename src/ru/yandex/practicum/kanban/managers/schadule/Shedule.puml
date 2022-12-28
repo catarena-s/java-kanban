@@ -4,7 +4,6 @@ class Task
 class DaySlots {
 - LocalDate date
 - SortedMap<LocalTime, Boolean> slots
--init()
 + getSlots(): SortedMap<LocalTime, Boolean>
 + getDate() : LocalDate
 + getCountFreeTimeSlotsInDay() : int
@@ -21,9 +20,9 @@ class Schedule {
 class ScheduleValidator{
 - Schedule schedule
 + getSchedule() : Schedule
-+ takeTimeForTask(Task task) : boolean
++ takeTimeForTask(Task task)
++ freeTimeForTask(Task task)
 + checkTimeForTask(Task task) : boolean
-+ freeTimeForTask(Task task) : boolean
 '+ getBusyDays() List<DaySlots>
 - getCount(Task task, LocalTime beginTime) : int
 - getTimeNearestSlot(LocalTime time) : LocalTime
@@ -62,23 +61,7 @@ Schedule <-left-o BookingService
 ScheduleValidator -up-> Task
 ScheduleValidator <-up-* TaskManager
 
-
-/'List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
-}
-
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
-}'/
+hide Task members
+hide TaskManager members
 
 @enduml

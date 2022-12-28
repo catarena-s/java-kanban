@@ -6,10 +6,22 @@ import java.time.LocalDateTime;
 
 public class SubTask extends Task implements Updatable {
     private String epicID;
-
+//    private TaskType taskType = TaskType.SUB_TASK;
     public SubTask() {
         super();
+        setTaskType(TaskType.SUB_TASK);
         this.epicID = "";
+    }
+
+    public SubTask(String name, String description, int duration, String startTime, String epicID) {
+        super(name, description, duration, startTime);
+        this.epicID = epicID;
+        setTaskType(TaskType.SUB_TASK);
+    }
+
+    @Override
+    public void setTaskType(TaskType taskType) {
+        super.setTaskType(taskType);
     }
 
     public SubTask(String name, String description, String epicID) {
@@ -33,8 +45,8 @@ public class SubTask extends Task implements Updatable {
     @Override
     public String toString() {
         return "SubTask{" +
-                "epicID='" + epicID + '\'' +
                 super.toString() +
+                "epicID='" + epicID + '\'' +
                 '}';
     }
 
@@ -45,7 +57,7 @@ public class SubTask extends Task implements Updatable {
 
     @Override
     public String toCompactString() {
-        return String.format("%s, %s, %s", TaskType.SUB_TASK, super.toCompactString(), epicID);
+        return String.format("%s, %s", /*TaskType.SUB_TASK,*/ super.toCompactString(), epicID);
     }
 
     @Override
@@ -77,6 +89,7 @@ public class SubTask extends Task implements Updatable {
         public Task build() {
             return super.build();
         }
+
         @Override
         public Builder name(String name) {
             super.name(name);
@@ -113,7 +126,8 @@ public class SubTask extends Task implements Updatable {
         }
 
         public Builder duration(int duration) {
-            if (duration < 0) throw new IllegalArgumentException("Значение <duration> должно быть больше положительным");
+            if (duration < 0)
+                throw new IllegalArgumentException("Значение <duration> должно быть больше положительным");
             task.setDuration(duration);
             return this;
         }

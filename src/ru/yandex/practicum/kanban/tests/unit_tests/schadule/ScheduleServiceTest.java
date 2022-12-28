@@ -9,8 +9,7 @@ import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.managers.schadule.DaySlots;
 import ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil;
-import ru.yandex.practicum.kanban.managers.schadule.ScheduleValidator;
-import ru.yandex.practicum.kanban.model.SimpleTask;
+import ru.yandex.practicum.kanban.managers.schadule.ScheduleService;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.tests.TestHelper;
 import ru.yandex.practicum.kanban.tests.commands.TestAddCommand;
@@ -19,6 +18,7 @@ import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.yandex.practicum.kanban.utils.Helper.formatter;
 
-class ScheduleValidatorTest implements TestLogger {
-    final ScheduleValidator validator = new ScheduleValidator();
+class ScheduleServiceTest implements TestLogger {
+    final ScheduleService validator = new ScheduleService();
     private TaskManager taskManager;
 
     @BeforeEach
-    void setUp(TestInfo info) throws IOException, TaskException {
+    void setUp(TestInfo info) throws IOException, TaskException, URISyntaxException {
         final Managers managers = new Managers(1);
         taskManager = managers.getDefault();
 
@@ -62,7 +62,8 @@ class ScheduleValidatorTest implements TestLogger {
             Helper.printMessage("Before:");
             ScheduleUtil.printDay(validator, task, false);
 
-            boolean result = validator.takeTimeForTask(task);
+            boolean result = validator.checkTime(task);
+            validator.takeTimeForTask(task);
 
             Helper.printMessage("After:");
             ScheduleUtil.printDay(validator, task, false);
@@ -81,20 +82,28 @@ class ScheduleValidatorTest implements TestLogger {
             "0001, 12-12-2022 09:10:05, 150, Ошибка: Недостаточно свободного временив в расписании.",
             "0002, 15-01-2024 14:22:50, 200, Ошибка: Планировать можно только на год вперед.",
             "0003, 12-12-2022 10:12:10, 110, Ошибка: Время в расписании занято.",})
-    void takeTimeForTaskWithOverlappingTime(String taskId, String newStartTime, int duration, String expectationId) throws TaskGetterException {
-        SimpleTask task = (SimpleTask) taskManager.getTask(taskId);
-        task.builder().startTime(newStartTime).duration(duration);
+    void takeTimeForTaskWithOverlappingTime(String taskId, String newStartTime, int duration, String expectationId) throws TaskException {
+//        SimpleTask task = (SimpleTask) taskManager.getTask(taskId);
+        Task task = taskManager.getTask(taskId);
+        Task newTask = taskManager.clone(task);
+        task.builder()
+                .taskId(taskId)
+                .startTime(newStartTime)
+                .duration(duration);
+        taskManager.updateTask(newTask);
         assertException(expectationId, task);
     }
 
     @DisplayName("Освобождаем время: ")
-    @ParameterizedTest(name = "Задача id={0}: свободные слоты до={1} свободные слоты после={2}")
+    @ParameterizedTest(name = "Задача id={0}: свободные слоты до : {1} свободные слоты после : {2}")
     @Tag(value = "InitData")
-    @CsvSource({"0001, 94, 96", "0005, 76, 85"})
+    @CsvSource({"0001, 93, 96", "0005, 77, 87"})
     void freeTime(String taskId, int freeTimeBefore, int freeTimeAfter) throws TaskGetterException {
         Helper.printDotsSeparator();
         Task task = taskManager.getById(taskId);
         Helper.printMessage("Before:");
+        Helper.printMessage("startTime = %s, duration = %d", task.getStartTime().format(formatter), task.getDuration());
+
         ScheduleUtil.printDay(validator, task, false);//если передать true - напечатается всё время,false - только занятое
         LocalDate taskDate = task.getStartTime().toLocalDate();
         Optional<List<DaySlots>> days = Optional.ofNullable(validator.getBusyDays());
@@ -114,13 +123,6 @@ class ScheduleValidatorTest implements TestLogger {
         Helper.printDotsSeparator();
     }
 
-    private void assertException(String indexExpection, Task task) {
-        TaskException ex = Assertions.assertThrows(
-                TaskException.class,
-                () -> validator.takeTimeForTask(task));
-        assertEquals(indexExpection, ex.getDetailMessage().trim());
-    }
-
     @Test
     @Tag(value = "InitData")
     @DisplayName("Получаем дни на которые распределялись задачи.")
@@ -128,7 +130,14 @@ class ScheduleValidatorTest implements TestLogger {
         Optional<List<DaySlots>> days = Optional.ofNullable(validator.getBusyDays());
         days.ifPresent(days1 -> days1.forEach(d -> ScheduleUtil.print(d, false)));
         int size = days.orElse(new ArrayList<>()).size();
-        assertEquals(4, size);
+        assertEquals(5, size);
         Helper.printDotsSeparator();
+    }
+
+    private void assertException(String indexExpection, Task task) {
+        TaskException ex = Assertions.assertThrows(
+                TaskException.class,
+                () -> validator.checkTime(task));
+        assertEquals(indexExpection, ex.getDetailMessage().trim());
     }
 }
