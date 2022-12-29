@@ -85,7 +85,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         taskManager.add(task2);
 
         FileBackedTasksManager fbTasksManager2 = FileBackedTasksManager
-                .loadFromFile(taskManager.getFileName().toString());
+                .loadFromFile(taskManager.getPathName());
 
         int saved = fbTasksManager2.getAll().size();
 

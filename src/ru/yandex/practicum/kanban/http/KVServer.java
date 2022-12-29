@@ -46,11 +46,6 @@ public class KVServer {
                     return;
                 }
                 String value = data.get(key);
-                if (value == null || value.isEmpty()) {
-                    Helper.printMessage("/load Value пустой. value указывается в теле запроса");
-                    h.sendResponseHeaders(400, 0);
-                    return;
-                }
                 Helper.printMessage("Значение для ключа " + key + " успешно загружено!");
                 writeResponse(h, value, 200);
             } else {

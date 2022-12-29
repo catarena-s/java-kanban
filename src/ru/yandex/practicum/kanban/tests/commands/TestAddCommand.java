@@ -55,9 +55,8 @@ public class TestAddCommand extends AbstractTest {
     private static String getLastEpic(TaskManager taskManager) {
         Optional<List<? extends Task>> epic = Optional.ofNullable(taskManager.getAllEpics());
         return (epic.isPresent() && !epic.get().isEmpty()) ?
-                epic.get().stream()
-                        .sorted(Comparator.reverseOrder())
-                        .findFirst().get()
+                epic.get().stream().min(Comparator.reverseOrder())
+                        .get()
                         .getTaskID() : "";
 
     }

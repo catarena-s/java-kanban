@@ -1,5 +1,6 @@
 package ru.yandex.practicum.kanban.model;
 
+import com.google.gson.annotations.SerializedName;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.time.LocalDateTime;
@@ -24,13 +25,11 @@ public class Task implements Comparable<Task>, Updatable {
     private TaskStatus taskStatus = TaskStatus.NEW;
 
     public Task() {
-        //initDates();
     }
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        //   initDates();
     }
 
     public Task(String name, String description, int duration, String startTime) {
@@ -41,10 +40,6 @@ public class Task implements Comparable<Task>, Updatable {
             this.startTime = LocalDateTime.parse(startTime, Helper.formatter);
         else this.startTime = null;
     }
-
-//    private void initDates() {
-//        startTime = LocalDateTime.MAX;//Helper.MAX_DATE;
-//    }
 
     public LocalDateTime getEndTime() {
         return startTime != null ? startTime.plusMinutes(duration) : null;
@@ -138,7 +133,6 @@ public class Task implements Comparable<Task>, Updatable {
         this.taskStatus = taskStatus;
     }
 
-    //    public abstract TaskType getType();
     public TaskType getType() {
         return TaskType.TASK;
     }

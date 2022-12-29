@@ -1,22 +1,16 @@
 package ru.yandex.practicum.kanban.tests.unit_tests.schadule;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import ru.yandex.practicum.kanban.managers.schadule.DaySlots;
 import ru.yandex.practicum.kanban.managers.schadule.Schedule;
-import ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil;
 import ru.yandex.practicum.kanban.managers.schadule.service.BookingSlotsService;
 import ru.yandex.practicum.kanban.tests.unit_tests.TestLogger;
-import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DaySlotsTest implements TestLogger {
     private final Schedule schedule = new Schedule();
@@ -34,10 +28,10 @@ class DaySlotsTest implements TestLogger {
                         final int[] min = {0, 15, 30, 45};
                         final Random minInd = new Random(0);
                         final LocalTime time = LocalTime.of(hour, min[minInd.nextInt(4)]);
-                        bookingSlotsService.bookTimeSlots(localDate, time,1);
+                        bookingSlotsService.bookTimeSlots(localDate, time, 1);
                     });
-           bookingSlotsService.bookTimeSlots(localDate,LocalTime.of(10, 0), 3);
-           bookingSlotsService.bookTimeSlots(localDate,LocalTime.of(15, 0), 6);
+            bookingSlotsService.bookTimeSlots(localDate, LocalTime.of(10, 0), 3);
+            bookingSlotsService.bookTimeSlots(localDate, LocalTime.of(15, 0), 6);
         }
     }
 

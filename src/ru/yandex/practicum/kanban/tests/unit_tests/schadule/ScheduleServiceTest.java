@@ -8,8 +8,8 @@ import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.managers.Managers;
 import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.managers.schadule.DaySlots;
-import ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil;
 import ru.yandex.practicum.kanban.managers.schadule.ScheduleService;
+import ru.yandex.practicum.kanban.managers.schadule.ScheduleUtil;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.tests.TestHelper;
 import ru.yandex.practicum.kanban.tests.commands.TestAddCommand;
@@ -18,7 +18,6 @@ import ru.yandex.practicum.kanban.utils.FileHelper;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ class ScheduleServiceTest implements TestLogger {
     private TaskManager taskManager;
 
     @BeforeEach
-    void setUp(TestInfo info) throws IOException, TaskException, URISyntaxException {
+    void setUp(TestInfo info) throws IOException, TaskException {
         final Managers managers = new Managers(1);
         taskManager = managers.getDefault();
 
@@ -83,7 +82,6 @@ class ScheduleServiceTest implements TestLogger {
             "0002, 15-01-2024 14:22:50, 200, Ошибка: Планировать можно только на год вперед.",
             "0003, 12-12-2022 10:12:10, 110, Ошибка: Время в расписании занято.",})
     void takeTimeForTaskWithOverlappingTime(String taskId, String newStartTime, int duration, String expectationId) throws TaskException {
-//        SimpleTask task = (SimpleTask) taskManager.getTask(taskId);
         Task task = taskManager.getTask(taskId);
         Task newTask = taskManager.clone(task);
         task.builder()

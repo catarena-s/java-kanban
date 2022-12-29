@@ -10,37 +10,32 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVTaskClient {
-    private HttpClient client;
+    private final HttpClient client;
+    private final URI uri;
     private HttpRequest request;
-    private URI uri;
     private String apiToken;
 
-    public String getApiToken() {
-        return apiToken;
-    }
-
     public KVTaskClient(URI url) {
+        uri = url;
+        client = HttpClient.newHttpClient();
         try {
-            uri = url;
-            client = HttpClient.newHttpClient();
             request = HttpRequest.newBuilder()
                     .GET()
                     .uri(URI.create(uri.toString() + "register/"))
                     .build();
-            try {
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() == 200) {
-                    apiToken = response.body();
-                } else {
-                    Helper.printMessage("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
-                }
-            } catch (IOException | InterruptedException e) { // обрабатываем ошибки отправки запроса
-                Helper.printMessage("Во время выполнения запроса возникла ошибка.\n" +
-                        "Проверьте, пожалуйста, адрес и повторите попытку.");
-            }
 
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                apiToken = response.body();
+            } else {
+                Helper.printMessage("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
+            }
+        } catch (IOException | InterruptedException e) { // обрабатываем ошибки отправки запроса
+            Helper.printMessage("Во время выполнения запроса возникла ошибка.\n" +
+                    "Проверьте, пожалуйста, адрес и повторите попытку.");
         } catch (IllegalArgumentException ex) {
-            Helper.printMessage("Введённый вами адрес не соответствует формату URL. Попробуйте, пожалуйста, снова.");
+            Helper.printMessage("Введённый вами адрес не соответствует формату URL. " +
+                    "Попробуйте, пожалуйста, снова.");
         }
     }
 

@@ -10,19 +10,11 @@ import java.util.stream.Collectors;
 public class Epic extends Task {
 
     private LocalDateTime endTime;
-//    private TaskType taskType = TaskType.EPIC;
     private final List<Task> subTasks;
 
     public Epic() {
         super();
         subTasks = new ArrayList<>();
-        setTaskType(TaskType.EPIC);
-    }
-
-    public Epic(String name, String description, int duration, String startTime, LocalDateTime endTime, List<Task> subTasks) {
-        super(name, description, duration, startTime);
-        this.endTime = endTime;
-        this.subTasks = subTasks;
         setTaskType(TaskType.EPIC);
     }
 
@@ -64,11 +56,6 @@ public class Epic extends Task {
         subTasks.add(subtask);
     }
 
-//    @Override
-//    public String toCompactString() {
-////        return String.format("%-8s, %s", TaskType.EPIC, super.toCompactString());
-//    }
-
     @Override
     public String toActualStringFoTest() {
         return String.format("%s, %s", TaskType.EPIC, super.toActualStringFoTest());
@@ -89,19 +76,7 @@ public class Epic extends Task {
                 super.toString() +
                 ", endTime='" + (endTime == null ? "" : endTime.format(Helper.formatter)) +"',"+
                 "subTasks=[" + String.join(", ", listSubTaskId)+ "]" +
-                '}';//String.join(", ", listSubTaskId)
+                '}';
     }
 
-//    @Override
-//    public String toString() {
-//        return "Epic{" +
-//                "endTime=" + endTime +
-//                ", subTasks=" + subTasks +
-//                ", taskID='" + taskID + '\'' +
-//                ", name='" + name + '\'' +
-//                ", description='" + description + '\'' +
-//                ", duration=" + duration +
-//                ", startTime=" + startTime +
-//                '}';
-//    }
 }

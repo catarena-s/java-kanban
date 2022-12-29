@@ -27,17 +27,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     public static final String KV_SERVER_HTTP_LOCALHOST_8078 = "http://localhost:8078/";
+    private static KVServer kvServer;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        new KVServer().start();
+        kvServer = new KVServer();
+        kvServer.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        kvServer.stop();
     }
 
     @BeforeEach
     void setUp(TestInfo info) throws IOException, TaskException {
         init(3);
         if (info.getTags().contains("InitData")) {
-            List<String> testLines = FileHelper.readFromFile(TestHelper.getPath(TestHelper.INIT_TEST_DATA));
+            final List<String> testLines = FileHelper.readFromFile(TestHelper.getPath(TestHelper.INIT_TEST_DATA));
             for (String line : testLines) {
                 final String testLine = (line.contains("[")) ? line.substring(0, line.indexOf("[")) : line;
                 if (testLine.isBlank()) continue;
@@ -51,6 +58,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         taskManager.clear();
     }
 
+
     @Order(1)
     @Test
     @DisplayName("Загружаем пустой список задач.")
@@ -60,28 +68,30 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         assertEquals(0, taskManager.getAllSubTasks().size());
         assertEquals(0, taskManager.getHistory().size());
     }
+
     @Order(3)
     @Test
     @Tag("InitData")
-    @DisplayName("Загружаем пустой список задач.")
+    @DisplayName("Загружаем список задач.")
     void loadData() {
         assertEquals(4, taskManager.getAllTasks().size());
         assertEquals(4, taskManager.getAllEpics().size());
         assertEquals(6, taskManager.getAllSubTasks().size());
         assertEquals(14, taskManager.getHistory().size());
     }
+
     @Order(2)
     @Test
     @DisplayName("Сохранение - в пустое хранилище.")
     void saveToEmptyFile() throws TaskException, URISyntaxException {
-        Task task = new Task("Task1", "TAsk 1 description");
-        Task task2 = new Task("Task2", "TAsk 2 description");
+        final Task task = new Task("Task1", "TAsk 1 description");
+        final Task task2 = new Task("Task2", "TAsk 2 description");
         taskManager.add(task);
         taskManager.add(task2);
 
-        KVTaskClient kvTaskClient = new KVTaskClient(new URI(KV_SERVER_HTTP_LOCALHOST_8078));
-        String res = kvTaskClient.load(TaskType.TASK.toString());
-        List<Task> resL = gson.fromJson(res, (Type) List.class);
+        final KVTaskClient kvTaskClient = new KVTaskClient(new URI(KV_SERVER_HTTP_LOCALHOST_8078));
+        final String res = kvTaskClient.load(TaskType.TASK.toString());
+        final List<Task> resL = gson.fromJson(res, (Type) List.class);
 
         assertEquals(2, resL.size());
     }
@@ -93,32 +103,32 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     @Tag("InitData")
     @DisplayName("Сохранение")
     void save() throws TaskException, URISyntaxException {
-        int beforeTasks = taskManager.getAllTasks().size();
-        int beforeEpics = taskManager.getAllEpics().size();
-        int beforeSubTasks = taskManager.getAllSubTasks().size();
-        int beforeHistory = taskManager.getHistory().size();
+        final int beforeTasks = taskManager.getAllTasks().size();
+        final int beforeEpics = taskManager.getAllEpics().size();
+        final int beforeSubTasks = taskManager.getAllSubTasks().size();
+        final int beforeHistory = taskManager.getHistory().size();
 
-        Task task = new Task("Task1", "Task 1 description");
+        final Task task = new Task("Task1", "Task 1 description");
         taskManager.add(task);
-        Task task2 = new Task("Task2", "Task 2 description");
+        final Task task2 = new Task("Task2", "Task 2 description");
         taskManager.add(task2);
-        Epic epic1 = new Epic("Epic1", "Epic 1 description");
+        final Epic epic1 = new Epic("Epic1", "Epic 1 description");
         taskManager.add(epic1);
-        SubTask subtask = new SubTask("SubTask 1", "SubTask1 description", epic1.getTaskID());
+        final SubTask subtask = new SubTask("SubTask 1", "SubTask1 description", epic1.getTaskID());
         taskManager.add(subtask);
 
-        KVTaskClient kvTaskClient = new KVTaskClient(new URI(KV_SERVER_HTTP_LOCALHOST_8078));
+        final KVTaskClient kvTaskClient = new KVTaskClient(new URI(KV_SERVER_HTTP_LOCALHOST_8078));
         String res = kvTaskClient.load(TaskType.TASK.toString());
-        JsonArray tasks = JsonParser.parseString(res).getAsJsonArray();
+        final JsonArray tasks = JsonParser.parseString(res).getAsJsonArray();
 
         res = kvTaskClient.load(TaskType.EPIC.toString());
-        JsonArray epics = JsonParser.parseString(res).getAsJsonArray();
+        final JsonArray epics = JsonParser.parseString(res).getAsJsonArray();
 
         res = kvTaskClient.load(TaskType.SUB_TASK.toString());
-        JsonArray subtasks = JsonParser.parseString(res).getAsJsonArray();
+        final JsonArray subtasks = JsonParser.parseString(res).getAsJsonArray();
 
         res = kvTaskClient.load("history");
-        JsonArray history = JsonParser.parseString(res).getAsJsonArray();
+        final JsonArray history = JsonParser.parseString(res).getAsJsonArray();
 
         assertEquals(beforeTasks + 2, tasks.size());
         assertEquals(beforeEpics + 1, epics.size());

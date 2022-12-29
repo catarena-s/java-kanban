@@ -23,10 +23,8 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = Managers.getDefaultHistory();
 
         tasksByType = new EnumMap<>(TaskType.class);
-//        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime)
-//                .thenComparing(Task::getTaskID));
-        prioritized = new TreeSet<>(Comparator
-                .comparing((Task task) -> Optional.ofNullable(task.getStartTime()).orElse(LocalDateTime.MAX))
+        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
                 .thenComparing(Task::getTaskID));
         schedule = new ScheduleService();
     }
@@ -105,7 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isUpdate) {
             final Task taskFromTM = getById(task.getTaskID());
             final LocalDateTime oldStartDate = taskFromTM.getStartTime();
-            if (oldStartDate!=null) {
+            if (oldStartDate != null) {
                 if (oldStartDate.equals(task.getStartTime())) return;
                 schedule.freeTime(taskFromTM);
             }
@@ -171,7 +169,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getAllTasks() {
-        return (List<Task>) getAllByType(TaskType.TASK);
+        return getAllByType(TaskType.TASK);
     }
 
     @Override
@@ -194,7 +192,6 @@ public class InMemoryTaskManager implements TaskManager {
      */
     private boolean filterStartTimeOff(Task task) {
         return task.getStartTime() == null;
-//                .equals(MAX_DATE);
     }
 
     @Override
@@ -404,12 +401,12 @@ public class InMemoryTaskManager implements TaskManager {
         List<Task> subTasks = epic.getSubTasks();
         if (subTasks.stream().anyMatch(task -> task.getStartTime() != null)) {
             epic.setStartTime(subTasks.stream()
-                            .filter(f->f.getStartTime()!=null)
                     .map(Task::getStartTime)
-                    .min(LocalDateTime::compareTo).get());//MAX_DATE
+                    .filter(Objects::nonNull)
+                    .min(LocalDateTime::compareTo).get());
             epic.setEndTime(subTasks.stream()
-                    .filter(f->f.getEndTime()!=null)
                     .map(Task::getEndTime)
+                    .filter(Objects::nonNull)
                     .max(LocalDateTime::compareTo).get());
         } else {
             epic.setStartTime(null);

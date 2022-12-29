@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class SubTask extends Task implements Updatable {
     private String epicID;
-//    private TaskType taskType = TaskType.SUB_TASK;
+
     public SubTask() {
         super();
         setTaskType(TaskType.SUB_TASK);
@@ -46,7 +46,7 @@ public class SubTask extends Task implements Updatable {
     public String toString() {
         return "SubTask{" +
                 super.toString() +
-                "epicID='" + epicID + '\'' +
+                ", epicID='" + epicID + '\'' +
                 '}';
     }
 
@@ -80,7 +80,7 @@ public class SubTask extends Task implements Updatable {
         builder().duration(duration);
     }
 
-    public class Builder extends Task.Builder {
+    public static class Builder extends Task.Builder {
         public Builder(Task task) {
             super(task);
         }
@@ -113,11 +113,13 @@ public class SubTask extends Task implements Updatable {
             return this;
         }
 
+        @Override
         public Builder status(TaskStatus status) {
             task.setStatus(status);
             return this;
         }
 
+        @Override
         public Builder startTime(String startTime) {
             if (startTime.isBlank()) return this;
             LocalDateTime time = LocalDateTime.parse(startTime, Helper.formatter);
@@ -125,6 +127,7 @@ public class SubTask extends Task implements Updatable {
             return this;
         }
 
+        @Override
         public Builder duration(int duration) {
             if (duration < 0)
                 throw new IllegalArgumentException("Значение <duration> должно быть больше положительным");

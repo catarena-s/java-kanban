@@ -1,6 +1,9 @@
 package ru.yandex.practicum.kanban.tests.unit_tests.model;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SubTaskTest extends TaskTest {
 
+    @Override
     @BeforeEach
     void setUp(TestInfo info) {
         task = new SubTask();
@@ -34,12 +38,7 @@ class SubTaskTest extends TaskTest {
         }
     }
 
-    @Test
-    @Tag(value = "Init")
-    void StringTest() {
-        super.toStringTest();
-    }
-
+    @Override
     @ParameterizedTest(name = "Инициализация задачи id=''{0}'' name=''{1}'' description=''{2}''")
     @CsvSource(value = {
             "0006, Subtask name, Subtask desription,'',0",
@@ -51,6 +50,7 @@ class SubTaskTest extends TaskTest {
         super.init(id, name, description, starTimeExpected, duration);
     }
 
+    @Override
     @Tag(value = "Init")
     @DisplayName("Получить время окончания")
     @ParameterizedTest
@@ -59,6 +59,7 @@ class SubTaskTest extends TaskTest {
         super.getEndTime(expected);
     }
 
+    @Override
     @Tag(value = "Init")
     @ParameterizedTest
     @ValueSource(strings = "01-01-2015 15:00:02")
@@ -66,6 +67,7 @@ class SubTaskTest extends TaskTest {
         super.getStartTime(expected);
     }
 
+    @Override
     @ParameterizedTest
     @Tag(value = "Init")
     @DisplayName("Получить duration")
@@ -73,7 +75,6 @@ class SubTaskTest extends TaskTest {
     void getDuration(int expected) {
         super.getDuration(expected);
     }
-
 
 
     @Override

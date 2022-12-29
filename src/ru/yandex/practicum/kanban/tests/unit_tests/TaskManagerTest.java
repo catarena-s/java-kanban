@@ -33,8 +33,13 @@ public abstract class TaskManagerTest<T extends TaskManager> implements TestLogg
     protected T taskManager;
 
     protected void init(int config, String... args) {
-        final Managers managers = new Managers(config, args);
-        taskManager = (T) managers.getDefault();
+        final Managers managers;
+        try {
+            managers = new Managers(config, args);
+            taskManager = (T) managers.getDefault();
+        } catch (TaskException e) {
+            Helper.printMessage(e.getDetailMessage());
+        }
     }
 
     @Order(1)

@@ -7,13 +7,12 @@ import com.sun.net.httpserver.HttpServer;
 import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
-import ru.yandex.practicum.kanban.managers.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.managers.Managers;
+import ru.yandex.practicum.kanban.managers.TaskManager;
 import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.utils.FileHelper;
-import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,39 +27,36 @@ public class HttpTaskServer {
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final String WRONG_COMMAND = "Некорректная команда.";
-    private final FileBackedTasksManager tasksManager;
+    private final TaskManager tasksManager;
     private final Gson gson = new Gson();
-
-    enum Endpoint {GET_TASKS, GET_PRIORITIZED, POST_TASK, DELETE_TASKS, DELETE_TASK, GET_TASK, GET_EPIC_SUBTASKS, GET_HISTORY, UNKNOWN}
-
     private final HttpServer httpServer;
 
-    public HttpTaskServer(int config) throws IOException {
-        Managers managers = new Managers(config, FileHelper.DATA_FILE_NAME_HTTP);
-        tasksManager = (FileBackedTasksManager) managers.getDefault();
-        httpServer = HttpServer.create();
+    private enum Endpoint {
+        GET_TASKS, GET_PRIORITIZED, GET_TASK, GET_EPIC_SUBTASKS, GET_HISTORY,
+        POST_TASK,
+        DELETE_TASKS, DELETE_TASK,
+        UNKNOWN
+    }
 
+    public HttpTaskServer(final int configKey) throws IOException, TaskException {
+        //если configKey = 2, то FileBackedTasksManager работать с файлом DATA_FILE_NAME_HTTP
+        //для других ключей имя файла игнорируется
+        final Managers managers = new Managers(configKey, FileHelper.DATA_FILE_NAME_HTTP);
+        tasksManager = managers.getDefault();
+        httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new TaskHandler());
-
-//        gson = new GsonBuilder()
-//                .setPrettyPrinting()
-//                .registerTypeAdapter(LocalDateTime.class, new Helper.LocalDateAdapter())
-//                .create();
     }
+
     public void start() {
         httpServer.start();
-    }
-    public void stop() {
-        httpServer.stop(1);
     }
 
     class TaskHandler implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            Endpoint endpoint = getEndpoint(exchange.getRequestURI(), exchange.getRequestMethod());
-
+        public void handle(final HttpExchange exchange) throws IOException {
+            final Endpoint endpoint = getEndpoint(exchange.getRequestURI(), exchange.getRequestMethod());
             try {
                 switch (endpoint) {
                     case GET_PRIORITIZED: {
@@ -94,29 +90,10 @@ public class HttpTaskServer {
             } catch (TaskGetterException | TaskRemoveException e) {
                 writeResponse(exchange, e.getDetailMessage(), 400);
             }
-
         }
 
-        private void handleEpicSubTasks(HttpExchange exchange) throws IOException, TaskGetterException {
-            String id;
-            id = getId(exchange);
-            Epic epic = (Epic) tasksManager.getEpic(id);
-            List<Task> list = tasksManager.getAllSubtaskFromEpic(epic);
-            writeResponse(exchange, gson.toJson(list), 200);
-        }
-
-        private void handleHistory(HttpExchange exchange) throws IOException {
-            List<Task> list = tasksManager.getHistory();
-            writeResponse(exchange, gson.toJson(list), 200);
-        }
-
-        private void handleGetPrioritizedList(HttpExchange exchange) throws IOException {
-            List<Task> list = tasksManager.getPrioritizedTasks();
-            writeResponse(exchange, gson.toJson(list), 200);
-        }
-
-        private Endpoint getEndpoint(URI requestPath, String requestMethod) {
-            String[] pathParts = requestPath.toString().split("/");
+        private Endpoint getEndpoint(final URI requestPath, final String requestMethod) {
+            final String[] pathParts = requestPath.toString().split("/");
 
             if (requestMethod.equals("GET") && pathParts.length == 2 && pathParts[1].equals("tasks")) {
                 return Endpoint.GET_PRIORITIZED;
@@ -151,7 +128,29 @@ public class HttpTaskServer {
             return Endpoint.UNKNOWN;
         }
 
-        private void handlePost(HttpExchange exchange) throws IOException {
+        private void handleEpicSubTasks(final HttpExchange exchange) throws IOException, TaskGetterException {
+            String id;
+            id = getId(exchange);
+            if (id.isBlank()) {
+                writeResponse(exchange, WRONG_COMMAND, 400);
+                return;
+            }
+            Epic epic = (Epic) tasksManager.getEpic(id);
+            List<Task> list = tasksManager.getAllSubtaskFromEpic(epic);
+            writeResponse(exchange, gson.toJson(list), 200);
+        }
+
+        private void handleHistory(final HttpExchange exchange) throws IOException {
+            List<Task> list = tasksManager.getHistory();
+            writeResponse(exchange, gson.toJson(list), 200);
+        }
+
+        private void handleGetPrioritizedList(final HttpExchange exchange) throws IOException {
+            List<Task> list = tasksManager.getPrioritizedTasks();
+            writeResponse(exchange, gson.toJson(list), 200);
+        }
+
+        private void handlePost(final HttpExchange exchange) throws IOException {
             String taskType = getTaskType(exchange);
 
             InputStream inputStream = exchange.getRequestBody();
@@ -177,13 +176,10 @@ public class HttpTaskServer {
                 }
                 if (task.getTaskID().isBlank()) {
                     tasksManager.add(task);
-                    writeResponse(exchange, taskType + " добавлен(а) c id=" + task.getTaskID(), 200);
+                    writeResponse(exchange, taskType + " добавлен(а) c id=" + task.getTaskID(), 201);
                 } else {
-                    Task tmpTask = tasksManager.getById(task.getTaskID());
-                    if (tmpTask == null) tasksManager.add(task);
-                    else
-                        tasksManager.updateTask(task);
-                    writeResponse(exchange, taskType + " обнавлен(а)", 200);
+                    tasksManager.updateTask(task);
+                    writeResponse(exchange, taskType + " обнавлен(а)", 201);
                 }
 
             } catch (TaskException e) {
@@ -193,9 +189,13 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleDeleteTask(HttpExchange exchange) throws TaskGetterException, TaskRemoveException, IOException {
+        private void handleDeleteTask(final HttpExchange exchange) throws TaskGetterException, TaskRemoveException, IOException {
             String taskType = getTaskType(exchange);
             String id = getId(exchange);
+            if (id.isBlank()) {
+                writeResponse(exchange, WRONG_COMMAND, 400);
+                return;
+            }
             String response;
             switch (taskType) {
                 case "task":
@@ -217,9 +217,9 @@ public class HttpTaskServer {
             writeResponse(exchange, response, 200);
         }
 
-        private void handleDeleteTaskList(HttpExchange exchange) throws TaskGetterException, IOException {
+        private void handleDeleteTaskList(final HttpExchange exchange) throws TaskGetterException, IOException {
             String taskType = getTaskType(exchange);
-            String response = "";
+            String response;
             switch (taskType) {
                 case "task":
                     tasksManager.removeAllTasks();
@@ -240,9 +240,13 @@ public class HttpTaskServer {
             writeResponse(exchange, response, 200);
         }
 
-        private void handleGetTask(HttpExchange exchange) throws TaskGetterException, IOException {
+        private void handleGetTask(final HttpExchange exchange) throws TaskGetterException, IOException {
             String taskType = getTaskType(exchange);
             String id = getId(exchange);
+            if (id.isBlank()) {
+                writeResponse(exchange, WRONG_COMMAND, 400);
+                return;
+            }
             Task task = null;
             switch (taskType) {
                 case "task":
@@ -262,20 +266,9 @@ public class HttpTaskServer {
 
         }
 
-        private String getTaskType(HttpExchange exchange) {
-            String path = exchange.getRequestURI().getPath();
-            String[] paths = path.split("/");
-            return paths[2];
-        }
-
-        private String getId(HttpExchange exchange) {
-            String[] query = exchange.getRequestURI().getRawQuery().split("=");
-            return query[1];
-        }
-
-        private void handleGetTaskList(HttpExchange exchange) throws IOException {
+        private void handleGetTaskList(final HttpExchange exchange) throws IOException {
             String taskType = getTaskType(exchange);
-            List<? extends Task> tasks = null;
+            List<Task> tasks = null;
             switch (taskType) {
                 case "task":
                     tasks = tasksManager.getAllTasks();
@@ -294,9 +287,24 @@ public class HttpTaskServer {
             }
         }
 
-        private void writeResponse(HttpExchange exchange,
-                                   String responseString,
-                                   int responseCode) throws IOException {
+        private String getTaskType(final HttpExchange exchange) {
+            final String path = exchange.getRequestURI().getPath();
+            final String[] paths = path.split("/");
+            return paths[2];
+        }
+
+        private String getId(final HttpExchange exchange) {
+            final String rawQuery = exchange.getRequestURI().getRawQuery();
+            if (rawQuery == null || !rawQuery.contains("id=")) {
+                return "";
+            }
+            final String[] query = rawQuery.split("=");
+            return query[1];
+        }
+
+        private void writeResponse(final HttpExchange exchange,
+                                   final String responseString,
+                                   final int responseCode) throws IOException {
             if (responseString.isBlank()) {
                 exchange.sendResponseHeaders(responseCode, 0);
             } else {
@@ -308,7 +316,6 @@ public class HttpTaskServer {
             }
             exchange.close();
         }
-
 
     }
 

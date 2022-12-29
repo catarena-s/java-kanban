@@ -1,6 +1,8 @@
 package ru.yandex.practicum.kanban.utils;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -22,8 +24,13 @@ public class Helper {
 
     private Helper() {
     }
-
-    public static class LocalDateAdapter extends TypeAdapter<LocalDateTime> {
+    public static Gson getGsonWithDataTineAdapter(){
+        return new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+    }
+    public static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
         @Override
         public void write(final JsonWriter jsonWriter, final LocalDateTime localDate) throws IOException {
             jsonWriter.value(localDate == null ? "" : localDate.format(Helper.formatter));
@@ -31,7 +38,8 @@ public class Helper {
 
         @Override
         public LocalDateTime read(final JsonReader jsonReader) throws IOException {
-            return jsonReader.nextString().isBlank() ? null : LocalDateTime.parse(jsonReader.nextString(), Helper.formatter);
+            return jsonReader.nextString().isBlank()
+                    ? null : LocalDateTime.parse(jsonReader.nextString(), Helper.formatter);
         }
     }
 
@@ -70,5 +78,13 @@ public class Helper {
 
     public static String getColoredString(String messageTemplate, Colors color) {
         return getColoredString(messageTemplate, color.getColor());
+    }
+    private static final DateTimeFormatter formatterReaderDate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter formatterReaderTime = DateTimeFormatter.ofPattern("hh:mm:ss");
+
+    public static class LocalDateAdapter {
+    }
+
+    public static class LocalTimeAdapter {
     }
 }
