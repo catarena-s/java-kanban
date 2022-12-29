@@ -1,0 +1,53 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+database KVServer
+
+hnote over KVServer : start
+participant HttpTaskServer #99FF99
+hnote over HttpTaskServer : init
+collections HttpTaskManager
+HttpTaskServer -> HttpTaskManager:  init
+hnote over HttpTaskManager: init
+
+HttpTaskManager -> KVTaskClient :  init http client
+
+KVServer<- KVTaskClient :  register
+KVServer-> KVTaskClient :  got token
+KVServer<- KVTaskClient :  load(key)
+KVServer-> KVTaskClient :  got receive
+KVTaskClient -> HttpTaskManager  :  init manager
+
+hnote over HttpTaskServer : start
+box "HTTP_Server" #LightBlue
+    participant KVTaskClient
+    participant HttpTaskManager
+    participant HttpTaskServer
+end box
+autonumber stop
+
+autonumber
+actor Frontend_Client
+'== запросы пользователя к менеджеру ==
+alt #LightGreen Успешный кейс
+    Frontend_Client -> HttpTaskServer : add Task(post)
+    HttpTaskServer -> HttpTaskManager : add Task(post)
+    HttpTaskManager -> KVTaskClient  : save data
+    KVTaskClient  -> KVServer: put(key,data)
+    KVServer-> KVTaskClient : receive
+    HttpTaskManager  -> HttpTaskServer : receive
+    HttpTaskServer -> Frontend_Client : receive(task has been added)
+autonumber stop
+autonumber
+else #Pink Ошибка
+    Frontend_Client -> HttpTaskServer : get Task id(get)
+    HttpTaskServer -> HttpTaskManager : get Task id
+    HttpTaskManager  -> HttpTaskServer : receive error(task not found)
+    HttpTaskServer -> Frontend_Client : receive error(task not found)
+end
+
+hide footbox
+
+@enduml

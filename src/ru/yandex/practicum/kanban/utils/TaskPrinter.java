@@ -10,6 +10,7 @@ import java.util.List;
 public class TaskPrinter {
     private TaskPrinter() {
     }
+
     public static void printHistory(TaskManager taskManager) {
         Helper.printMessage("History: ");
         List<Task> historyManager = taskManager.getHistory();
@@ -18,7 +19,7 @@ public class TaskPrinter {
         for (Task task : historyManager) {
             history.add(task.getTaskID());
         }
-        Helper.printMessage("(%d) '%s'",historyManager.size(), String.join("' -> '", history));
+        Helper.printMessage("(%d) '%s'", historyManager.size(), String.join("' -> '", history));
     }
 
     public static void printAllTaskManagerList(TaskManager taskManager) {
@@ -36,6 +37,7 @@ public class TaskPrinter {
             printSortedTasks(allTasks);
         }
     }
+
     public static void printAllTaskManagerListLong(TaskManager taskManager) {
         List<Task> allTasks = taskManager.getAllTasks();
         if (allTasks != null && !allTasks.isEmpty()) {
@@ -51,13 +53,16 @@ public class TaskPrinter {
             printSortedTasksLong(allTasks);
         }
     }
+
     public static void printSortedTasks(List<Task> allTasks) {
         allTasks.stream().sorted().forEach(t -> Helper.printMessage(t.toCompactString()));
     }
+
     public static void printList(List<Task> allTasks) {
         allTasks.forEach(t -> Helper.printMessage(t.toCompactString()));
         Helper.printEmptySting();
     }
+
     public static void printSortedTasksLong(List<Task> allTasks) {
         allTasks.stream().sorted().forEach(t -> Helper.printMessage(t.toString()));
         Helper.printEmptySting();

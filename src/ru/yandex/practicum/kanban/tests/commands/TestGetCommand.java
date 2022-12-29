@@ -66,7 +66,7 @@ public class TestGetCommand extends AbstractTest {
         return tasks;
     }
 
-    private List<Task> testShortOperation(String objectType) {
+    private List<? extends Task> testShortOperation(String objectType) {
         switch (objectType) {
             case "all":
                 return taskManager.getAll();

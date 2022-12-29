@@ -1,0 +1,66 @@
+@startuml
+'https://plantuml.com/class-diagram
+class Task
+class DaySlots {
+- LocalDate date
+- Set<LocalDate> usedDays
+- NavigableMap<LocalTime, Boolean> slots
++ getSlots(): NavigableMap<LocalTime, Boolean>
++ getDate() : LocalDate
++ getCountFreeTimeSlotsInDay() : int
++ getCountBusyTimeSlotsInDay() : int
+}
+class Schedule {
+- Map<LocalDate, DaySlots> days
++ getUsedDays() : Set<LocalDate>
++ getDays() : Map<LocalDate, DaySlots>
++ put(LocalDate date, DaySlots daySlots)
++ get(LocalDate date) : DaySlots
++ addUsedDays(LocalDate day)
++ removeFromUsedDays(LocalDate date)
++ clear()
+}
+class ScheduleService {
+- Schedule schedule
++ getSchedule() : Schedule
++ takeTimeForTask(Task task)
++ freeTime(Task task)
++ checkTime(Task task) : boolean
++ freeAllTime()
++ getBusyDays() List<DaySlots>
+- getCount(Task task, LocalTime beginTime) : int
+- getTimeNearestSlot(LocalTime time) : LocalTime
+}
+
+class BookingService{
+- Schedule schedule
++ bookTimeSlots(LocalDate date, LocalTime time, int count)
++ freeTimeSlots(LocalDate date, LocalTime time, int count)
+- mark(int count, LocalTime timeBegin, boolean isMark, DaySlots daySlots)
+}
+class CheckService{
+- Schedule schedule
++ isEmptyDate(LocalDate date)
++ isFullDate(LocalDate date)
++ isTimeBeginFree(LocalDate date,LocalTime time)
++ isEnoughTime(LocalDate date,LocalTime time, int count): boolean
+}
+
+'ScheduleUtil -up-> ScheduleService
+'ScheduleUtil -up-> DaySlots
+'BookingService .left.> DaySlots
+'CheckService .right.> DaySlots
+Schedule *--> DaySlots
+ScheduleService *--> Schedule
+ScheduleService *--> BookingService
+ScheduleService *--> CheckService
+Schedule <-right-o CheckService
+Schedule <-left-o BookingService
+
+ScheduleService -up-> Task
+ScheduleService <-up-* TaskManager
+
+hide Task members
+hide TaskManager members
+
+@enduml

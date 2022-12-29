@@ -17,7 +17,7 @@ public enum TaskType {
 
     public Task create(){
         switch (this){
-            case TASK: return new SimpleTask();
+            case TASK: return new Task();
             case EPIC: return new Epic();
             case SUB_TASK:return new SubTask();
         }

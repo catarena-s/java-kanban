@@ -23,25 +23,25 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private Path fileName;
+    protected String pathName;
 
-    private FileBackedTasksManager(final HistoryManager historyManager) {
-        super(historyManager);
+    protected FileBackedTasksManager(final String file) {
+        super();
+        this.pathName = file;
+        load();
     }
 
-    public static FileBackedTasksManager loadFromFile(final Path file) {
-        final FileBackedTasksManager manager = new FileBackedTasksManager(Managers.getDefaultHistory());
-        manager.load(file);
-        return manager;
+    public static FileBackedTasksManager loadFromFile(final String file) {
+        return new FileBackedTasksManager(file);
     }
 
-    public Path getFileName() {
-        return fileName;
+    public String getPathName() {
+        return pathName;
     }
 
     public static void main(final String[] args) {
         final Path file = Paths.get(FileHelper.DATA_FILE_NAME);
-        final FileBackedTasksManager f1 = FileBackedTasksManager.loadFromFile(file);
+        final FileBackedTasksManager f1 = FileBackedTasksManager.loadFromFile(file.toString());
         Helper.printMessage("Тестируем 1-й FileBackedTasksManager:");
         final Tester test = TestManager.get(f1);
         if (test == null) return;
@@ -53,19 +53,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         Helper.printSeparator();
         Helper.printMessage("Тестируем 2-й FileBackedTasksManager:");
-        FileBackedTasksManager f2 = FileBackedTasksManager.loadFromFile(file);
+        FileBackedTasksManager f2 = FileBackedTasksManager.loadFromFile(file.toString());
         Helper.printMessage("Печать содержимого менеджера 2");
         TaskPrinter.printAllTaskManagerListLong(f2);
-        TaskPrinter.printHistory(f2);/**/
+        TaskPrinter.printHistory(f2);
     }
 
     /**
      * загружаем данные из файла таск-менеджер
      */
-    private void load(final Path file) {
+    protected void load() {
         try {
-            fileName = file;
-            final List<String> lines = FileHelper.readFromFile(file);
+            final List<String> lines = FileHelper.readFromFile(Path.of(pathName));
 
             if (lines.isEmpty() || lines.size() <= 1) return;
             final String head = lines.get(0).trim().toLowerCase().replace(" ", "");
@@ -78,7 +77,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             loadHistory(lines, index);
         } catch (FileNotFoundException e) {
-            Helper.printMessage("Ошибка загрузки данных: файл '" + file.toAbsolutePath() + "' не найден.");
+            Helper.printMessage("Ошибка загрузки данных: файл '" + pathName + "' не найден.");
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения из файл.");
         } catch (TaskException e) {
@@ -89,7 +88,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     /**
      * Сохраняем таск-менеджер в файл
      */
-    private void save() {
+    protected void save() {
         try {
             final StringBuilder builder = new StringBuilder();
             if (!tasksByType.isEmpty()) {
@@ -100,7 +99,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         .append(System.lineSeparator())
                         .append(Converter.historyToString(historyManager));
             }
-            FileHelper.saveToFile(fileName, builder.toString());
+            FileHelper.saveToFile(Path.of(pathName), builder.toString());
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка во время записи в файл.");
         }

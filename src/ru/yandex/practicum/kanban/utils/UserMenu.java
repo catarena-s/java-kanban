@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class UserMenu {
     private UserMenu() {
     }
-
     public static final String NUMBER_FORMAT_EXCEPTION = "Введено некорректное значение.";
 
     public static void printMainMenu() {
@@ -23,6 +22,7 @@ public class UserMenu {
     public static void printChooseTaskManager() {
         Helper.printMessage("1 - InMemoryTaskManager");
         Helper.printMessage("2 - FileBackedTasksManager");
+        Helper.printMessage("3 - HttpTaskManager");
         Helper.printMessage("0 - выход");
     }
 

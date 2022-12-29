@@ -13,6 +13,7 @@ import java.util.List;
 public class FileHelper {
     public static final String ERROR_FILE_READING = " Ошибка чтения файла : '%s'";
     public static final String DATA_FILE_NAME = "src/ru/yandex/practicum/kanban/data/task_manager_data.csv";
+    public static final String DATA_FILE_NAME_HTTP = "src/ru/yandex/practicum/kanban/data/task_manager_data_for_http.csv";
     private static final String FILE_ADD_TEST_DATA = "src/ru/yandex/practicum/kanban/data/data_for_test/test_additional.csv";
     private static final String FILE_UPDATE_TEST_DATA = "src/ru/yandex/practicum/kanban/data/data_for_test/test_update.csv";
     private static final String FILE_REMOVE_TEST_DATA = "src/ru/yandex/practicum/kanban/data/data_for_test/test_remove.csv";

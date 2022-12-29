@@ -12,6 +12,10 @@ import ru.yandex.practicum.kanban.utils.Colors;
 import ru.yandex.practicum.kanban.utils.Converter;
 import ru.yandex.practicum.kanban.utils.Helper;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
 public class TestAddCommand extends AbstractTest {
     public TestAddCommand(TaskManager taskManager, boolean isPrintHistory) {
         super(taskManager, isPrintHistory);
@@ -46,6 +50,15 @@ public class TestAddCommand extends AbstractTest {
     public static Task parseLine(String line, TaskManager taskManager) throws TaskException {
         Converter.Record newData = initTask(line, taskManager);
         return Converter.createNewTask(newData);
+    }
+
+    private static String getLastEpic(TaskManager taskManager) {
+        Optional<List<? extends Task>> epic = Optional.ofNullable(taskManager.getAllEpics());
+        return (epic.isPresent() && !epic.get().isEmpty()) ?
+                epic.get().stream().min(Comparator.reverseOrder())
+                        .get()
+                        .getTaskID() : "";
+
     }
 
     private static Converter.Record initTask(String line, TaskManager taskManager) {

@@ -4,30 +4,29 @@ import ru.yandex.practicum.kanban.exceptions.TaskAddException;
 import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
-import ru.yandex.practicum.kanban.managers.schadule.ScheduleValidator;
+import ru.yandex.practicum.kanban.managers.schadule.ScheduleService;
 import ru.yandex.practicum.kanban.model.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static ru.yandex.practicum.kanban.utils.Helper.MAX_DATE;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected final Map<TaskType, Map<String, Task>> tasksByType;
-    protected final Set<Task> prioritized ;
+    protected Map<TaskType, Map<String, Task>> tasksByType;
+    protected final TreeSet<Task> prioritized;
     protected final HistoryManager historyManager;
-    private final ScheduleValidator schedule;
+    private final ScheduleService schedule;
     private int lastID = 0;
     private final List<String> allId = new ArrayList<>();
 
-    public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
+    public InMemoryTaskManager() {
+        this.historyManager = Managers.getDefaultHistory();
 
         tasksByType = new EnumMap<>(TaskType.class);
-        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime)
+        prioritized = new TreeSet<>(Comparator.comparing(Task::getStartTime,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
                 .thenComparing(Task::getTaskID));
-
-        schedule = new ScheduleValidator();
+        schedule = new ScheduleService();
     }
 
     @Override
@@ -104,10 +103,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (isUpdate) {
             final Task taskFromTM = getById(task.getTaskID());
             final LocalDateTime oldStartDate = taskFromTM.getStartTime();
-            if (oldStartDate.equals(task.getStartTime())) return;
-            schedule.freeTime(taskFromTM);
+            if (oldStartDate != null) {
+                if (oldStartDate.equals(task.getStartTime())) return;
+                schedule.freeTime(taskFromTM);
+            }
         }
-        schedule.takeTimeForTask(task);
+        if (schedule.checkTime(task))
+            schedule.takeTimeForTask(task);
     }
 
     protected void subtaskToEpic(final SubTask task) throws TaskGetterException {
@@ -131,7 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (task instanceof Epic) {
             newTask = new Epic(task.getName(), task.getDescription());
         } else {
-            newTask = new SimpleTask(task.getName(), task.getDescription());
+            newTask = new Task(task.getName(), task.getDescription());
         }
         add(newTask);
         if (task instanceof Epic) {
@@ -189,8 +191,7 @@ public class InMemoryTaskManager implements TaskManager {
      * проверяем установлено ли значение в startTime
      */
     private boolean filterStartTimeOff(Task task) {
-        return task.getStartTime()
-                .equals(MAX_DATE);
+        return task.getStartTime() == null;
     }
 
     @Override
@@ -261,6 +262,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasksByType.clear();
         historyManager.clear();
         prioritized.clear();
+        schedule.freeAllTime();
         allId.clear();
         lastID = 0;
     }
@@ -387,12 +389,6 @@ public class InMemoryTaskManager implements TaskManager {
         setTime(epic);
     }
 
-    /**
-     * Перенесла методы расчета duration, startTime и endTime в менеджер.
-     * В Epice оставила сетеры и герреты.
-     * Просто мне казалось, что раз устанавливать эти значения у эпика нельзя, то логично их рассчитывать внутри Эпика,
-     * Сеттеры убрать, оставить только геттеры.
-     */
     private void setDuration(Epic epic) {
         List<Task> subTasks = epic.getSubTasks();
         epic.setDuration(subTasks.stream()
@@ -403,12 +399,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void setTime(Epic epic) {
         List<Task> subTasks = epic.getSubTasks();
-        epic.setStartTime(subTasks.stream()
-                .map(Task::getStartTime)
-                .min(LocalDateTime::compareTo).orElse(MAX_DATE));
-        epic.setEndTime(subTasks.stream()
-                .map(Task::getEndTime)
-                .max(LocalDateTime::compareTo).orElse(null));
+        if (subTasks.stream().anyMatch(task -> task.getStartTime() != null)) {
+            epic.setStartTime(subTasks.stream()
+                    .map(Task::getStartTime)
+                    .filter(Objects::nonNull)
+                    .min(LocalDateTime::compareTo).get());
+            epic.setEndTime(subTasks.stream()
+                    .map(Task::getEndTime)
+                    .filter(Objects::nonNull)
+                    .max(LocalDateTime::compareTo).get());
+        } else {
+            epic.setStartTime(null);
+            epic.setEndTime(null);
+        }
     }
 
     private void updateEpicStatus(Epic epic) {

@@ -4,6 +4,7 @@ import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
 import ru.yandex.practicum.kanban.exceptions.TaskRemoveException;
 import ru.yandex.practicum.kanban.model.Epic;
+import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
 
 import java.util.List;

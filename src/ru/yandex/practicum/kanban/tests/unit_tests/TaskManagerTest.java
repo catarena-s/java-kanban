@@ -1,9 +1,6 @@
 package ru.yandex.practicum.kanban.tests.unit_tests;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.yandex.practicum.kanban.exceptions.TaskAddException;
 import ru.yandex.practicum.kanban.exceptions.TaskException;
 import ru.yandex.practicum.kanban.exceptions.TaskGetterException;
@@ -23,7 +20,6 @@ import ru.yandex.practicum.kanban.utils.Helper;
 import ru.yandex.practicum.kanban.utils.TaskPrinter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,18 +27,39 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static ru.yandex.practicum.kanban.tests.TestHelper.*;
 import static ru.yandex.practicum.kanban.utils.Helper.formatter;
 
-abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
 
     protected T taskManager;
 
     protected void init(int config, String... args) {
-        final Managers managers = new Managers(config, args);
-        taskManager = (T) managers.getDefault();
+        final Managers managers;
+        try {
+            managers = new Managers(config, args);
+            taskManager = (T) managers.getDefault();
+        } catch (TaskException e) {
+            Helper.printMessage(e.getDetailMessage());
+        }
     }
 
+    @Order(1)
     @Test
     @Tag(value = "EmptyFile")
-    @DisplayName("Получение всех подзадач по эпику в пустом таск-менеджере")
+    @DisplayName("Получить все задачи из пустого менеджера.")
+    void getAllFromEmptyManager() {
+        final List<Task> all = taskManager.getAll();
+        final List<Task> subTasks = taskManager.getAllSubTasks();
+        final List<Task> epics = taskManager.getAllEpics();
+        final List<Task> tasks = taskManager.getAllTasks();
+
+        assertEquals(0, tasks.size() + epics.size() + subTasks.size(), "Ошибка получения задач");
+        assertEquals(0, all.size(), "Ошибка получения всех задач");
+    }
+
+    @Order(2)
+    @Test
+    @Tag(value = "EmptyFile")
+    @DisplayName("Получить подзадачи по эпику в пустом таск-менеджере")
     void getTaskFromEmptyManager() {
         final TaskException ex = Assertions.assertThrows(
                 TaskGetterException.class,
@@ -51,6 +68,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
                 ex.getDetailMessage().trim(), "Эпик не должен быть получен");
     }
 
+    @Order(3)
     @Test
     @Tag("EmptyFile")
     @DisplayName("Добавление задач, эпиков и подзадач с корректными данными")
@@ -71,6 +89,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     }
 
     @Test
+    @Order(4)
     @Tag(value = "InitData")
     @DisplayName("Добавление подзадач с ошибочными тестовыми данными:\n" +
             "1- добавление дубликата.\n" +
@@ -93,6 +112,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     }
 
     @Test
+    @Order(5)
     @Tag(value = "InitData")
     @DisplayName("Получение всех подзадач по эпику")
     void getAllSubtaskByEpic() throws TaskGetterException {
@@ -106,7 +126,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
         assertEquals(0, subTasksFoEpic.size());
     }
 
-
+    @Order(6)
     @Test
     @Tag(value = "InitData")
     @DisplayName("Получить все задачи, не пустой менеджер.")
@@ -122,21 +142,8 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
         assertEquals(14, all.size(), "Ошибка получения всех задач");
     }
 
-
     @Test
-    @Tag(value = "EmptyFile")
-    @DisplayName("Получить все задачи из пустого менеджера.")
-    void getAllFromEmptyManager() {
-        final List<Task> all = taskManager.getAll();
-        final List<Task> subTasks = taskManager.getAllSubTasks();
-        final List<Task> epics = taskManager.getAllEpics();
-        final List<Task> tasks = taskManager.getAllTasks();
-
-        assertEquals(0, tasks.size() + epics.size() + subTasks.size(), "Ошибка получения задач");
-        assertEquals(0, all.size(), "Ошибка получения всех задач");
-    }
-
-    @Test
+    @Order(7)
     @Tag(value = "InitData")
     @DisplayName("Обновление задач\n")
     void updateTasks() throws IOException, TaskGetterException {
@@ -153,6 +160,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     }
 
     @Test
+    @Order(8)
     @Tag(value = "InitData")
     @DisplayName("Обновление статусов эпика:\n" +
             "- при удалении и добавлении подзадач;\n" +
@@ -199,6 +207,37 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     }
 
     @Test
+    @Order(9)
+    @Tag(value = "InitData")
+    @DisplayName("Получить преоритизированный список " +
+            "- список упорядочен по возрастанию startTime.\n" +
+            "- в конце списка задачи у которых не установлен startTime")
+    void getPrioritizedTasks() throws TaskException, IOException {
+        TestHelper.addDataFromFile(taskManager, TEST_ADD_TO_MANAGER);
+        taskManager.removeTask("0001");
+        taskManager.removeEpic("0004");
+
+        final List<Task> expectationList = List.of(
+                taskManager.getById("0012"),
+                taskManager.getById("0017"),
+                taskManager.getById("0019"),
+                taskManager.getById("0015"),
+                taskManager.getById("0010"),
+                taskManager.getById("0011"),
+                taskManager.getById("0003"),
+                taskManager.getById("0002"),
+                taskManager.getById("0013"),
+                taskManager.getById("0016"),
+                taskManager.getById("0020")
+        );
+        final List<Task> list = taskManager.getPrioritizedTasks();
+        TaskPrinter.printList(list);
+        assertEquals(expectationList, list);
+        Helper.printDotsSeparator();
+    }
+
+    @Test
+    @Order(10)
     @Tag(value = "InitData")
     @DisplayName("Удаление задачи.")
     void removeTask() throws TaskGetterException, TaskRemoveException {
@@ -216,8 +255,9 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     }
 
     @Test
+    @Order(11)
     @Tag(value = "InitData")
-    @DisplayName("Удаление эпикаю")
+    @DisplayName("Удаление эпика")
     void removeEpic() throws TaskGetterException, TaskRemoveException {
         printTaskManager(BEFORE_TEST_MSG, taskManager);
         final Epic task = (Epic) taskManager.getEpic("0004");
@@ -233,6 +273,7 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     }
 
     @Test
+    @Order(12)
     @Tag(value = "InitData")
     @DisplayName("Удаление подзадач: проверяем обновление данных у эпика(status, startTime, endTime, duration)")
     void removeSubtask() throws TaskGetterException, TaskRemoveException, IOException {
@@ -254,38 +295,6 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
         }
     }
 
-    @Test
-    @Tag(value = "InitData")
-    @DisplayName("Получить преоритизированный список " +
-            "- список упорядочен по возрастанию startTime.\n" +
-            "- в конце списка задачи у которых не установлен startTime")
-    void getPrioritizedTasks() throws TaskException, IOException {
-        TestHelper.addDataFromFile(taskManager, TEST_ADD_TO_MANAGER);
-        taskManager.removeTask("0001");
-        taskManager.removeEpic("0004");
-
-
-        Helper.printMessage(LocalDateTime.MIN.format(formatter));
-        Helper.printMessage(LocalDateTime.MAX.format(formatter));
-        final List<Task> expectationList = List.of(
-                taskManager.getById("0017"),
-                taskManager.getById("0019"),
-                taskManager.getById("0015"),
-                taskManager.getById("0010"),
-                taskManager.getById("0012"),
-                taskManager.getById("0011"),
-                taskManager.getById("0003"),
-                taskManager.getById("0002"),
-                taskManager.getById("0013"),
-                taskManager.getById("0016"),
-                taskManager.getById("0020")
-        );
-        final List<Task> list = taskManager.getPrioritizedTasks();
-        TaskPrinter.printList(list);
-        assertEquals(expectationList, list);
-        Helper.printDotsSeparator();
-    }
-
     private void testTestAddCommand(String line, Class<? extends TaskException> classException) {
         final String expected = TestHelper.getExpectation(line).trim();
         if (line.isBlank()) return;
@@ -301,8 +310,9 @@ abstract class TaskManagerTest<T extends TaskManager> implements TestLogger {
     private void assertEpicData(Epic epic, Expectations expectations) {
         assertEquals(expectations.status.trim(), epic.getStatus().name(), "status не совпадают");
         assertEquals(expectations.duration, epic.getDuration(), "duration не совпадают");
-        assertEquals(expectations.startTime.trim(), epic.getStartTime().format(formatter), "startTime не совпадают");
         if (expectations.isNullEndTime) {
+            assertEquals(expectations.startTime.trim(), epic.getStartTime() == null ? "" : epic.getStartTime().format(formatter), "startTime не совпадают");
+            assertNull(epic.getStartTime());
             assertNull(epic.getEndTime());
         } else
             assertEquals(expectations.endTime.trim(), epic.getEndTime().format(formatter), "EndTime не совпадают");

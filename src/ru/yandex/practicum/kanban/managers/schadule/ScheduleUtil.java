@@ -3,6 +3,8 @@ package ru.yandex.practicum.kanban.managers.schadule;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.utils.Helper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -13,10 +15,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ScheduleUtil {
-    public static final int ONE_SLOT_TIME_IN_SCHEDULER = 15;
     public static final boolean PRINT_REPORT = false;
 
     private ScheduleUtil() {
+    }
+
+    public static void print(final Schedule schedule, final LocalDate date, boolean isPrintAll) {
+        final DaySlots daySlots = schedule.get(date);
+        print(daySlots, isPrintAll);
     }
 
     public static void print(final DaySlots daySlots, boolean isPrintAll) {
@@ -25,13 +31,17 @@ public class ScheduleUtil {
                 .ifPresent(getStreamConsumer(isPrintAll ? daySlots.getSlots().size() : daySlots.getCountBusyTimeSlotsInDay()));
     }
 
-    public static void printDay(ScheduleValidator validator, Task task, boolean isPrintAll) {
-        validator.printDay(task, isPrintAll);
+    public static void printDay(final ScheduleService validator, final Task task, boolean isPrintAll) {
+        if (task.getStartTime() == null) return;
+        final LocalDateTime dateTime = task.getStartTime();
+        final LocalDate date = dateTime.toLocalDate();
+        final DaySlots daySlots = validator.getSchedule().get(date);
+        ScheduleUtil.print(daySlots, isPrintAll);
     }
 
     private static Optional<Stream<Map.Entry<LocalTime, Boolean>>> getEntryStream(final DaySlots daySlots, boolean isPrintAll) {
         return isPrintAll ? Optional.ofNullable(daySlots.getSlots().entrySet().stream())
-                            : Optional.of(daySlots.getSlots().entrySet().stream()
+                : Optional.of(daySlots.getSlots().entrySet().stream()
                 .filter(f -> Boolean.TRUE.equals(f.getValue())));
     }
 
@@ -46,7 +56,5 @@ public class ScheduleUtil {
                     else Helper.print(timeSlot + "\t");
                     if (countPrint.get() % 4 == 0 || countPrint.get() == size) Helper.printEmptySting();
                 });
-
-
     }
 }

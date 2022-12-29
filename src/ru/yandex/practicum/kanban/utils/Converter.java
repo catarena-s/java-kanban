@@ -39,7 +39,7 @@ public class Converter {
     /**
      * Формируем строку из списка задач
      */
-    public static String taskListToString(final List<Task> taskList) {
+    public static String taskListToString(final List<? extends Task> taskList) {
         final String result = taskList.stream().sorted()
                 .map(Task::toCompactString)
                 .collect(Collectors.joining(System.lineSeparator()));
@@ -101,6 +101,6 @@ public class Converter {
         public String epicID = "";
         public String status = "";
         public String duration = "0";
-        public String startTime = "01-01-2222 00:00:00";
+        public String startTime = "";//01-01-2222 00:00:00";
     }
 }
