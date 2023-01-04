@@ -1,9 +1,9 @@
 package ru.yandex.practicum.kanban.model;
 
-import com.google.gson.annotations.SerializedName;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Task implements Comparable<Task>, Updatable {
     protected static final String DEFAULT_FORMAT_OUT_DATA = "%-8s, %s, %-12s, %-15s, %-25s, %2s, %s";
@@ -12,7 +12,7 @@ public class Task implements Comparable<Task>, Updatable {
     protected String description = "";
     protected int duration = 0;
     protected LocalDateTime startTime;
-    private TaskType taskType = TaskType.TASK;
+    protected TaskType taskType = TaskType.TASK;
 
     public TaskType getTaskType() {
         return taskType;
@@ -25,6 +25,20 @@ public class Task implements Comparable<Task>, Updatable {
     private TaskStatus taskStatus = TaskStatus.NEW;
 
     public Task() {
+    }
+
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
+    public Task(String taskID, String name, String description, int duration, LocalDateTime startTime, TaskType taskType, TaskStatus taskStatus) {
+        this.taskID = taskID;
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.taskType = taskType;
+        this.taskStatus = taskStatus;
     }
 
     public Task(String name, String description) {
@@ -113,7 +127,7 @@ public class Task implements Comparable<Task>, Updatable {
         return name;
     }
 
-    protected void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -121,16 +135,12 @@ public class Task implements Comparable<Task>, Updatable {
         return description;
     }
 
-    protected void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     public TaskStatus getStatus() {
         return taskStatus;
-    }
-
-    public void setStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
     }
 
     public TaskType getType() {
@@ -156,6 +166,21 @@ public class Task implements Comparable<Task>, Updatable {
         builder().duration(duration);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return duration == task.duration && Objects.equals(taskID, task.taskID) && Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) && Objects.equals(startTime, task.startTime) &&
+                taskType == task.taskType && taskStatus == task.taskStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskID, name, description, duration, startTime, taskType, taskStatus);
+    }
+
     public static class Builder {
         protected Task task;
 
@@ -179,7 +204,7 @@ public class Task implements Comparable<Task>, Updatable {
         }
 
         public Builder status(TaskStatus status) {
-            task.setStatus(status);
+            task.setTaskStatus(status);
             return this;
         }
 

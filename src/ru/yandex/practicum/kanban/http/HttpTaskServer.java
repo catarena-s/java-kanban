@@ -13,6 +13,7 @@ import ru.yandex.practicum.kanban.model.Epic;
 import ru.yandex.practicum.kanban.model.SubTask;
 import ru.yandex.practicum.kanban.model.Task;
 import ru.yandex.practicum.kanban.utils.FileHelper;
+import ru.yandex.practicum.kanban.utils.GsonAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class HttpTaskServer {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final String WRONG_COMMAND = "Некорректная команда.";
     private final TaskManager tasksManager;
-    private final Gson gson = new Gson();
+    private final Gson gson;
     private final HttpServer httpServer;
 
     private enum Endpoint {
@@ -46,6 +47,7 @@ public class HttpTaskServer {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new TaskHandler());
+        gson = GsonAdapter.getGsonWithAdapter();
     }
 
     public void start() {
@@ -100,12 +102,16 @@ public class HttpTaskServer {
             }
             if (pathParts.length == 3 && pathParts[1].equals("tasks")) {
                 if (pathParts[2].equals("task") || pathParts[2].equals("epic") || pathParts[2].equals("subtask")) {
-                    if (requestMethod.equals("GET"))
-                        return Endpoint.GET_TASKS;
-                    if (requestMethod.equals("POST"))
-                        return Endpoint.POST_TASK;
-                    if (requestMethod.equals("DELETE"))
-                        return Endpoint.DELETE_TASKS;
+                    switch (requestMethod) {
+                        case "GET":
+                            return Endpoint.GET_TASKS;
+                        case "POST":
+                            return Endpoint.POST_TASK;
+                        case "DELETE":
+                            return Endpoint.DELETE_TASKS;
+                        default:
+                            return Endpoint.UNKNOWN;
+                    }
                 }
                 if (pathParts[2].equals("history")) {
                     return Endpoint.GET_HISTORY;
@@ -115,10 +121,14 @@ public class HttpTaskServer {
                     (pathParts[2].equals("task") ||
                             pathParts[2].equals("epic") ||
                             pathParts[2].equals("subtask"))) {
-                if (requestMethod.equals("GET"))
-                    return Endpoint.GET_TASK;
-                if (requestMethod.equals("DELETE"))
-                    return Endpoint.DELETE_TASK;
+                switch (requestMethod) {
+                    case "GET":
+                        return Endpoint.GET_TASK;
+                    case "DELETE":
+                        return Endpoint.DELETE_TASK;
+                    default:
+                        return Endpoint.UNKNOWN;
+                }
             }
 
             if (pathParts.length == 5 && pathParts[1].equals("tasks") &&

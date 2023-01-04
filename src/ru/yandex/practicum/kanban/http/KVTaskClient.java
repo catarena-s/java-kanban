@@ -15,9 +15,13 @@ public class KVTaskClient {
     private HttpRequest request;
     private String apiToken;
 
-    public KVTaskClient(URI url) {
-        uri = url;
+    public KVTaskClient(URI uri) {
+        this.uri = uri;
         client = HttpClient.newHttpClient();
+        registerOnServer();
+    }
+
+    private void registerOnServer() {
         try {
             request = HttpRequest.newBuilder()
                     .GET()
@@ -61,6 +65,12 @@ public class KVTaskClient {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
                 return response.body();
+            }
+            if (response.statusCode() == 204) {
+                return "";
+            } else {
+                Helper.printMessage("Ошибка загрузки: %s. Код ответа: %d"
+                        , response.body(), response.statusCode());
             }
         } catch (IOException | InterruptedException ex) {
             Helper.printMessage("Во время выполнения запроса возникла ошибка. Проверьте, пожалуйста, URL-адрес и повторите попытку.");

@@ -3,10 +3,10 @@ package ru.yandex.practicum.kanban.model;
 import ru.yandex.practicum.kanban.utils.Helper;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class SubTask extends Task implements Updatable {
     private String epicID;
-
     public SubTask() {
         super();
         setTaskType(TaskType.SUB_TASK);
@@ -19,13 +19,9 @@ public class SubTask extends Task implements Updatable {
         setTaskType(TaskType.SUB_TASK);
     }
 
-    @Override
-    public void setTaskType(TaskType taskType) {
-        super.setTaskType(taskType);
-    }
-
     public SubTask(String name, String description, String epicID) {
         super(name, description);
+        setTaskType(TaskType.SUB_TASK);
         this.epicID = epicID;
     }
 
@@ -80,7 +76,21 @@ public class SubTask extends Task implements Updatable {
         builder().duration(duration);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SubTask subTask = (SubTask) o;
+        return Objects.equals(epicID, subTask.epicID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), epicID);
+    }
     public static class Builder extends Task.Builder {
+
         public Builder(Task task) {
             super(task);
         }
@@ -115,7 +125,7 @@ public class SubTask extends Task implements Updatable {
 
         @Override
         public Builder status(TaskStatus status) {
-            task.setStatus(status);
+            task.setTaskStatus(status);
             return this;
         }
 

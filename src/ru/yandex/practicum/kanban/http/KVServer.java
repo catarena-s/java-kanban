@@ -45,6 +45,11 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
+                if (!data.containsKey(key)) {
+                    Helper.printMessage("Значение для ключа " + key + " не найдено!");
+                    h.sendResponseHeaders(204, 0);
+                    return;
+                }
                 String value = data.get(key);
                 Helper.printMessage("Значение для ключа " + key + " успешно загружено!");
                 writeResponse(h, value, 200);

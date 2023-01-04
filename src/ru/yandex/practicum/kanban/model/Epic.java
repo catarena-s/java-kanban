@@ -5,6 +5,7 @@ import ru.yandex.practicum.kanban.utils.Helper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Epic extends Task {
@@ -20,17 +21,18 @@ public class Epic extends Task {
 
     public Epic(String name, String description, int duration, String startTime, String endTime) {
         super(name, description, duration, startTime);
-        setTaskType(TaskType.EPIC);
         if (!endTime.isBlank())
             this.endTime = LocalDateTime.parse(endTime, Helper.formatter);
         else
             this.endTime = null;
         subTasks = new ArrayList<>();
+        setTaskType(TaskType.EPIC);
     }
 
     public Epic(String name, String description) {
         super(name, description);
         subTasks = new ArrayList<>();
+        setTaskType(TaskType.EPIC);
     }
 
     public Epic(String name, String description, String endTime) {
@@ -74,9 +76,23 @@ public class Epic extends Task {
         List<String> listSubTaskId = subTasks.stream().map(s -> s.taskID).collect(Collectors.toList());
         return "Epic{" +
                 super.toString() +
-                ", endTime='" + (endTime == null ? "" : endTime.format(Helper.formatter)) +"',"+
-                "subTasks=[" + String.join(", ", listSubTaskId)+ "]" +
+                ", endTime='" + (endTime == null ? "" : endTime.format(Helper.formatter)) + "'," +
+                "subTasks=[" + String.join(", ", listSubTaskId) + "]" +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(endTime, epic.endTime) && Objects.equals(subTasks, epic.subTasks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), endTime, subTasks);
     }
 
 }
