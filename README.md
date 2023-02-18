@@ -5,13 +5,13 @@ ___
 Репозиторий для домашнего проекта - Трекер задач.
 
 **Оглавление**
-1. [Типы задач](https://github.com/catarena-s/java-kanban/blob/main/README.md#Типы-задач)
-2. [Менеджер](https://github.com/catarena-s/java-kanban/blob/main/README.md#Менеджер)
-3. [Истории просмотров задач](https://github.com/catarena-s/java-kanban/blob/main/README.md#Истории-просмотров-задач)
-4. [UML](https://github.com/catarena-s/java-kanban/blob/main/README.md#uml)
-5. [Диаграмма](https://github.com/catarena-s/java-kanban/blob/main/README.md#Диаграмма)
+1. [Типы задач](README.md#Типы-задач)
+2. [Менеджер](README.md#Менеджер)
+3. [Истории просмотров задач](README.md#Истории-просмотров-задач)
+4. [UML](README.md#uml)
+5. [Диаграмма](README.md#Диаграмма)
 
-<img src="https://github.com/catarena-s/java-kanban/blob/main/res/kanbat_task_manager.png?token=GHSAT0AAAAAABYYWDKXNRBSYFQGZQXTTIWQY3VADUQ" width="80%"/>
+<img src="res/kanbat_task_manager.png?token=GHSAT0AAAAAABYYWDKXNRBSYFQGZQXTTIWQY3VADUQ" width="80%"/>
 
 
 ### **Типы задач**[]()
@@ -63,15 +63,15 @@ ___
 ___
 Пример формирования истории просмотров задач после вызовов методов менеджера:
 
-<img src="https://github.com/catarena-s/java-kanban/blob/main/res/history_task_manager.png?token=GHSAT0AAAAAABYYWDKXWI2UXBIHUDSCZORIY3VAHIQ" width="60%"/>
+<img src="res/history_task_manager.png" width="60%"/>
 
 ### **UML**[]()
 
-![](https://github.com/catarena-s/java-kanban/blob/main/res/UML_task.svg?token=A2GDMWJSDNOBLOD4XL5AW7DDOUBGU)
+![](res/UML_task.svg?token=A2GDMWJSDNOBLOD4XL5AW7DDOUBGU)
 
 ### **Диаграмма**[]()
 
-![](https://github.com/catarena-s/java-kanban/blob/main/res/classes.svg?token=A2GDMWNHTBGPI5J4WY5ME2TDOUBDM)
+![](res/classes.svg?token=A2GDMWNHTBGPI5J4WY5ME2TDOUBDM)
 
 
 
