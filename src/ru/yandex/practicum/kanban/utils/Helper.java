@@ -2,6 +2,7 @@ package ru.yandex.practicum.kanban.utils;
 
 
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class Helper {
     public static final String WRONG_RECORD = "Некорректная тестовая строка: '%s'";
@@ -13,6 +14,7 @@ public class Helper {
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     private static final String MSG_SEPARATOR = "---------------------------------------------------------------------------";
     private static final String MSG_DOTS_SEPARATOR = "...........................................................................";
+    public static final Locale LOCALE = new Locale("UTF-18");
 
     private Helper() {
     }
@@ -26,7 +28,7 @@ public class Helper {
     }
 
     public static void printSeparator(String color) {
-        System.out.printf(getColoredString(MSG_SEPARATOR, color));
+        System.out.printf(LOCALE,getColoredString(MSG_SEPARATOR, color));
     }
 
     public static void printEmptySting() {
@@ -34,7 +36,7 @@ public class Helper {
     }
 
     public static void printMessage(String messageTemplate, Object... args) {
-        System.out.printf(messageTemplate + "\n", args);
+        System.out.printf(LOCALE,messageTemplate + "\n", args);
     }
 
     public static void print(String messageTemplate, Object... args) {
